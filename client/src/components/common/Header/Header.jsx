@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
-import { Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { useCart } from '../../../contexts/CartContext';
+import { Menu, X, User, LogOut, Settings, ShoppingCart } from 'lucide-react';
 import './Header.css';
 
 const Header = () => {
   const { user, logout } = useAuth();
+  const { getCartItemCount } = useCart();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  useEffect(() => {
+    setCartItemCount(getCartItemCount());
+  }, [getCartItemCount]);
 
   const handleLogout = () => {
     logout();
@@ -55,9 +62,9 @@ const Header = () => {
                       <Settings size={16} />
                       Profile
                     </Link>
-                    <Link to="/my-tickets" className="dropdown-item">
-                      <User size={16} />
-                      My Tickets
+                    <Link to="/cart" className="dropdown-item">
+                      <ShoppingCart size={16} />
+                      Cart {cartItemCount > 0 && `(${cartItemCount})`}
                     </Link>
                     <button onClick={handleLogout} className="dropdown-item logout-btn">
                       <LogOut size={16} />

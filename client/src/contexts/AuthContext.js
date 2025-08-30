@@ -115,7 +115,11 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    updateUser
+    updateUser,
+    verifyEmail,
+    isAuthenticated: !!state.token,
+    isLoading: state.loading,
+    error: state.error
   };
 
   return (

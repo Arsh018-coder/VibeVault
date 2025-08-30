@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Users, ArrowLeft } from 'lucide-react';
+import { Calendar, MapPin, Users, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import './EventBookingPage.css';
 
@@ -11,6 +13,8 @@ const EventBookingPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTickets, setSelectedTickets] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -281,46 +285,69 @@ const EventBookingPage = () => {
     return Object.values(selectedTickets).reduce((sum, qty) => sum + qty, 0);
   };
 
-  const handleSubmit = async (e) => {
+  const handleAddToCart = (e) => {
     e.preventDefault();
-
-    const totalTickets = getTotalTickets();
-    if (totalTickets === 0) {
-      toast.error('Please select at least one ticket.');
+    
+    if (!isAuthenticated) {
+      toast.error('Please log in to add items to your cart');
+      navigate('/login', { state: { from: `/events/${slug}/book` } });
       return;
     }
-
-    setIsSubmitting(true);
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // In a real app, this would be an API call to create the booking
-      const bookingData = {
-        eventId: event.id,
-        tickets: event.ticketTypes
-          .filter(ticket => selectedTickets[ticket.id] > 0)
-          .map(ticket => ({
-            ticketTypeId: ticket.id,
-            quantity: selectedTickets[ticket.id],
-            price: ticket.price
-          })),
-        total: calculateTotal()
-      };
-
-      console.log('Booking data:', bookingData);
-
-      toast.success('Booking successful! Redirecting to your tickets...');
-      setTimeout(() => {
-        navigate('/my-tickets');
-      }, 1500);
-
-    } catch (error) {
-      toast.error('Booking failed. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+    
+    const tickets = [];
+    Object.entries(selectedTickets).forEach(([ticketTypeId, quantity]) => {
+      if (quantity > 0) {
+        const ticketType = event.ticketTypes.find(t => t.id === parseInt(ticketTypeId));
+        if (ticketType) {
+          tickets.push({
+            id: `${event.id}-${ticketType.id}`,
+            eventId: event.id,
+            eventTitle: event.title,
+            eventDate: new Date(event.startAt).toLocaleDateString(),
+            eventTime: new Date(event.startAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            location: `${event.venueName}, ${event.city}`,
+            ticketType: ticketType.name,
+            price: ticketType.price,
+            quantity: quantity
+          });
+        }
+      }
+    });
+    
+    if (tickets.length === 0) {
+      toast.error('Please select at least one ticket');
+      return;
     }
+    
+    tickets.forEach(ticket => {
+      addToCart(ticket);
+    });
+    
+    toast.success('Tickets added to cart!');
+    navigate('/cart');
+  };
+  
+  const handleBookNow = (e) => {
+    e.preventDefault();
+    
+    if (!isAuthenticated) {
+      toast.error('Please log in to book tickets');
+      navigate('/login', { state: { from: `/events/${slug}/book` } });
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    // Process booking logic here
+    console.log('Booking tickets:', selectedTickets);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false);
+      toast.success('Tickets booked successfully!');
+      // Navigate to confirmation page or user's tickets
+      navigate('/my-tickets');
+    }, 1500);
   };
 
   const formatDate = (dateString) => {
@@ -332,8 +359,6 @@ const EventBookingPage = () => {
       day: 'numeric'
     });
   };
-
-
 
   if (loading) {
     return (
@@ -392,7 +417,7 @@ const EventBookingPage = () => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="booking-form">
+          <form onSubmit={handleBookNow} className="booking-form">
             <h2>Select Tickets</h2>
 
             <div className="ticket-selection">
@@ -442,13 +467,24 @@ const EventBookingPage = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="btn btn-primary btn-block"
-              disabled={isSubmitting || getTotalTickets() === 0}
-            >
-              {isSubmitting ? 'Processing...' : `Book ${getTotalTickets()} Ticket${getTotalTickets() !== 1 ? 's' : ''}`}
-            </button>
+            <div className="booking-actions">
+              <button 
+                type="button" 
+                className="btn btn-outline"
+                onClick={handleAddToCart}
+                disabled={isSubmitting || !Object.values(selectedTickets).some(qty => qty > 0)}
+              >
+                <ShoppingCart size={18} style={{ marginRight: '8px' }} />
+                Add to Cart
+              </button>
+              <button 
+                type="submit" 
+                className="btn btn-primary"
+                disabled={isSubmitting || !Object.values(selectedTickets).some(qty => qty > 0)}
+              >
+                {isSubmitting ? 'Processing...' : 'Book Now'}
+              </button>
+            </div>
           </form>
         </div>
       </div>

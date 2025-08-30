@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { authAPI } from '../../services/authAPI';
 import { toast } from 'react-hot-toast';
 
 const VerifyEmailPage = () => {
@@ -8,8 +8,6 @@ const VerifyEmailPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { verifyEmail } = useAuth();
-  
   // Get email from location state or fallback to empty string
   const email = location.state?.email || '';
 
@@ -22,11 +20,17 @@ const VerifyEmailPage = () => {
 
     try {
       setIsLoading(true);
-      await verifyEmail({ email, otp });
-      toast.success('Email verified successfully!');
-      navigate('/login');
+      const response = await authAPI.verifyOtp({ email, otp });
+      
+      if (response.success) {
+        toast.success('Email verified successfully!');
+        navigate('/login');
+      } else {
+        throw new Error(response.message || 'Failed to verify email');
+      }
     } catch (error) {
-      toast.error(error.message || 'Failed to verify email');
+      console.error('Verification error:', error);
+      toast.error(error.response?.data?.message || error.message || 'Failed to verify email');
     } finally {
       setIsLoading(false);
     }

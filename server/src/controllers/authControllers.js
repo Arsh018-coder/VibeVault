@@ -233,7 +233,7 @@ exports.getProfile = async (req, res, next) => {
 
 exports.updateProfile = async (req, res, next) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id; // Changed from req.user.userId to req.user.id
     const { firstName, lastName, phone, avatarUrl } = req.body;
 
     const user = await prisma.user.update({

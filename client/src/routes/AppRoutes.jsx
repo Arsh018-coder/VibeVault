@@ -9,6 +9,7 @@ import LoginPage from '../pages/Auth/LoginPage';
 import RegisterPage from '../pages/Auth/RegisterPage';
 import VerifyEmailPage from '../pages/Auth/VerifyEmailPage';
 import ProfilePage from '../pages/Profile/ProfilePage';
+import CartPage from '../pages/Cart/CartPage';
 import OrganizerDashboardPage from '../pages/Dashboard/OrganizerDashboardPage';
 import AttendeeDashboardPage from '../pages/Dashboard/AttendeeDashboardPage';
 import MyTicketsPage from '../pages/Profile/MyTicketsPage';
@@ -54,6 +55,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/cart" element={<CartPage />} />
 
       <Route 
         path="/profile" 

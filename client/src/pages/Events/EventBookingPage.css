@@ -234,19 +234,60 @@
 .btn-primary {
   background: #194759;
   color: white;
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #4f7369;
+  background: #0d3542;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btn-primary:disabled {
-  background: #ccc;
+.btn-outline {
+  background: transparent;
+  border: 1px solid #194759;
+  color: #194759;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: #f0f7f9;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:disabled,
+.btn-outline:disabled {
+  background: #e9ecef;
+  color: #adb5bd;
+  border-color: #e9ecef;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-block {
   width: 100%;
+}
+
+.booking-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.booking-actions .btn {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
 .loading-spinner {
