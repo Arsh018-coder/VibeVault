@@ -24,6 +24,7 @@ exports.getTicketsByEvent = async (req, res, next) => {
 
 exports.getTicketTypeById = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const { id } = req.params;
 
     const ticketType = await prisma.ticketType.findUnique({
@@ -45,6 +46,12 @@ exports.getTicketTypeById = async (req, res, next) => {
     }
 
     res.json(ticketType);
+=======
+    const tickets = await Ticket.findAll({
+      where: { eventId: req.params.eventId }
+    });
+    res.json(tickets);
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
   } catch (err) {
     console.error('Get ticket type by ID error:', err);
     next(err);

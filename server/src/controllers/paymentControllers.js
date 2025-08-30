@@ -2,6 +2,7 @@ const prisma = require('../db/prisma');
 
 exports.initiatePayment = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const { bookingId, provider = 'stripe' } = req.body;
     const userId = req.user.userId;
 
@@ -19,6 +20,20 @@ exports.initiatePayment = async (req, res, next) => {
           }
         }
       }
+=======
+    const { amount, bookingId, method } = req.body;
+
+    // Process payment via your service
+    const paymentIntent = await paymentService.processPayment(amount, method);
+
+    // Create payment record in PostgreSQL
+    const payment = await Payment.create({
+      bookingId,          // Sequelize foreign key
+      userId: req.user.id, // Sequelize foreign key
+      amount,
+      method,
+      status: 'pending'
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
     });
 
     if (!booking) {

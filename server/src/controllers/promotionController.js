@@ -2,6 +2,7 @@ const prisma = require('../db/prisma');
 
 exports.validatePromoCode = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const { code, eventId, totalAmount, userId } = req.body;
 
     // Find the promotion
@@ -65,6 +66,21 @@ exports.validatePromoCode = async (req, res, next) => {
       discountAmount,
       finalAmount
     });
+=======
+    const { code, totalAmount } = req.body;
+
+    // Find active promotion by code
+    const promo = await Promotion.findOne({
+      where: { code, isActive: true }
+    });
+
+    if (!promo) return res.status(404).json({ message: 'Invalid promo code' });
+
+    // Calculate discounted amount
+    const discounted = totalAmount - (totalAmount * promo.discount / 100);
+
+    res.json({ discountedAmount: discounted, promo });
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
   } catch (err) {
     console.error('Validate promo code error:', err);
     next(err);

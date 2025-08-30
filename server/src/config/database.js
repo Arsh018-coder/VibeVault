@@ -1,37 +1,33 @@
-
-const mongoose = require("mongoose");
+const { Sequelize } = require("sequelize");
 const logger = require("../utils/logger");
-const { MONGO_URI, NODE_ENV } = require("./environment");
+const { PG_URI, NODE_ENV } = require("./environment");
 
-mongoose.set("strictQuery", true); 
+// Sequelize instance
+const sequelize = new Sequelize(PG_URI, {
+  dialect: "postgres",
+  logging: NODE_ENV === "development" ? console.log : false, // Show SQL logs in dev
+});
 
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    logger.info(`MongoDB connected: ${mongoose.connection.host}`);
+    await sequelize.authenticate();
+    logger.info("PostgreSQL connected successfully");
   } catch (err) {
-    logger.error(`MongoDB connection error: ${err.message}`);
-    process.exit(1);                                   // Exit process if DB fails
+    logger.error(`PostgreSQL connection error: ${err.message}`);
+    process.exit(1); // Exit process if DB fails
   }
 };
 
-mongoose.connection.on("disconnected", () => {
-  logger.warn("MongoDB disconnected");
-});
-
-mongoose.connection.on("error", (err) => {
-  logger.error(`MongoDB error: ${err}`);
-});
 
 if (NODE_ENV === "development") {
-  mongoose.connection.on("reconnected", () => {
-    logger.info("MongoDB reconnected");
+  sequelize.afterConnect(() => {
+    logger.info("PostgreSQL connection established");
+  });
+
+  sequelize.afterDisconnect(() => {
+    logger.warn("PostgreSQL connection lost");
   });
 }
 
-module.exports = connectDB;
+module.exports = { sequelize, connectDB };

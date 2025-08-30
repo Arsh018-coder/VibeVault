@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const prisma = require('../db/prisma');
 
 exports.createEvent = async (req, res, next) => {
@@ -83,6 +84,19 @@ exports.createEvent = async (req, res, next) => {
       message: 'Event created successfully',
       event
     });
+=======
+const Event = require('../models/event');
+const User = require('../models/user');
+
+exports.createEvent = async (req, res, next) => {
+  try {
+    const event = await Event.create({
+      ...req.body,
+      createdById: req.user.id, // Sequelize foreign key
+    });
+
+    res.status(201).json({ message: 'Event created', event });
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
   } catch (err) {
     console.error('Create event error:', err);
     next(err);
@@ -91,6 +105,7 @@ exports.createEvent = async (req, res, next) => {
 
 exports.getEvents = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const {
       page = 1,
       limit = 10,
@@ -160,6 +175,19 @@ exports.getEvents = async (req, res, next) => {
         pages: Math.ceil(total / parseInt(limit))
       }
     });
+=======
+    const events = await Event.findAll({
+      include: [
+        {
+          model: User,
+          as: 'createdBy',
+          attributes: ['id', 'name', 'email'], // only select needed fields
+        },
+      ],
+    });
+
+    res.json(events);
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
   } catch (err) {
     console.error('Get events error:', err);
     next(err);
@@ -168,6 +196,7 @@ exports.getEvents = async (req, res, next) => {
 
 exports.getEventById = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const { id } = req.params;
     
     const event = await prisma.event.findUnique({
@@ -203,6 +232,19 @@ exports.getEventById = async (req, res, next) => {
       data: { views: { increment: 1 } }
     });
 
+=======
+    const event = await Event.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'createdBy',
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
+    });
+
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
     res.json(event);
   } catch (err) {
     console.error('Get event by ID error:', err);

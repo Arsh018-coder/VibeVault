@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 
 exports.createBooking = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const {
       eventId,
       ticketItems, // [{ ticketTypeId, quantity }]
@@ -20,6 +21,18 @@ exports.createBooking = async (req, res, next) => {
           where: { isActive: true }
         }
       }
+=======
+    const { ticketId, quantity } = req.body;
+
+    const ticket = await Ticket.findByPk(ticketId);
+    if (!ticket) return res.status(404).json({ message: 'Ticket not found' });
+
+    const booking = await Booking.create({
+      userId: req.user.id,      // make sure Booking model has userId as foreign key
+      ticketId: ticket.id,      // Booking model should have ticketId as foreign key
+      quantity,
+      totalPrice: ticket.price * quantity,
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
     });
 
     if (!event) {

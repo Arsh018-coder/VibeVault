@@ -2,6 +2,7 @@ const prisma = require('../db/prisma');
 
 exports.getUserNotifications = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const userId = req.user.userId;
     const { page = 1, limit = 20, isRead } = req.query;
 
@@ -35,6 +36,21 @@ exports.getUserNotifications = async (req, res, next) => {
         pages: Math.ceil(total / parseInt(limit))
       }
     });
+=======
+    const { userId, message, type } = req.body;
+
+    // Call your service as before
+    await notificationService.send(userId, message, type);
+
+    // Create notification in PostgreSQL
+    const notification = await Notification.create({
+      userId,   // Sequelize foreign key
+      message,
+      type
+    });
+
+    res.status(201).json({ message: 'Notification sent', notification });
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
   } catch (err) {
     console.error('Get user notifications error:', err);
     next(err);

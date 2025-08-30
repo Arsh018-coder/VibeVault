@@ -6,6 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 exports.register = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const { firstName, lastName, email, password, role = 'ATTENDEE' } = req.body;
     
     // Check if user already exists
@@ -40,6 +41,19 @@ exports.register = async (req, res, next) => {
         isVerified: true,
         createdAt: true
       }
+=======
+    const { name, email, password } = req.body;
+
+    const existing = await User.findOne({ where: { email } });
+    if (existing) return res.status(400).json({ message: 'Email already exists' });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
     });
 
     // Generate JWT token
@@ -63,6 +77,7 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+<<<<<<< HEAD
     
     // Find user by email
     const user = await prisma.user.findUnique({
@@ -72,11 +87,17 @@ exports.login = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+=======
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
 
     if (!user.isActive) {
       return res.status(403).json({ message: 'Account is deactivated' });
     }
 
+<<<<<<< HEAD
     // Verify password
     const isValidPassword = await bcrypt.compare(password, user.passwordHash);
     if (!isValidPassword) {
@@ -98,6 +119,11 @@ exports.login = async (req, res, next) => {
       user: userWithoutPassword,
       token
     });
+=======
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' });
+
+    res.json({ message: 'Login successful', token, user });
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
   } catch (err) {
     console.error('Login error:', err);
     next(err);

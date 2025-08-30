@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const prisma = require('../db/prisma');
 
 exports.getDashboardStats = async (req, res, next) => {
@@ -247,6 +248,18 @@ exports.getSalesReport = async (req, res, next) => {
       salesByDate,
       topEvents
     });
+=======
+const { Op } = require('sequelize');
+const Payment = require('../models/payment');
+
+exports.getSalesReport = async (req, res, next) => {
+  try {
+    const totalSales = await Payment.sum('amount', {
+      where: { status: 'completed' }
+    });
+
+    res.json({ totalSales: totalSales || 0 });
+>>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
   } catch (err) {
     console.error('Get sales report error:', err);
     next(err);
