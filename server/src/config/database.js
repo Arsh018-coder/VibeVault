@@ -16,7 +16,7 @@ const connectDB = async () => {
     logger.info(`MongoDB connected: ${mongoose.connection.host}`);
   } catch (err) {
     logger.error(`MongoDB connection error: ${err.message}`);
-    process.exit(1);                                                // Exit process if DB fails
+    process.exit(1);                                   // Exit process if DB fails
   }
 };
 
