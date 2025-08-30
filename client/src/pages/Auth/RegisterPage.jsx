@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Navigate } from 'react-router-dom';
+import { Users, Calendar } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './AuthPage.css';
 
@@ -9,6 +10,7 @@ const RegisterPage = () => {
   const { user, register: registerUser } = useAuth();
   const navigate = useNavigate();
   const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm();
+  const [selectedRole, setSelectedRole] = useState('attendee');
 
   if (user) return <Navigate to="/" />;
 
@@ -17,6 +19,7 @@ const RegisterPage = () => {
       await registerUser({
         email: data.email,
         password: data.password,
+        role: selectedRole,
         profile: {
           firstName: data.firstName,
           lastName: data.lastName
@@ -32,7 +35,31 @@ const RegisterPage = () => {
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
-        <h2>Register</h2>
+        <h2>Create Your Account</h2>
+        <p className="auth-subtitle">Join VibeVault and start your event journey</p>
+
+        {/* Role Selection */}
+        <div className="form-group">
+          <label className="form-label">I want to:</label>
+          <div className="role-selection">
+            <div 
+              className={`role-card ${selectedRole === 'attendee' ? 'selected' : ''}`}
+              onClick={() => setSelectedRole('attendee')}
+            >
+              <Users size={24} />
+              <h3>Attend Events</h3>
+              <p>Discover and book amazing events</p>
+            </div>
+            <div 
+              className={`role-card ${selectedRole === 'organizer' ? 'selected' : ''}`}
+              onClick={() => setSelectedRole('organizer')}
+            >
+              <Calendar size={24} />
+              <h3>Organize Events</h3>
+              <p>Create and manage your own events</p>
+            </div>
+          </div>
+        </div>
 
         <div className="form-group">
           <label htmlFor="firstName" className="form-label">First Name</label>

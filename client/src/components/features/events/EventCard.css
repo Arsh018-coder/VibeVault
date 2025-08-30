@@ -28,7 +28,7 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: #6366f1;
+  background: #194759;
   color: white;
   padding: 4px 12px;
   border-radius: 20px;
@@ -75,7 +75,7 @@
 }
 
 .event-detail svg {
-  color: #6366f1;
+  color: #194759;
 }
 
 .event-footer {
@@ -87,11 +87,11 @@
 .event-price {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #6366f1;
+  color: #194759;
 }
 
 .book-button {
-  background: #6366f1;
+  background: #194759;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -102,5 +102,5 @@
 }
 
 .book-button:hover {
-  background: #5856eb;
+  background: #4f7369;
 }

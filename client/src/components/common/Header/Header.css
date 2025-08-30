@@ -8,6 +8,7 @@
   z-index: 100;
 }
 
+
 .header-content {
   display: flex;
   align-items: center;
@@ -20,15 +21,17 @@
   text-decoration: none;
   font-size: 1.8rem;
   font-weight: 700;
-  color: #6366f1;
+  color: #194759;
+  padding: 16px;
 }
 
 .logo-text {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #194759, #7ebfb3);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 800;
+  padding: 16px;
 }
 
 .nav {
@@ -47,8 +50,8 @@
 }
 
 .nav-link:hover {
-  background: rgba(99, 102, 241, 0.2);
-  color: #6366f1;
+  background: rgba(25, 71, 89, 0.2);
+  color: #7ebfb3;
 }
 
 .header-actions {
@@ -73,7 +76,7 @@
   gap: 0.5rem;
   background: none;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0px 16px;
   border-radius: 6px;
   cursor: pointer;
   color: white;
@@ -82,7 +85,7 @@
 }
 
 .profile-btn:hover {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(25, 71, 89, 0.2);
 }
 
 .profile-dropdown {
@@ -113,7 +116,7 @@
 }
 
 .dropdown-item:hover {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(25, 71, 89, 0.1);
 }
 
 .logout-btn {

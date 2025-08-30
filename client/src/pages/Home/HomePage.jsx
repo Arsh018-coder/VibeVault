@@ -9,40 +9,73 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock featured events data (same as EventsPage)
+    // Mock featured events data - diverse selection from different categories
     const mockEvents = [
       {
         id: 1,
         title: 'Tech Conference 2024',
         description: 'Join us for the biggest tech conference of the year featuring industry leaders and innovative technologies.',
         date: '2024-12-15',
-        location: 'San Francisco, CA',
-        price: 299,
+        location: 'Mumbai, India',
+        price: 2499,
         capacity: 500,
         category: 'Technology',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Tech+Conference'
+        imageUrl: 'https://via.placeholder.com/300x200?'
       },
       {
         id: 2,
-        title: 'Music Festival',
-        description: 'Experience amazing live music from top artists in a beautiful outdoor setting.',
+        title: 'Bollywood Music Festival',
+        description: 'Experience amazing live music from top Bollywood artists in a beautiful outdoor setting.',
         date: '2024-11-20',
-        location: 'Austin, TX',
-        price: 150,
+        location: 'Bangalore, India',
+        price: 1299,
         capacity: 2000,
         category: 'Music',
         imageUrl: 'https://via.placeholder.com/300x200?text=Music+Festival'
       },
       {
-        id: 3,
-        title: 'Art Gallery Opening',
-        description: 'Discover contemporary art from emerging artists in our new gallery space.',
-        date: '2024-10-30',
-        location: 'New York, NY',
-        price: 0,
-        capacity: 100,
-        category: 'Art',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Art+Gallery'
+        id: 5,
+        title: 'Startup Networking Summit',
+        description: 'Connect with entrepreneurs, investors, and industry leaders in this exclusive networking event.',
+        date: '2024-12-05',
+        location: 'Pune, India',
+        price: 1999,
+        capacity: 300,
+        category: 'Business',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Business+Summit'
+      },
+      {
+        id: 6,
+        title: 'Indian Street Food Festival',
+        description: 'Taste authentic street food from across India in this amazing culinary celebration.',
+        date: '2024-11-25',
+        location: 'Delhi, India',
+        price: 499,
+        capacity: 1000,
+        category: 'Food & Drink',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Food+Festival'
+      },
+      {
+        id: 8,
+        title: 'Stand-up Comedy Night',
+        description: 'Laugh out loud with India\'s top comedians in this hilarious comedy show.',
+        date: '2024-11-18',
+        location: 'Bangalore, India',
+        price: 799,
+        capacity: 400,
+        category: 'Entertainment',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Comedy+Show'
+      },
+      {
+        id: 4,
+        title: 'IPL Cricket Match',
+        description: 'Watch the thrilling IPL match between Mumbai Indians and Chennai Super Kings.',
+        date: '2024-11-15',
+        location: 'Mumbai, India',
+        price: 899,
+        capacity: 50000,
+        category: 'Sports',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Cricket+Match'
       }
     ];
 
@@ -78,21 +111,21 @@ const HomePage = () => {
           <div className="stat">
             <Calendar size={24} />
             <div>
-              <span className="stat-number">500+</span>
+              <span className="stat-number">10+</span>
               <span className="stat-label">Events</span>
             </div>
           </div>
           <div className="stat">
             <Users size={24} />
             <div>
-              <span className="stat-number">10K+</span>
+              <span className="stat-number">1K+</span>
               <span className="stat-label">Attendees</span>
             </div>
           </div>
           <div className="stat">
             <MapPin size={24} />
             <div>
-              <span className="stat-number">50+</span>
+              <span className="stat-number">8+</span>
               <span className="stat-label">Cities</span>
             </div>
           </div>

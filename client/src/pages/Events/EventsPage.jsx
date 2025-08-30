@@ -17,33 +17,132 @@ const EventsPage = () => {
         title: 'Tech Conference 2024',
         description: 'Join us for the biggest tech conference of the year featuring industry leaders and innovative technologies.',
         date: '2024-12-15',
-        location: 'San Francisco, CA',
-        price: 299,
+        location: 'Mumbai, India',
+        price: 2499,
         capacity: 500,
         category: 'Technology',
         imageUrl: 'https://via.placeholder.com/300x200?text=Tech+Conference'
       },
       {
         id: 2,
-        title: 'Music Festival',
-        description: 'Experience amazing live music from top artists in a beautiful outdoor setting.',
+        title: 'Bollywood Music Festival',
+        description: 'Experience amazing live music from top Bollywood artists in a beautiful outdoor setting.',
         date: '2024-11-20',
-        location: 'Austin, TX',
-        price: 150,
+        location: 'Bangalore, India',
+        price: 1299,
         capacity: 2000,
         category: 'Music',
         imageUrl: 'https://via.placeholder.com/300x200?text=Music+Festival'
       },
       {
         id: 3,
-        title: 'Art Gallery Opening',
-        description: 'Discover contemporary art from emerging artists in our new gallery space.',
+        title: 'Contemporary Art Gallery Opening',
+        description: 'Discover contemporary art from emerging Indian artists in our new gallery space.',
         date: '2024-10-30',
-        location: 'New York, NY',
+        location: 'Delhi, India',
         price: 0,
         capacity: 100,
         category: 'Art',
         imageUrl: 'https://via.placeholder.com/300x200?text=Art+Gallery'
+      },
+      {
+        id: 4,
+        title: 'IPL Cricket Match',
+        description: 'Watch the thrilling IPL match between Mumbai Indians and Chennai Super Kings.',
+        date: '2024-11-15',
+        location: 'Mumbai, India',
+        price: 899,
+        capacity: 50000,
+        category: 'Sports',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Cricket+Match'
+      },
+      {
+        id: 5,
+        title: 'Startup Networking Summit',
+        description: 'Connect with entrepreneurs, investors, and industry leaders in this exclusive networking event.',
+        date: '2024-12-05',
+        location: 'Pune, India',
+        price: 1999,
+        capacity: 300,
+        category: 'Business',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Business+Summit'
+      },
+      {
+        id: 6,
+        title: 'Indian Street Food Festival',
+        description: 'Taste authentic street food from across India in this amazing culinary celebration.',
+        date: '2024-11-25',
+        location: 'Delhi, India',
+        price: 499,
+        capacity: 1000,
+        category: 'Food & Drink',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Food+Festival'
+      },
+      {
+        id: 7,
+        title: 'Digital Marketing Workshop',
+        description: 'Learn the latest digital marketing strategies and tools from industry experts.',
+        date: '2024-12-10',
+        location: 'Hyderabad, India',
+        price: 1499,
+        capacity: 150,
+        category: 'Education',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Workshop'
+      },
+      {
+        id: 8,
+        title: 'Stand-up Comedy Night',
+        description: 'Laugh out loud with India\'s top comedians in this hilarious comedy show.',
+        date: '2024-11-18',
+        location: 'Bangalore, India',
+        price: 799,
+        capacity: 400,
+        category: 'Entertainment',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Comedy+Show'
+      },
+      {
+        id: 9,
+        title: 'AI & Machine Learning Conference',
+        description: 'Explore the future of AI and ML with leading researchers and practitioners.',
+        date: '2024-12-20',
+        location: 'Chennai, India',
+        price: 2999,
+        capacity: 600,
+        category: 'Technology',
+        imageUrl: 'https://via.placeholder.com/300x200?text=AI+Conference'
+      },
+      {
+        id: 10,
+        title: 'Classical Music Concert',
+        description: 'Experience the beauty of Indian classical music with renowned maestros.',
+        date: '2024-11-12',
+        location: 'Kolkata, India',
+        price: 999,
+        capacity: 800,
+        category: 'Music',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Classical+Music'
+      },
+      {
+        id: 11,
+        title: 'Photography Exhibition',
+        description: 'Stunning photography showcasing the diversity and beauty of India.',
+        date: '2024-11-08',
+        location: 'Jaipur, India',
+        price: 299,
+        capacity: 200,
+        category: 'Art',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Photography'
+      },
+      {
+        id: 12,
+        title: 'Marathon Run for Charity',
+        description: 'Join thousands of runners in this charity marathon supporting education for underprivileged children.',
+        date: '2024-12-01',
+        location: 'Mumbai, India',
+        price: 599,
+        capacity: 5000,
+        category: 'Sports',
+        imageUrl: 'https://via.placeholder.com/300x200?text=Marathon'
       }
     ];
 
@@ -53,7 +152,7 @@ const EventsPage = () => {
     }, 1000);
   }, []);
 
-  const categories = ['all', 'Technology', 'Music', 'Art', 'Sports', 'Business'];
+  const categories = ['all', 'Technology', 'Music', 'Art', 'Sports', 'Business', 'Food & Drink', 'Education', 'Entertainment'];
 
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
