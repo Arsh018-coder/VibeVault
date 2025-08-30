@@ -4,7 +4,6 @@ import './EventCard.css';
 
 const EventCard = ({ event }) => {
   const {
-    id,
     title,
     description,
     date,

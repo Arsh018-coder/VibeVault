@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, Link } from 'react-router-dom';
 import { Users, Calendar } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './AuthPage.css';
@@ -132,8 +132,12 @@ const RegisterPage = () => {
           className="btn btn-primary" 
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Registering...' : 'Register'}
+          {isSubmitting ? 'Creating Account...' : 'Create Account'}
         </button>
+
+        <div className="auth-footer">
+          <p>Already have an account? <Link to="/login" className="auth-link">Sign in</Link></p>
+        </div>
       </form>
     </div>
   );
