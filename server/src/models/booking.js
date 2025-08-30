@@ -1,19 +1,110 @@
-const mongoose = require("mongoose");
+const prisma = require("../db/prisma");
 
-const bookingSchema = new mongoose.Schema(
-  {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    event: { type: mongoose.Schema.Types.ObjectId, ref: "Event", required: true },
-    tickets: [
-      {
-        ticket: { type: mongoose.Schema.Types.ObjectId, ref: "Ticket" },
-        quantity: { type: Number, default: 1 },
+class BookingModel {
+  static async create(bookingData) {
+    return prisma.booking.create({
+      data: bookingData,
+      include: {
+        user: true,
+        event: true,
+        tickets: {
+          include: {
+            ticket: true,
+          },
+        },
+        payment: true,
       },
-    ],
-    status: { type: String, enum: ["pending", "confirmed", "cancelled"], default: "pending" },
-    payment: { type: mongoose.Schema.Types.ObjectId, ref: "Payment" },
-  },
-  { timestamps: true }
-);
+    });
+  }
 
-module.exports = mongoose.model("Booking", bookingSchema);
+  static async findById(id) {
+    return prisma.booking.findUnique({
+      where: { id },
+      include: {
+        user: true,
+        event: true,
+        tickets: {
+          include: {
+            ticket: true,
+          },
+        },
+        payment: true,
+      },
+    });
+  }
+
+  static async findAll(options = {}) {
+    return prisma.booking.findMany({
+      ...options,
+      include: {
+        user: true,
+        event: true,
+        tickets: {
+          include: {
+            ticket: true,
+          },
+        },
+        payment: true,
+        ...options.include,
+      },
+    });
+  }
+
+  static async update(id, bookingData) {
+    return prisma.booking.update({
+      where: { id },
+      data: bookingData,
+      include: {
+        user: true,
+        event: true,
+        tickets: {
+          include: {
+            ticket: true,
+          },
+        },
+        payment: true,
+      },
+    });
+  }
+
+  static async delete(id) {
+    return prisma.booking.delete({
+      where: { id },
+    });
+  }
+
+  static async findByUser(userId) {
+    return prisma.booking.findMany({
+      where: { userId },
+      include: {
+        event: true,
+        tickets: {
+          include: {
+            ticket: true,
+          },
+        },
+        payment: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  static async findByEvent(eventId) {
+    return prisma.booking.findMany({
+      where: { eventId },
+      include: {
+        user: true,
+        tickets: {
+          include: {
+            ticket: true,
+          },
+        },
+        payment: true,
+      },
+    });
+  }
+}
+
+module.exports = BookingModel;

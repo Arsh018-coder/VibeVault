@@ -1,27 +1,52 @@
-const mongoose = require("mongoose");
+const prisma = require("../db/prisma");
 const bcrypt = require("bcryptjs");
 
-const userSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true, minlength: 6 },
-    role: { type: String, enum: ["user", "organizer", "admin"], default: "user" },
-    profileImage: { type: String }, 
-  },
-  { timestamps: true }
-);
+class UserModel {
+  static async create(userData) {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    return prisma.user.create({
+      data: {
+        ...userData,
+        password: hashedPassword,
+      },
+    });
+  }
 
-// Hash password before saving
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
+  static async findById(id) {
+    return prisma.user.findUnique({
+      where: { id },
+    });
+  }
 
-// Compare passwords
-userSchema.methods.comparePassword = function (password) {
-  return bcrypt.compare(password, this.password);
-};
+  static async findByEmail(email) {
+    return prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
+  }
 
-module.exports = mongoose.model("User", userSchema);
+  static async update(id, userData) {
+    if (userData.password) {
+      userData.password = await bcrypt.hash(userData.password, 10);
+    }
+    return prisma.user.update({
+      where: { id },
+      data: userData,
+    });
+  }
+
+  static async delete(id) {
+    return prisma.user.delete({
+      where: { id },
+    });
+  }
+
+  static async findAll(options = {}) {
+    return prisma.user.findMany(options);
+  }
+
+  static async comparePassword(plainPassword, hashedPassword) {
+    return bcrypt.compare(plainPassword, hashedPassword);
+  }
+}
+
+module.exports = UserModel;

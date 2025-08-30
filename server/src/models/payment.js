@@ -1,15 +1,104 @@
-const mongoose = require("mongoose");
+const prisma = require("../db/prisma");
 
-const paymentSchema = new mongoose.Schema(
-  {
-    booking: { type: mongoose.Schema.Types.ObjectId, ref: "Booking", required: true },
-    amount: { type: Number, required: true },
-    currency: { type: String, default: "INR" },
-    provider: { type: String, enum: ["stripe", "paypal"], default: "stripe" },
-    status: { type: String, enum: ["initiated", "successful", "failed"], default: "initiated" },
-    transactionId: { type: String },
-  },
-  { timestamps: true }
-);
+class PaymentModel {
+  static async create(paymentData) {
+    return prisma.payment.create({
+      data: paymentData,
+      include: {
+        booking: {
+          include: {
+            user: true,
+            event: true,
+          },
+        },
+      },
+    });
+  }
 
-module.exports = mongoose.model("Payment", paymentSchema);
+  static async findById(id) {
+    return prisma.payment.findUnique({
+      where: { id },
+      include: {
+        booking: {
+          include: {
+            user: true,
+            event: true,
+          },
+        },
+      },
+    });
+  }
+
+  static async findAll(options = {}) {
+    return prisma.payment.findMany({
+      ...options,
+      include: {
+        booking: {
+          include: {
+            user: true,
+            event: true,
+          },
+        },
+        ...options.include,
+      },
+    });
+  }
+
+  static async update(id, paymentData) {
+    return prisma.payment.update({
+      where: { id },
+      data: paymentData,
+      include: {
+        booking: {
+          include: {
+            user: true,
+            event: true,
+          },
+        },
+      },
+    });
+  }
+
+  static async delete(id) {
+    return prisma.payment.delete({
+      where: { id },
+    });
+  }
+
+  static async findByBooking(bookingId) {
+    return prisma.payment.findMany({
+      where: { bookingId },
+      include: {
+        booking: true,
+      },
+    });
+  }
+
+  static async findByTransactionId(transactionId) {
+    return prisma.payment.findFirst({
+      where: { transactionId },
+      include: {
+        booking: {
+          include: {
+            user: true,
+            event: true,
+          },
+        },
+      },
+    });
+  }
+
+  static async updateStatus(id, status, transactionId = null) {
+    const updateData = { status };
+    if (transactionId) {
+      updateData.transactionId = transactionId;
+    }
+
+    return prisma.payment.update({
+      where: { id },
+      data: updateData,
+    });
+  }
+}
+
+module.exports = PaymentModel;

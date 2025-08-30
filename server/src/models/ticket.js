@@ -1,14 +1,78 @@
-const mongoose = require("mongoose");
+const prisma = require("../db/prisma");
 
-const ticketSchema = new mongoose.Schema(
-  {
-    event: { type: mongoose.Schema.Types.ObjectId, ref: "Event", required: true },
-    type: { type: String, enum: ["regular", "vip", "early-bird"], default: "regular" },
-    price: { type: Number, required: true },
-    quantity: { type: Number, required: true },
-    sold: { type: Number, default: 0 },
-  },
-  { timestamps: true }
-);
+class TicketModel {
+  static async create(ticketData) {
+    return prisma.ticket.create({
+      data: ticketData,
+      include: {
+        event: true,
+      },
+    });
+  }
 
-module.exports = mongoose.model("Ticket", ticketSchema);
+  static async findById(id) {
+    return prisma.ticket.findUnique({
+      where: { id },
+      include: {
+        event: true,
+      },
+    });
+  }
+
+  static async findAll(options = {}) {
+    return prisma.ticket.findMany({
+      ...options,
+      include: {
+        event: true,
+        ...options.include,
+      },
+    });
+  }
+
+  static async update(id, ticketData) {
+    return prisma.ticket.update({
+      where: { id },
+      data: ticketData,
+      include: {
+        event: true,
+      },
+    });
+  }
+
+  static async delete(id) {
+    return prisma.ticket.delete({
+      where: { id },
+    });
+  }
+
+  static async findByEvent(eventId) {
+    return prisma.ticket.findMany({
+      where: { eventId },
+      include: {
+        event: true,
+      },
+    });
+  }
+
+  static async updateSoldCount(id, quantity) {
+    return prisma.ticket.update({
+      where: { id },
+      data: {
+        sold: {
+          increment: quantity,
+        },
+      },
+    });
+  }
+
+  static async checkAvailability(id, requestedQuantity) {
+    const ticket = await prisma.ticket.findUnique({
+      where: { id },
+    });
+    
+    if (!ticket) return false;
+    return (ticket.quantity - ticket.sold) >= requestedQuantity;
+  }
+}
+
+module.exports = TicketModel;

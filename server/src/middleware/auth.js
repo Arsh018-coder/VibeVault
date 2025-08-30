@@ -1,19 +1,43 @@
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../config/environment');
-const User = require('../models/user');
+const prisma = require('../db/prisma');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 module.exports = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1]; // Bearer <token>
-    if (!token) return res.status(401).json({ message: "No token provided" });
+    
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = await User.findById(decoded.id).select("-password");
+    
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        firstName: true,
+        lastName: true,
+        isActive: true,
+        isVerified: true
+      }
+    });
 
-    if (!req.user) return res.status(401).json({ message: "User not found" });
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
 
+    if (!user.isActive) {
+      return res.status(401).json({ message: "Account is deactivated" });
+    }
+
+    req.user = { ...decoded, ...user };
     next();
   } catch (err) {
+    console.error('Auth middleware error:', err);
     res.status(401).json({ message: "Invalid or expired token" });
   }
 };
