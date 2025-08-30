@@ -33,3 +33,12 @@
   font-weight: 800;
   color: var(--primary-main);
 }
+
+.sales-chart-section {
+  margin-top: 40px;
+}
+.sales-chart-section h3 {
+  color: var(--primary-main);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
