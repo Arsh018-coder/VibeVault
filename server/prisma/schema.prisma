@@ -1,0 +1,267 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ORGANIZER
+  ATTENDEE
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  role          Role     @default(ATTENDEE)
+  firstName     String?
+  lastName      String?
+  phone         String?
+  avatarUrl     String?
+  loyaltyPoints Int      @default(0)
+  isVerified    Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  events        Event[]        @relation("OrganizerEvents")
+  bookings      Booking[]
+  notifications Notification[]
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  color       String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events Event[]
+}
+
+model Event {
+  id          String    @id @default(uuid())
+  title       String
+  slug        String    @unique
+  description String
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  organizerId String
+  organizer   User      @relation("OrganizerEvents", fields: [organizerId], references: [id])
+
+  startAt  DateTime
+  endAt    DateTime
+  timezone String?
+
+  isVirtual   Boolean @default(false)
+  venueName   String?
+  street      String?
+  city        String?
+  state       String?
+  zipCode     String?
+  country     String?
+  virtualLink String?
+
+  capacity   Int?
+  featured   Boolean     @default(false)
+  trending   Boolean     @default(false)
+  visibility Visibility  @default(PUBLIC)
+  status     EventStatus @default(DRAFT)
+
+  views         Int     @default(0)
+  bookingsCount Int     @default(0)
+  revenue       Decimal @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ticketTypes TicketType[]
+  bookings    Booking[]
+  promotions  EventPromotion[]
+  images      EventImage[]
+}
+
+model EventImage {
+  id        String  @id @default(uuid())
+  eventId   String
+  event     Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  isPrimary Boolean @default(false)
+}
+
+model TicketType {
+  id           String    @id @default(uuid())
+  eventId      String
+  event        Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  type         String
+  name         String
+  description  String?
+  price        Decimal   @db.Decimal(12, 2)
+  currency     String    @default("INR")
+  qtyTotal     Int
+  qtyAvailable Int
+  perUserLimit Int       @default(1)
+  saleStart    DateTime?
+  saleEnd      DateTime?
+  isActive     Boolean   @default(true)
+
+  bookingItems BookingItem[]
+}
+
+model Booking {
+  id            String        @id @default(uuid())
+  bookingCode   String        @unique
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  eventId       String
+  event         Event         @relation(fields: [eventId], references: [id])
+  status        BookingStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  subtotal Decimal @default(0) @db.Decimal(12, 2)
+  discount Decimal @default(0) @db.Decimal(12, 2)
+  fees     Decimal @default(0) @db.Decimal(12, 2)
+  taxes    Decimal @default(0) @db.Decimal(12, 2)
+  total    Decimal @default(0) @db.Decimal(12, 2)
+  currency String  @default("INR")
+
+  promoCode String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items     BookingItem[]
+  payments  Payment[]
+  attendees Attendee[]
+}
+
+model BookingItem {
+  id           String     @id @default(uuid())
+  bookingId    String
+  booking      Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  ticketTypeId String
+  ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+  quantity     Int
+  unitPrice    Decimal    @db.Decimal(12, 2)
+  totalPrice   Decimal    @db.Decimal(12, 2)
+}
+
+model Attendee {
+  id          String    @id @default(uuid())
+  bookingId   String
+  booking     Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  name        String
+  email       String
+  phone       String?
+  ticketType  String
+  qrCode      String?
+  checkedIn   Boolean   @default(false)
+  checkedInAt DateTime?
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  bookingId     String
+  booking       Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount        Decimal       @db.Decimal(12, 2)
+  currency      String        @default("INR")
+  provider      String
+  providerTxnId String?
+  status        PaymentStatus @default(PENDING)
+  failureReason String?
+  fees          Decimal?      @db.Decimal(12, 2)
+  metadata      Json?
+  createdAt     DateTime      @default(now())
+  paidAt        DateTime?
+  refundedAt    DateTime?
+}
+
+model Promotion {
+  id              String       @id @default(uuid())
+  code            String       @unique
+  name            String
+  description     String?
+  discountType    DiscountType
+  value           Decimal      @db.Decimal(12, 2)
+  maxDiscount     Decimal?     @db.Decimal(12, 2)
+  validFrom       DateTime?
+  validTo         DateTime?
+  totalLimit      Int?
+  perUserLimit    Int?
+  minimumAmount   Decimal?     @db.Decimal(12, 2)
+  minimumQuantity Int?
+  userType        String?
+  isActive        Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  events EventPromotion[]
+}
+
+model EventPromotion {
+  id          String    @id @default(uuid())
+  eventId     String
+  promotionId String
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, promotionId])
+}
+
+model Notification {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         String
+  title        String?
+  message      String
+  channels     Json?
+  relatedId    String?
+  relatedType  String?
+  scheduledFor DateTime?
+  priority     String?
+  status       String    @default("pending")
+  isRead       Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
