@@ -20,7 +20,7 @@ const HomePage = () => {
         price: 2499,
         capacity: 500,
         category: 'Technology',
-        imageUrl: 'https://via.placeholder.com/300x200?'
+        imageUrl: 'https://via.placeholder.com/300x200?text=Tech+Conference'
       },
       {
         id: 2,

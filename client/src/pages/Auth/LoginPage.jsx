@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import './AuthPage.css';
 
@@ -14,9 +14,15 @@ const LoginPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      await login(data);
+      const userData = await login(data);
       toast.success('Logged in successfully!');
-      navigate('/');
+      
+      // Navigate based on user role
+      if (userData.role === 'organizer') {
+        navigate('/dashboard');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       toast.error(err.message || 'Login failed');
     }
@@ -58,6 +64,10 @@ const LoginPage = () => {
         >
           {isSubmitting ? 'Logging in...' : 'Login'}
         </button>
+
+        <div className="auth-footer">
+          <p>Don't have an account? <Link to="/register" className="auth-link">Sign up</Link></p>
+        </div>
       </form>
     </div>
   );
