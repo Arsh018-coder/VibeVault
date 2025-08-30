@@ -18,7 +18,7 @@ const LoginPage = () => {
       toast.success('Logged in successfully!');
       
       // Navigate based on user role
-      if (userData.role === 'organizer') {
+      if (userData.user.role === 'ORGANIZER') {
         navigate('/dashboard');
       } else {
         navigate('/');

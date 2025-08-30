@@ -1,79 +1,58 @@
-// Mock authentication API for demo purposes
+import api from './api';
+
 export const authAPI = {
-  login: async (credentials) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Mock user data
-    const mockUser = {
-      id: 1,
-      email: credentials.email,
-      role: credentials.email.includes('organizer') ? 'organizer' : 'attendee',
-      profile: {
-        firstName: 'John',
-        lastName: 'Doe'
-      }
-    };
-
-    const mockToken = 'mock-jwt-token-' + Date.now();
-    
-    return {
-      user: mockUser,
-      token: mockToken
-    };
-  },
-
   register: async (userData) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Mock user creation
-    const mockUser = {
-      id: Date.now(),
-      email: userData.email,
-      role: userData.role,
-      profile: userData.profile
-    };
-
-    const mockToken = 'mock-jwt-token-' + Date.now();
-    
-    return {
-      user: mockUser,
-      token: mockToken
-    };
+    const response = await api.post('/auth/register', userData);
+    return response.data;
   },
 
-  verifyToken: async (token) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    if (token.startsWith('mock-jwt-token-')) {
-      return {
-        id: 1,
-        email: 'user@example.com',
-        role: 'attendee',
-        profile: {
-          firstName: 'John',
-          lastName: 'Doe'
-        }
-      };
-    }
-    
-    throw new Error('Invalid token');
+  login: async (credentials) => {
+    const response = await api.post('/auth/login', credentials);
+    return response.data;
   },
 
-  forgotPassword: async (email) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { message: 'Password reset email sent' };
+  logout: async () => {
+    const response = await api.post('/auth/logout');
+    return response.data;
   },
 
-  resetPassword: async (token, password) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { message: 'Password reset successful' };
+  getProfile: async () => {
+    const response = await api.get('/auth/me');
+    return response.data;
   },
 
   updateProfile: async (userData) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { user: userData };
+    const response = await api.put('/auth/me', userData);
+    return response.data;
+  },
+
+  changePassword: async (passwordData) => {
+    const response = await api.post('/auth/change-password', passwordData);
+    return response.data;
+  },
+
+  forgotPassword: async (email) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  resetPassword: async (token, password) => {
+    const response = await api.post('/auth/reset-password', { token, password });
+    return response.data;
+  },
+
+  verifyEmail: async (token) => {
+    const response = await api.get(`/auth/verify-email/${token}`);
+    return response.data;
+  },
+
+  // Legacy method for compatibility
+  verifyToken: async (token) => {
+    try {
+      const response = await api.get('/auth/me');
+      return response.data;
+    } catch (error) {
+      throw new Error('Invalid token');
+    }
   }
 };

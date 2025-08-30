@@ -8,7 +8,7 @@ exports.createBooking = async (req, res, next) => {
       ticketItems, // [{ ticketTypeId, quantity }]
       promoCode
     } = req.body;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     // Validate event exists and is published
     const event = await prisma.event.findUnique({
@@ -143,7 +143,7 @@ exports.createBooking = async (req, res, next) => {
 
 exports.getUserBookings = async (req, res, next) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const { page = 1, limit = 10, status } = req.query;
 
     const skip = (page - 1) * limit;
@@ -203,7 +203,7 @@ exports.getUserBookings = async (req, res, next) => {
 exports.getBookingById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     const booking = await prisma.booking.findUnique({
       where: { id },
@@ -315,7 +315,7 @@ exports.cancelBooking = async (req, res, next) => {
 exports.getEventBookings = async (req, res, next) => {
   try {
     const { eventId } = req.params;
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const { page = 1, limit = 20, status } = req.query;
 
     // Check if user is the event organizer
@@ -328,7 +328,7 @@ exports.getEventBookings = async (req, res, next) => {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    if (event.organizerId !== userId) {
+    if (event.organizerId !== userId && req.user.role !== 'ADMIN') {
       return res.status(403).json({ message: 'Not authorized to view event bookings' });
     }
 
@@ -384,5 +384,114 @@ exports.getEventBookings = async (req, res, next) => {
   } catch (err) {
     console.error('Get event bookings error:', err);
     res.status(500).json({ message: 'Failed to get event bookings' });
+  }
+};
+
+exports.confirmBooking = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const booking = await prisma.booking.findUnique({
+      where: { id },
+      include: {
+        event: {
+          select: { organizerId: true }
+        }
+      }
+    });
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    if (booking.event.organizerId !== userId && req.user.role !== 'ADMIN') {
+      return res.status(403).json({ message: 'Not authorized to confirm this booking' });
+    }
+
+    const updatedBooking = await prisma.booking.update({
+      where: { id },
+      data: {
+        status: 'CONFIRMED',
+        paymentStatus: 'SUCCESS'
+      }
+    });
+
+    res.json({ message: 'Booking confirmed successfully', booking: updatedBooking });
+
+  } catch (err) {
+    console.error('Confirm booking error:', err);
+    res.status(500).json({ message: 'Failed to confirm booking' });
+  }
+};
+
+exports.getAllBookings = async (req, res, next) => {
+  try {
+    const { page = 1, limit = 20, status, eventId } = req.query;
+
+    const skip = (page - 1) * limit;
+    const where = {};
+
+    if (status) {
+      where.status = status;
+    }
+
+    if (eventId) {
+      where.eventId = eventId;
+    }
+
+    const [bookings, total] = await Promise.all([
+      prisma.booking.findMany({
+        where,
+        skip: parseInt(skip),
+        take: parseInt(limit),
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              phone: true
+            }
+          },
+          event: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              startAt: true
+            }
+          },
+          items: {
+            include: {
+              ticketType: true
+            }
+          },
+          payments: {
+            orderBy: { createdAt: 'desc' },
+            take: 1
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      }),
+      prisma.booking.count({ where })
+    ]);
+
+    res.json({
+      bookings,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+
+  } catch (err) {
+    console.error('Get all bookings error:', err);
+    res.status(500).json({ message: 'Failed to get bookings' });
   }
 };

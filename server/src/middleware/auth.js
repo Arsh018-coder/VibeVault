@@ -1,20 +1,17 @@
 const jwt = require('jsonwebtoken');
 const prisma = require('../db/prisma');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
-module.exports = async (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1]; // Bearer <token>
+    const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (!token) {
-      return res.status(401).json({ message: "No token provided" });
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET);
-    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      where: { id: decoded.id },
       select: {
         id: true,
         email: true,
@@ -27,17 +24,35 @@ module.exports = async (req, res, next) => {
     });
 
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).json({ message: 'Invalid token.' });
     }
 
     if (!user.isActive) {
-      return res.status(401).json({ message: "Account is deactivated" });
+      return res.status(401).json({ message: 'Account is deactivated.' });
     }
 
-    req.user = { ...decoded, ...user };
+    req.user = user;
     next();
-  } catch (err) {
-    console.error('Auth middleware error:', err);
-    res.status(401).json({ message: "Invalid or expired token" });
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token.' });
   }
+};
+
+const authorize = (roles = []) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required.' });
+    }
+
+    if (roles.length && !roles.includes(req.user.role)) {
+      return res.status(403).json({ message: 'Insufficient permissions.' });
+    }
+
+    next();
+  };
+};
+
+module.exports = {
+  authenticate,
+  authorize
 };

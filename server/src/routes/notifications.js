@@ -1,12 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const notificationController = require('../controllers/notificationController');
-const auth = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 
-router.get('/', auth, notificationController.getUserNotifications);        // Get user notifications
-router.post('/', auth, notificationController.createNotification);         // Create notification
-router.patch('/:id/read', auth, notificationController.markAsRead);        // Mark as read
-router.patch('/read-all', auth, notificationController.markAllAsRead);     // Mark all as read
-router.delete('/:id', auth, notificationController.deleteNotification);    // Delete notification
+// All routes require authentication
+router.use(authenticate);
+
+// User routes
+router.get('/my-notifications', notificationController.getUserNotifications);
+router.patch('/:id/read', notificationController.markNotificationAsRead);
+router.patch('/mark-all-read', notificationController.markAllNotificationsAsRead);
+router.get('/stats', notificationController.getNotificationStats);
+router.put('/preferences', notificationController.updateNotificationPreferences);
+
+// Admin routes
+router.post('/send', 
+  authorize(['ADMIN', 'ORGANIZER']), 
+  notificationController.sendNotification
+);
+
+router.post('/send-bulk', 
+  authorize(['ADMIN']), 
+  notificationController.sendBulkNotification
+);
 
 module.exports = router;

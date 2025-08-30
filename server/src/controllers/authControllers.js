@@ -44,7 +44,7 @@ exports.register = async (req, res, next) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -87,7 +87,7 @@ exports.login = async (req, res, next) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -105,7 +105,7 @@ exports.login = async (req, res, next) => {
 
 exports.getProfile = async (req, res, next) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -138,7 +138,7 @@ exports.getProfile = async (req, res, next) => {
 
 exports.updateProfile = async (req, res, next) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const { firstName, lastName, phone, avatarUrl } = req.body;
 
     const user = await prisma.user.update({
@@ -173,7 +173,7 @@ exports.updateProfile = async (req, res, next) => {
 
 exports.changePassword = async (req, res, next) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const { currentPassword, newPassword } = req.body;
 
     // Get current user
@@ -206,5 +206,68 @@ exports.changePassword = async (req, res, next) => {
   } catch (err) {
     console.error('Change password error:', err);
     res.status(500).json({ message: 'Failed to change password' });
+  }
+};
+
+exports.logout = async (req, res, next) => {
+  try {
+    // In a JWT-based system, logout is typically handled client-side
+    // by removing the token from storage
+    res.json({ message: 'Logged out successfully' });
+  } catch (err) {
+    console.error('Logout error:', err);
+    res.status(500).json({ message: 'Logout failed' });
+  }
+};
+
+exports.forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    
+    // Find user by email
+    const user = await prisma.user.findUnique({
+      where: { email }
+    });
+    
+    if (!user) {
+      // Don't reveal if email exists or not for security
+      return res.json({ message: 'If the email exists, a reset link has been sent' });
+    }
+
+    // In a real app, you would generate a reset token and send email
+    // For now, just return success
+    res.json({ message: 'If the email exists, a reset link has been sent' });
+
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.status(500).json({ message: 'Failed to process request' });
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    
+    // In a real app, you would verify the reset token
+    // For now, just return success
+    res.json({ message: 'Password reset successfully' });
+
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ message: 'Failed to reset password' });
+  }
+};
+
+exports.verifyEmail = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+    
+    // In a real app, you would verify the email verification token
+    // For now, just return success
+    res.json({ message: 'Email verified successfully' });
+
+  } catch (err) {
+    console.error('Verify email error:', err);
+    res.status(500).json({ message: 'Failed to verify email' });
   }
 };

@@ -1,12 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const ticketController = require('../controllers/ticketController');
-const auth = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 
-router.get('/event/:eventId', ticketController.getTicketsByEvent);      // Get ticket types for event
-router.get('/my-tickets', auth, ticketController.getUserTickets);       // Get user's tickets
-router.get('/:id', ticketController.getTicketTypeById);                 // Get ticket type by ID
-router.put('/:id', auth, ticketController.updateTicketType);            // Update ticket type
-router.post('/checkin/:qrCode', auth, ticketController.checkInAttendee); // Check in attendee
+// Public routes
+router.get('/:id', ticketController.getTicketTypeById);
+router.get('/:id/availability', ticketController.checkTicketAvailability);
+
+// Protected routes
+router.use(authenticate);
+
+// Organizer routes
+router.post('/', 
+  authorize(['ORGANIZER', 'ADMIN']), 
+  ticketController.createTicketType
+);
+
+router.put('/:id', 
+  authorize(['ORGANIZER', 'ADMIN']), 
+  ticketController.updateTicketType
+);
+
+router.delete('/:id', 
+  authorize(['ORGANIZER', 'ADMIN']), 
+  ticketController.deleteTicketType
+);
+
+router.patch('/:id/toggle', 
+  authorize(['ORGANIZER', 'ADMIN']), 
+  ticketController.toggleTicketTypeStatus
+);
+
+router.get('/event/:eventId', ticketController.getEventTicketTypes);
 
 module.exports = router;

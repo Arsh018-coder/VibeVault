@@ -151,6 +151,38 @@ exports.refundPayment = async (req, res, next) => {
   }
 };
 
+exports.getBookingPayments = async (req, res, next) => {
+  try {
+    const { bookingId } = req.params;
+    const userId = req.user.userId;
+
+    // Verify booking belongs to user
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      select: { userId: true }
+    });
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    if (booking.userId !== userId) {
+      return res.status(403).json({ message: 'Not authorized to view these payments' });
+    }
+
+    const payments = await prisma.payment.findMany({
+      where: { bookingId },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    res.json(payments);
+
+  } catch (err) {
+    console.error('Get booking payments error:', err);
+    res.status(500).json({ message: 'Failed to get booking payments' });
+  }
+};
+
 exports.getPaymentHistory = async (req, res, next) => {
   try {
     const userId = req.user.userId;

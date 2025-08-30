@@ -110,7 +110,7 @@ model Event {
 
   views         Int     @default(0)
   bookingsCount Int     @default(0)
-  revenue       Decimal @default(0)
+  revenue       Decimal @default(0.00) @db.Decimal(12, 2)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -159,11 +159,11 @@ model Booking {
   status        BookingStatus @default(PENDING)
   paymentStatus PaymentStatus @default(PENDING)
 
-  subtotal Decimal @default(0) @db.Decimal(12, 2)
-  discount Decimal @default(0) @db.Decimal(12, 2)
-  fees     Decimal @default(0) @db.Decimal(12, 2)
-  taxes    Decimal @default(0) @db.Decimal(12, 2)
-  total    Decimal @default(0) @db.Decimal(12, 2)
+  subtotal Decimal @default(0.00) @db.Decimal(12, 2)
+  discount Decimal @default(0.00) @db.Decimal(12, 2)
+  fees     Decimal @default(0.00) @db.Decimal(12, 2)
+  taxes    Decimal @default(0.00) @db.Decimal(12, 2)
+  total    Decimal @default(0.00) @db.Decimal(12, 2)
   currency String  @default("INR")
 
   promoCode String?

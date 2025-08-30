@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, Users, MapPin } from 'lucide-react';
 import EventCard from '../../components/features/events/EventCard';
+import { eventAPI } from '../../services/eventAPI';
 import './HomePage.css';
 
 const HomePage = () => {
@@ -9,116 +10,56 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock featured events data - diverse selection from different categories
-    const mockEvents = [
-      {
-        id: 1,
-        slug: 'tech-conference-2025',
-        title: 'Tech Conference 2025',
-        description: 'Join us for the biggest tech conference of the year featuring industry leaders and innovative technologies.',
-        date: '2025-12-15',
-        location: 'Mumbai, India',
-        price: 1999,
-        capacity: 500,
-        category: 'Technology',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Tech+Conference',
-        ticketTypes: [
-          { id: 1, type: 'early-bird', name: 'Early Bird', price: 1999 },
-          { id: 2, type: 'regular', name: 'Regular', price: 2499 },
-          { id: 3, type: 'vip', name: 'VIP', price: 3999 }
-        ]
-      },
-      {
-        id: 2,
-        slug: 'bollywood-music-festival',
-        title: 'Bollywood Music Festival',
-        description: 'Experience amazing live music from top Bollywood artists in a beautiful outdoor setting.',
-        date: '2025-11-20',
-        location: 'Bangalore, India',
-        price: 999,
-        capacity: 2000,
-        category: 'Music',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Music+Festival',
-        ticketTypes: [
-          { id: 4, type: 'early-bird', name: 'Early Bird', price: 999 },
-          { id: 5, type: 'regular', name: 'Regular', price: 1299 },
-          { id: 6, type: 'vip', name: 'VIP', price: 2999 }
-        ]
-      },
-      {
-        id: 5,
-        slug: 'startup-networking-summit',
-        title: 'Startup Networking Summit',
-        description: 'Connect with entrepreneurs, investors, and industry leaders in this exclusive networking event.',
-        date: '2025-12-05',
-        location: 'Pune, India',
-        price: 1499,
-        capacity: 300,
-        category: 'Business',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Business+Summit',
-        ticketTypes: [
-          { id: 10, type: 'early-bird', name: 'Early Bird', price: 1499 },
-          { id: 11, type: 'regular', name: 'Startup Pass', price: 1999 },
-          { id: 12, type: 'vip', name: 'Investor Pass', price: 4999 }
-        ]
-      },
-      {
-        id: 6,
-        slug: 'indian-street-food-festival',
-        title: 'Indian Street Food Festival',
-        description: 'Taste authentic street food from across India in this amazing culinary celebration.',
-        date: '2025-11-25',
-        location: 'Delhi, India',
-        price: 399,
-        capacity: 1000,
-        category: 'Food & Drink',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Food+Festival',
-        ticketTypes: [
-          { id: 130, type: 'early-bird', name: 'Early Bird', price: 399 },
-          { id: 13, type: 'regular', name: 'Food Pass', price: 499 },
-          { id: 14, type: 'vip', name: 'Premium Tasting', price: 999 }
-        ]
-      },
-      {
-        id: 8,
-        slug: 'stand-up-comedy-night',
-        title: 'Stand-up Comedy Night',
-        description: 'Laugh out loud with India\'s top comedians in this hilarious comedy show.',
-        date: '2025-11-18',
-        location: 'Bangalore, India',
-        price: 599,
-        capacity: 400,
-        category: 'Entertainment',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Comedy+Show',
-        ticketTypes: [
-          { id: 170, type: 'early-bird', name: 'Early Bird', price: 599 },
-          { id: 17, type: 'regular', name: 'Regular', price: 799 },
-          { id: 18, type: 'vip', name: 'Front Row VIP', price: 1299 }
-        ]
-      },
-      {
-        id: 4,
-        slug: 'ipl-cricket-match',
-        title: 'IPL Cricket Match',
-        description: 'Watch the thrilling IPL match between Mumbai Indians and Chennai Super Kings.',
-        date: '2025-11-15',
-        location: 'Mumbai, India',
-        price: 699,
-        capacity: 50000,
-        category: 'Sports',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Cricket+Match',
-        ticketTypes: [
-          { id: 80, type: 'early-bird', name: 'Early Bird', price: 699 },
-          { id: 8, type: 'regular', name: 'General Stand', price: 899 },
-          { id: 9, type: 'vip', name: 'Premium Box', price: 2499 }
-        ]
+    const fetchFeaturedEvents = async () => {
+      try {
+        const events = await eventAPI.getFeaturedEvents();
+        setFeaturedEvents(events);
+      } catch (error) {
+        console.error('Error fetching featured events:', error);
+        // Fallback to mock data if API fails
+        const mockEvents = [
+          {
+            id: 1,
+            slug: 'tech-conference-2025',
+            title: 'Tech Conference 2025',
+            description: 'Join us for the biggest tech conference of the year featuring industry leaders and innovative technologies.',
+            startAt: '2025-12-15T09:00:00Z',
+            venueName: 'Mumbai Convention Center',
+            city: 'Mumbai',
+            capacity: 500,
+            category: { name: 'Technology' },
+            images: [{ url: 'https://via.placeholder.com/300x200?text=Tech+Conference', isPrimary: true }],
+            ticketTypes: [
+              { id: 1, type: 'early-bird', name: 'Early Bird', price: 1999 },
+              { id: 2, type: 'regular', name: 'Regular', price: 2499 },
+              { id: 3, type: 'vip', name: 'VIP', price: 3999 }
+            ]
+          },
+          {
+            id: 2,
+            slug: 'bollywood-music-festival',
+            title: 'Bollywood Music Festival',
+            description: 'Experience amazing live music from top Bollywood artists in a beautiful outdoor setting.',
+            startAt: '2025-11-20T18:00:00Z',
+            venueName: 'Palace Grounds',
+            city: 'Bangalore',
+            capacity: 2000,
+            category: { name: 'Music' },
+            images: [{ url: 'https://via.placeholder.com/300x200?text=Music+Festival', isPrimary: true }],
+            ticketTypes: [
+              { id: 4, type: 'early-bird', name: 'Early Bird', price: 999 },
+              { id: 5, type: 'regular', name: 'Regular', price: 1299 },
+              { id: 6, type: 'vip', name: 'VIP', price: 2999 }
+            ]
+          }
+        ];
+        setFeaturedEvents(mockEvents);
+      } finally {
+        setLoading(false);
       }
-    ];
+    };
 
-    setTimeout(() => {
-      setFeaturedEvents(mockEvents);
-      setLoading(false);
-    }, 1000);
+    fetchFeaturedEvents();
   }, []);
 
   if (loading) {

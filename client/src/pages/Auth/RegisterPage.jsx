@@ -16,17 +16,21 @@ const RegisterPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      await registerUser({
+      const userData = await registerUser({
         email: data.email,
         password: data.password,
-        role: selectedRole,
-        profile: {
-          firstName: data.firstName,
-          lastName: data.lastName
-        }
+        role: selectedRole.toUpperCase(),
+        firstName: data.firstName,
+        lastName: data.lastName
       });
       toast.success('Account created successfully!');
-      navigate('/');
+      
+      // Navigate based on user role
+      if (userData.user.role === 'ORGANIZER') {
+        navigate('/dashboard');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       toast.error(err.message || 'Registration failed');
     }

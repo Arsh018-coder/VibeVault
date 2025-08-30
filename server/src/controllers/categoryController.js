@@ -1,77 +1,36 @@
 const prisma = require('../db/prisma');
 
-exports.getCategories = async (req, res, next) => {
+exports.getAllCategories = async (req, res, next) => {
   try {
-    const { includeEventCount = false } = req.query;
+    const { includeInactive = false } = req.query;
+    
+    const where = {};
+    if (!includeInactive) {
+      where.isActive = true;
+    }
 
     const categories = await prisma.category.findMany({
-      where: { isActive: true },
+      where,
       orderBy: [
         { sortOrder: 'asc' },
         { name: 'asc' }
       ],
-      ...(includeEventCount === 'true' && {
-        include: {
-          _count: {
-            select: {
-              events: {
-                where: {
-                  status: 'PUBLISHED'
-                }
+      include: {
+        _count: {
+          select: {
+            events: {
+              where: {
+                status: 'PUBLISHED',
+                visibility: 'PUBLIC'
               }
             }
           }
         }
-      })
+      }
     });
 
     res.json(categories);
   } catch (err) {
-    console.error('Get categories error:', err);
-    next(err);
-  }
-};
-
-exports.getCategoryById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-
-    const category = await prisma.category.findUnique({
-      where: { id },
-      include: {
-        events: {
-          where: { status: 'PUBLISHED' },
-          include: {
-            organizer: {
-              select: {
-                firstName: true,
-                lastName: true
-              }
-            },
-            ticketTypes: {
-              orderBy: { price: 'asc' },
-              take: 1
-            },
-            images: {
-              where: { isPrimary: true },
-              take: 1
-            }
-          },
-          orderBy: { startAt: 'asc' }
-        },
-        _count: {
-          select: { events: true }
-        }
-      }
-    });
-
-    if (!category) {
-      return res.status(404).json({ message: 'Category not found' });
-    }
-
-    res.json(category);
-  } catch (err) {
-    console.error('Get category by ID error:', err);
     next(err);
   }
 };
@@ -83,28 +42,15 @@ exports.getCategoryBySlug = async (req, res, next) => {
     const category = await prisma.category.findUnique({
       where: { slug },
       include: {
-        events: {
-          where: { status: 'PUBLISHED' },
-          include: {
-            organizer: {
-              select: {
-                firstName: true,
-                lastName: true
-              }
-            },
-            ticketTypes: {
-              orderBy: { price: 'asc' },
-              take: 1
-            },
-            images: {
-              where: { isPrimary: true },
-              take: 1
-            }
-          },
-          orderBy: { startAt: 'asc' }
-        },
         _count: {
-          select: { events: true }
+          select: {
+            events: {
+              where: {
+                status: 'PUBLISHED',
+                visibility: 'PUBLIC'
+              }
+            }
+          }
         }
       }
     });
@@ -115,19 +61,79 @@ exports.getCategoryBySlug = async (req, res, next) => {
 
     res.json(category);
   } catch (err) {
-    console.error('Get category by slug error:', err);
+    next(err);
+  }
+};
+
+exports.getCategoryEvents = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const { page = 1, limit = 10, sort = 'startAt' } = req.query;
+
+    const category = await prisma.category.findUnique({
+      where: { slug }
+    });
+
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    const events = await prisma.event.findMany({
+      where: {
+        categoryId: category.id,
+        status: 'PUBLISHED',
+        visibility: 'PUBLIC'
+      },
+      include: {
+        category: true,
+        organizer: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true
+          }
+        },
+        ticketTypes: {
+          where: { isActive: true },
+          orderBy: { price: 'asc' }
+        },
+        images: {
+          where: { isPrimary: true }
+        }
+      },
+      orderBy: { [sort]: 'asc' },
+      skip: (page - 1) * limit,
+      take: parseInt(limit)
+    });
+
+    const total = await prisma.event.count({
+      where: {
+        categoryId: category.id,
+        status: 'PUBLISHED',
+        visibility: 'PUBLIC'
+      }
+    });
+
+    res.json({
+      events,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (err) {
     next(err);
   }
 };
 
 exports.createCategory = async (req, res, next) => {
   try {
-    const { name, description, color, sortOrder = 0 } = req.body;
-
+    const { name, description, color, sortOrder } = req.body;
+    
     // Generate slug from name
-    const slug = name.toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
     const category = await prisma.category.create({
       data: {
@@ -135,8 +141,7 @@ exports.createCategory = async (req, res, next) => {
         slug,
         description,
         color,
-        sortOrder,
-        isActive: true
+        sortOrder: sortOrder || 0
       }
     });
 
@@ -145,7 +150,87 @@ exports.createCategory = async (req, res, next) => {
       category
     });
   } catch (err) {
-    console.error('Create category error:', err);
+    next(err);
+  }
+};
+
+exports.updateCategory = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, description, color, sortOrder } = req.body;
+
+    const updateData = {};
+    if (name) {
+      updateData.name = name;
+      updateData.slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+    if (description !== undefined) updateData.description = description;
+    if (color) updateData.color = color;
+    if (sortOrder !== undefined) updateData.sortOrder = sortOrder;
+
+    const category = await prisma.category.update({
+      where: { id },
+      data: updateData
+    });
+
+    res.json({
+      message: 'Category updated successfully',
+      category
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteCategory = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Check if category has events
+    const eventCount = await prisma.event.count({
+      where: { categoryId: id }
+    });
+
+    if (eventCount > 0) {
+      return res.status(400).json({
+        message: 'Cannot delete category with existing events'
+      });
+    }
+
+    await prisma.category.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Category deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.toggleCategoryStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const category = await prisma.category.findUnique({
+      where: { id }
+    });
+
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    const updatedCategory = await prisma.category.update({
+      where: { id },
+      data: {
+        isActive: !category.isActive
+      }
+    });
+
+    res.json({
+      message: `Category ${updatedCategory.isActive ? 'activated' : 'deactivated'} successfully`,
+      category: updatedCategory
+    });
+  } catch (err) {
     next(err);
   }
 };

@@ -29,8 +29,11 @@ const Header = () => {
           <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
             <Link to="/events" className="nav-link">Events</Link>
             <Link to="/categories" className="nav-link">Categories</Link>
-            {user?.role === 'organizer' && (
+            {user?.role === 'ORGANIZER' && (
               <Link to="/dashboard" className="nav-link">Dashboard</Link>
+            )}
+            {user?.role === 'ATTENDEE' && (
+              <Link to="/attendee-dashboard" className="nav-link">My Dashboard</Link>
             )}
           </nav>
 
@@ -43,7 +46,7 @@ const Header = () => {
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                 >
                   <User size={20} />
-                  <span>{user.profile?.firstName || user.email}</span>
+                  <span>{user.firstName || user.email}</span>
                 </button>
                 
                 {isProfileMenuOpen && (

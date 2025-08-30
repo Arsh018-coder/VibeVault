@@ -1,10 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const analyticsController = require('../controllers/analyticsController');
-const auth = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 
-router.get('/dashboard', auth, analyticsController.getDashboardStats);     // Get dashboard stats
-router.get('/events/:eventId', auth, analyticsController.getEventAnalytics); // Get event analytics
-router.get('/sales', auth, analyticsController.getSalesReport);            // Get sales report
+// All routes require authentication
+router.use(authenticate);
+
+// Dashboard stats
+router.get('/dashboard', 
+  authorize(['ORGANIZER', 'ADMIN']), 
+  analyticsController.getDashboardStats
+);
+
+// Booking analytics
+router.get('/bookings', 
+  authorize(['ORGANIZER', 'ADMIN']), 
+  analyticsController.getBookingAnalytics
+);
+
+// Revenue analytics
+router.get('/revenue', 
+  authorize(['ORGANIZER', 'ADMIN']), 
+  analyticsController.getRevenueAnalytics
+);
+
+// Event performance
+router.get('/event/:eventId', 
+  authorize(['ORGANIZER', 'ADMIN']), 
+  analyticsController.getEventPerformance
+);
+
+// Export data
+router.get('/export', 
+  authorize(['ORGANIZER', 'ADMIN']), 
+  analyticsController.exportAnalyticsData
+);
 
 module.exports = router;

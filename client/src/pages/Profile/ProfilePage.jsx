@@ -13,25 +13,23 @@ const ProfilePage = () => {
   useEffect(() => {
     if (user) {
       reset({
-        firstName: user.profile?.firstName || '',
-        lastName: user.profile?.lastName || '',
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
         email: user.email,
-        phone: user.profile?.phone || '',
+        phone: user.phone || '',
       });
     }
   }, [user, reset]);
 
   const onSubmit = async (data) => {
     try {
-      const updated = await api.put('/auth/profile', {
-        profile: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          phone: data.phone,
-        },
-        email: data.email,
+      const response = await api.put('/auth/me', {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phone: data.phone,
       });
-      updateUser(updated.user);
+      updateUser(response.data.user);
+      setEditMode(false);
       toast.success('Profile updated successfully!');
     } catch (error) {
       toast.error('Failed to update profile.');

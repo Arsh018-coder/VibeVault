@@ -32,8 +32,22 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/events" element={<EventsPage />} />
-      <Route path="/events/:slug" element={<EventDetailsPage />} />
-      <Route path="/events/:slug/book" element={<EventBookingPage />} />
+      <Route 
+        path="/events/:slug" 
+        element={
+          <ProtectedRoute>
+            <EventDetailsPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/events/:slug/book" 
+        element={
+          <ProtectedRoute>
+            <EventBookingPage />
+          </ProtectedRoute>
+        } 
+      />
       <Route path="/categories" element={<CategoriesPage />} />
 
       <Route path="/login" element={<LoginPage />} />
@@ -51,7 +65,7 @@ const AppRoutes = () => {
       <Route 
         path="/dashboard" 
         element={
-          <ProtectedRoute role="organizer">
+          <ProtectedRoute role="ORGANIZER">
             <OrganizerDashboardPage />
           </ProtectedRoute>
         } 
@@ -69,7 +83,7 @@ const AppRoutes = () => {
       <Route 
         path="/attendee-dashboard" 
         element={
-          <ProtectedRoute role="attendee">
+          <ProtectedRoute role="ATTENDEE">
             <AttendeeDashboardPage />
           </ProtectedRoute>
         } 

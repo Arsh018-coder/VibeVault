@@ -40,9 +40,9 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     if (token) {
       // Verify token and get user data
-      authAPI.verifyToken(token)
-        .then(user => {
-          dispatch({ type: 'AUTH_SUCCESS', payload: { user, token } });
+      authAPI.getProfile()
+        .then(response => {
+          dispatch({ type: 'AUTH_SUCCESS', payload: { user: response.user, token } });
         })
         .catch(() => {
           localStorage.removeItem('token');

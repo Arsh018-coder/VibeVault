@@ -1,13 +1,17 @@
 const Stripe = require("stripe");
-const { STRIPE_SECRET } = require("../config/environment");
+const { STRIPE_SECRET_KEY } = require("../config/environment");
 const PaymentModel = require("../models/payment");
 const BookingModel = require("../models/booking");
 
-const stripe = Stripe(STRIPE_SECRET);
+const stripe = STRIPE_SECRET_KEY ? Stripe(STRIPE_SECRET_KEY) : null;
 
 class PaymentService {
   static async processPayment(bookingId, amount, method = "card") {
     try {
+      if (!stripe) {
+        throw new Error("Stripe is not configured. Please add STRIPE_SECRET_KEY to environment variables.");
+      }
+      
       // Create payment intent with Stripe
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount * 100, // Convert to paise
@@ -41,6 +45,10 @@ class PaymentService {
 
   static async confirmPayment(paymentIntentId) {
     try {
+      if (!stripe) {
+        throw new Error("Stripe is not configured. Please add STRIPE_SECRET_KEY to environment variables.");
+      }
+      
       const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
       
       const payment = await PaymentModel.findByTransactionId(paymentIntentId);
@@ -74,6 +82,10 @@ class PaymentService {
 
   static async refundPayment(paymentId, amount = null) {
     try {
+      if (!stripe) {
+        throw new Error("Stripe is not configured. Please add STRIPE_SECRET_KEY to environment variables.");
+      }
+      
       const payment = await PaymentModel.findById(paymentId);
       if (!payment) {
         throw new Error("Payment not found");
