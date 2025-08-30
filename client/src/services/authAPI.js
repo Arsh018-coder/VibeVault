@@ -46,6 +46,11 @@ export const authAPI = {
     return response.data;
   },
 
+  verifyOtp: async (data) => {
+    const response = await api.post('/auth/verify-otp', data);
+    return response.data;
+  },
+
   // Legacy method for compatibility
   verifyToken: async (token) => {
     try {

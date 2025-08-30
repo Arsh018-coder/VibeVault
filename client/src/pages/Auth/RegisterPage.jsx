@@ -16,20 +16,27 @@ const RegisterPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      const userData = await registerUser({
+      const response = await registerUser({
         email: data.email,
         password: data.password,
         role: selectedRole.toUpperCase(),
         firstName: data.firstName,
         lastName: data.lastName,
-        phone: '' // Add empty phone number as it's required by the server
+        phone: data.phone || ''
       });
-      toast.success(userData.message || 'Account created successfully! Please check your email for verification.');
       
-      // Navigate to verification page or home based on your flow
-      navigate('/verify-email');
+      toast.success(response.message || 'Account created! Check your email for verification.');
+      
+      // Navigate to verification page with email in state
+      navigate('/verify-email', { 
+        state: { 
+          email: response.email || data.email,
+          message: response.message 
+        } 
+      });
     } catch (err) {
-      toast.error(err.message || 'Registration failed');
+      console.error('Registration error:', err);
+      toast.error(err.message || 'Registration failed. Please try again.');
     }
   };
 

@@ -70,21 +70,33 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'AUTH_START' });
     try {
       const response = await authAPI.register(userData);
-      // Store the token if it exists (for auto-login after verification)
-      if (response.token) {
-        localStorage.setItem('token', response.token);
-        dispatch({ 
-          type: 'AUTH_SUCCESS', 
-          payload: { 
-            user: response.user,
-            token: response.token
-          } 
-        });
-      }
-      return response;
+      // Return the response with email for verification
+      return { ...response, email: userData.email };
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message || 'Registration failed';
       dispatch({ type: 'AUTH_ERROR', payload: errorMessage });
+      throw new Error(errorMessage);
+    }
+  };
+
+  const verifyEmail = async ({ email, otp }) => {
+    try {
+      const response = await authAPI.verifyOtp({ email, otp });
+      
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        dispatch({
+          type: 'AUTH_SUCCESS',
+          payload: {
+            user: response.user,
+            token: response.token
+          }
+        });
+      }
+      
+      return response;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Verification failed';
       throw new Error(errorMessage);
     }
   };

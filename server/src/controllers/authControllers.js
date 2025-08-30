@@ -124,7 +124,7 @@ exports.verifyOtp = async (req, res) => {
       data: { used: true }
     });
 
-    // Mark user as verified
+    // Mark user as verified and get updated user data
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: { isVerified: true },
@@ -134,21 +134,31 @@ exports.verifyOtp = async (req, res) => {
         role: true,
         firstName: true,
         lastName: true,
-        isVerified: true
+        isVerified: true,
+        phone: true,
+        avatarUrl: true,
+        createdAt: true,
+        updatedAt: true
       }
     });
 
     // Generate auth token
     const token = jwt.sign(
-      { id: updatedUser.id, email: updatedUser.email, role: updatedUser.role },
+      { 
+        id: updatedUser.id, 
+        email: updatedUser.email, 
+        role: updatedUser.role 
+      },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    res.json({ 
+    // Return success response with token and user data
+    res.status(200).json({ 
+      success: true,
       message: 'Email verified successfully',
-      user: updatedUser,
-      token
+      token,
+      user: updatedUser
     });
 
   } catch (err) {

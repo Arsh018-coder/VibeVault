@@ -7,6 +7,7 @@ import EventBookingPage from '../pages/Events/EventBookingPage';
 import CategoriesPage from '../pages/Categories/CategoriesPage';
 import LoginPage from '../pages/Auth/LoginPage';
 import RegisterPage from '../pages/Auth/RegisterPage';
+import VerifyEmailPage from '../pages/Auth/VerifyEmailPage';
 import ProfilePage from '../pages/Profile/ProfilePage';
 import OrganizerDashboardPage from '../pages/Dashboard/OrganizerDashboardPage';
 import AttendeeDashboardPage from '../pages/Dashboard/AttendeeDashboardPage';
@@ -52,6 +53,7 @@ const AppRoutes = () => {
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/verify-email" element={<VerifyEmailPage />} />
 
       <Route 
         path="/profile" 
