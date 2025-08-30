@@ -20,7 +20,7 @@ const HomePage = () => {
         price: 2499,
         capacity: 500,
         category: 'Technology',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Tech+Conference'
+        imageUrl: 'https://via.placeholder.com/300x200?'
       },
       {
         id: 2,
@@ -111,21 +111,21 @@ const HomePage = () => {
           <div className="stat">
             <Calendar size={24} />
             <div>
-              <span className="stat-number">500+</span>
+              <span className="stat-number">10+</span>
               <span className="stat-label">Events</span>
             </div>
           </div>
           <div className="stat">
             <Users size={24} />
             <div>
-              <span className="stat-number">10K+</span>
+              <span className="stat-number">1K+</span>
               <span className="stat-label">Attendees</span>
             </div>
           </div>
           <div className="stat">
             <MapPin size={24} />
             <div>
-              <span className="stat-number">50+</span>
+              <span className="stat-number">8+</span>
               <span className="stat-label">Cities</span>
             </div>
           </div>

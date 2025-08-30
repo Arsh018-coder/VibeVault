@@ -14,7 +14,7 @@ const CategoriesPage = () => {
         id: 1,
         name: 'Technology',
         description: 'Tech conferences, workshops, and networking events',
-        eventCount: 45,
+        eventCount: 2,
         imageUrl: 'https://via.placeholder.com/400x250?text=Technology',
         color: '#194759'
       },
@@ -22,7 +22,7 @@ const CategoriesPage = () => {
         id: 2,
         name: 'Music',
         description: 'Concerts, festivals, and live music performances',
-        eventCount: 32,
+        eventCount: 2,
         imageUrl: 'https://via.placeholder.com/400x250?text=Music',
         color: '#4f7369'
       },
@@ -30,7 +30,7 @@ const CategoriesPage = () => {
         id: 3,
         name: 'Art',
         description: 'Gallery openings, exhibitions, and art workshops',
-        eventCount: 28,
+        eventCount: 2,
         imageUrl: 'https://via.placeholder.com/400x250?text=Art',
         color: '#7ebfb3'
       },
@@ -38,7 +38,7 @@ const CategoriesPage = () => {
         id: 4,
         name: 'Sports',
         description: 'Sporting events, tournaments, and fitness activities',
-        eventCount: 38,
+        eventCount: 2,
         imageUrl: 'https://via.placeholder.com/400x250?text=Sports',
         color: '#194759'
       },
@@ -46,7 +46,7 @@ const CategoriesPage = () => {
         id: 5,
         name: 'Business',
         description: 'Professional networking, seminars, and conferences',
-        eventCount: 52,
+        eventCount: 1,
         imageUrl: 'https://via.placeholder.com/400x250?text=Business',
         color: '#4f7369'
       },
@@ -54,7 +54,7 @@ const CategoriesPage = () => {
         id: 6,
         name: 'Food & Drink',
         description: 'Culinary events, tastings, and food festivals',
-        eventCount: 24,
+        eventCount: 1,
         imageUrl: 'https://via.placeholder.com/400x250?text=Food',
         color: '#7ebfb3'
       },
@@ -62,7 +62,7 @@ const CategoriesPage = () => {
         id: 7,
         name: 'Education',
         description: 'Workshops, courses, and educational seminars',
-        eventCount: 41,
+        eventCount: 1,
         imageUrl: 'https://via.placeholder.com/400x250?text=Education',
         color: '#194759'
       },
@@ -70,7 +70,7 @@ const CategoriesPage = () => {
         id: 8,
         name: 'Entertainment',
         description: 'Comedy shows, theater, and entertainment events',
-        eventCount: 29,
+        eventCount: 1,
         imageUrl: 'https://via.placeholder.com/400x250?text=Entertainment',
         color: '#4f7369'
       }
