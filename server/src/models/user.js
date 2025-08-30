@@ -1,27 +1,75 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
 const bcrypt = require("bcryptjs");
+const sequelize = require("../config/database");
 
-const userSchema = new mongoose.Schema(
+const User = sequelize.define(
+  "User",
   {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true, minlength: 6 },
-    role: { type: String, enum: ["user", "organizer", "admin"], default: "user" },
-    profileImage: { type: String }, 
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      trim: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      lowercase: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: {
+      type: DataTypes.ENUM("user", "organizer", "admin"),
+      defaultValue: "user",
+    },
+    profileImage: {
+      type: DataTypes.STRING, // Cloudinary URL
+      allowNull: true,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    hooks: {
+      // Hash password before saving
+      beforeCreate: async (user) => {
+        if (user.password) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+      },
+      beforeUpdate: async (user) => {
+        if (user.changed("password")) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+      },
+    },
+  }
 );
 
-// Hash password before saving
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
-
-// Compare passwords
-userSchema.methods.comparePassword = function (password) {
+// Instance method for password comparison
+User.prototype.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-module.exports = mongoose.model("User", userSchema);
+// Associations
+User.associate = (models) => {
+  // User can organize many events
+  User.hasMany(models.Event, { foreignKey: "organizerId" });
+
+  // User can make many bookings
+  User.hasMany(models.Booking, { foreignKey: "userId" });
+
+  // User receives notifications
+  User.hasMany(models.Notification, { foreignKey: "userId" });
+};
+
+module.exports = User;

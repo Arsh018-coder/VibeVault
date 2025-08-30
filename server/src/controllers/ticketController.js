@@ -11,7 +11,9 @@ exports.createTicket = async (req, res, next) => {
 
 exports.getTicketsByEvent = async (req, res, next) => {
   try {
-    const tickets = await Ticket.find({ event: req.params.eventId });
+    const tickets = await Ticket.findAll({
+      where: { eventId: req.params.eventId }
+    });
     res.json(tickets);
   } catch (err) {
     next(err);

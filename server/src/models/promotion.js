@@ -1,17 +1,53 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const promotionSchema = new mongoose.Schema(
+const Promotion = sequelize.define(
+  "Promotion",
   {
-    code: { type: String, required: true, unique: true },
-    discountType: { type: String, enum: ["percentage", "flat"], required: true },
-    discountValue: { type: Number, required: true },
-    validFrom: { type: Date, required: true },
-    validUntil: { type: Date, required: true },
-    usageLimit: { type: Number, default: 1 },
-    usedCount: { type: Number, default: 0 },
-    event: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    discountType: {
+      type: DataTypes.ENUM("percentage", "flat"),
+      allowNull: false,
+    },
+    discountValue: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
+    validFrom: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    validUntil: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    usageLimit: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
+    usedCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true, // adds createdAt & updatedAt
+  }
 );
 
-module.exports = mongoose.model("Promotion", promotionSchema);
+// Associations
+Promotion.associate = (models) => {
+  // A promotion may apply to an event
+  Promotion.belongsTo(models.Event, { foreignKey: "eventId" });
+};
+
+module.exports = Promotion;

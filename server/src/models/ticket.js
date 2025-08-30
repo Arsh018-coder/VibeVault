@@ -1,14 +1,47 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const ticketSchema = new mongoose.Schema(
+const Ticket = sequelize.define(
+  "Ticket",
   {
-    event: { type: mongoose.Schema.Types.ObjectId, ref: "Event", required: true },
-    type: { type: String, enum: ["regular", "vip", "early-bird"], default: "regular" },
-    price: { type: Number, required: true },
-    quantity: { type: Number, required: true },
-    sold: { type: Number, default: 0 },
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    type: {
+      type: DataTypes.ENUM("regular", "vip", "early-bird"),
+      defaultValue: "regular",
+    },
+    price: {
+      type: DataTypes.DECIMAL(10, 2), 
+      allowNull: false,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    sold: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true, // adds createdAt & updatedAt automatically
+  }
 );
 
-module.exports = mongoose.model("Ticket", ticketSchema);
+// Associations
+Ticket.associate = (models) => {
+  // A Ticket belongs to one Event
+  Ticket.belongsTo(models.Event, { foreignKey: "eventId", onDelete: "CASCADE" });
+
+  // A Ticket can appear in many Bookings through a join table
+  Ticket.belongsToMany(models.Booking, {
+    through: "BookingTickets", // join table
+    foreignKey: "ticketId",
+    otherKey: "bookingId",
+  });
+};
+
+module.exports = Ticket;

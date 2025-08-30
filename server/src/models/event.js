@@ -1,16 +1,48 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const eventSchema = new mongoose.Schema(
+const Event = sequelize.define(
+  "Event",
   {
-    title: { type: String, required: true },
-    description: { type: String },
-    date: { type: Date, required: true },
-    location: { type: String, required: true },
-    banner: { type: String }, // Cloudinary image
-    organizer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    tickets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ticket" }],
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+    },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    location: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    banner: {
+      type: DataTypes.STRING, // Cloudinary image URL
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true, // adds createdAt & updatedAt
+  }
 );
 
-module.exports = mongoose.model("Event", eventSchema);
+// Associations
+Event.associate = (models) => {
+  // An Event belongs to one Organizer (User)
+  Event.belongsTo(models.User, { foreignKey: "organizerId", as: "organizer" });
+
+  // An Event has many Tickets
+  Event.hasMany(models.Ticket, { foreignKey: "eventId", as: "tickets" });
+
+  // An Event can have many Bookings
+  Event.hasMany(models.Booking, { foreignKey: "eventId" });
+};
+
+module.exports = Event;

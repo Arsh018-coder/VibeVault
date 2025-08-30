@@ -1,15 +1,43 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const paymentSchema = new mongoose.Schema(
+const Payment = sequelize.define(
+  "Payment",
   {
-    booking: { type: mongoose.Schema.Types.ObjectId, ref: "Booking", required: true },
-    amount: { type: Number, required: true },
-    currency: { type: String, default: "INR" },
-    provider: { type: String, enum: ["stripe", "paypal"], default: "stripe" },
-    status: { type: String, enum: ["initiated", "successful", "failed"], default: "initiated" },
-    transactionId: { type: String },
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    amount: {
+      type: DataTypes.DECIMAL(10, 2), // better for currency than INTEGER
+      allowNull: false,
+    },
+    currency: {
+      type: DataTypes.STRING,
+      defaultValue: "INR",
+    },
+    provider: {
+      type: DataTypes.ENUM("stripe", "paypal"),
+      defaultValue: "stripe",
+    },
+    status: {
+      type: DataTypes.ENUM("initiated", "successful", "failed"),
+      defaultValue: "initiated",
+    },
+    transactionId: {
+      type: DataTypes.STRING,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true, // adds createdAt & updatedAt
+  }
 );
 
-module.exports = mongoose.model("Payment", paymentSchema);
+// Associations
+Payment.associate = (models) => {
+  // A payment belongs to one booking
+  Payment.belongsTo(models.Booking, { foreignKey: "bookingId" });
+};
+
+module.exports = Payment;

@@ -1,19 +1,37 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const bookingSchema = new mongoose.Schema(
-  {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    event: { type: mongoose.Schema.Types.ObjectId, ref: "Event", required: true },
-    tickets: [
-      {
-        ticket: { type: mongoose.Schema.Types.ObjectId, ref: "Ticket" },
-        quantity: { type: Number, default: 1 },
-      },
-    ],
-    status: { type: String, enum: ["pending", "confirmed", "cancelled"], default: "pending" },
-    payment: { type: mongoose.Schema.Types.ObjectId, ref: "Payment" },
+const Booking = sequelize.define("Booking", {
+  id: { 
+    type: DataTypes.INTEGER, 
+    primaryKey: true, 
+    autoIncrement: true 
   },
-  { timestamps: true }
-);
+  status: {
+    type: DataTypes.ENUM("pending", "confirmed", "cancelled"),
+    defaultValue: "pending",
+  }
+}, {
+  timestamps: true, // createdAt, updatedAt
+});
 
-module.exports = mongoose.model("Booking", bookingSchema);
+// Associations (define later in index.js or model init)
+Booking.associate = (models) => {
+  // A booking belongs to one user
+  Booking.belongsTo(models.User, { foreignKey: "userId" });
+
+  // A booking belongs to one event
+  Booking.belongsTo(models.Event, { foreignKey: "eventId" });
+
+  // A booking may belong to one payment
+  Booking.belongsTo(models.Payment, { foreignKey: "paymentId" });
+
+  // Many-to-Many relation: Booking <-> Ticket (with quantity in join table)
+  Booking.belongsToMany(models.Ticket, {
+    through: models.BookingTicket,
+    foreignKey: "bookingId",
+    otherKey: "ticketId",
+  });
+};
+
+module.exports = Booking;
