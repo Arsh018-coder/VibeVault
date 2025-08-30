@@ -1,7 +1,7 @@
 .footer {
   background-color: #1a1a1a;
   color: white;
-  padding: 2rem 0 1rem;
+  padding: 3rem 0 2rem;
   margin-top: auto;
 }
 
@@ -11,7 +11,7 @@
   padding: 0 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
 .footer-section h3,
@@ -41,8 +41,8 @@
 
 .footer-bottom {
   border-top: 1px solid #333;
-  margin-top: 2rem;
-  padding-top: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
   text-align: center;
   color: #999;
 }

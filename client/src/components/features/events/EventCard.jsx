@@ -1,17 +1,26 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Users } from 'lucide-react';
 import './EventCard.css';
 
 const EventCard = ({ event }) => {
+  const navigate = useNavigate();
+  
   const {
+    id,
+    slug,
     title,
     description,
     date,
+    startAt,
     location,
+    venueName,
+    city,
     price,
     capacity,
     imageUrl,
-    category
+    category,
+    ticketTypes
   } = event;
 
   const formatDate = (dateString) => {
@@ -23,8 +32,40 @@ const EventCard = ({ event }) => {
     });
   };
 
+  // Handle card click to navigate to event details
+  const handleCardClick = (e) => {
+    // Don't navigate if clicking on the book button
+    if (e.target.closest('.book-button')) {
+      return;
+    }
+    
+    // Use slug if available, otherwise use id
+    const eventIdentifier = slug || id;
+    if (eventIdentifier) {
+      navigate(`/events/${eventIdentifier}`);
+    }
+  };
+
+  // Handle book button click
+  const handleBookClick = (e) => {
+    e.stopPropagation();
+    const eventIdentifier = slug || id;
+    if (eventIdentifier) {
+      navigate(`/events/${eventIdentifier}/book`);
+    }
+  };
+
+  // Get display date (prefer startAt over date)
+  const displayDate = startAt || date;
+  
+  // Get display location
+  const displayLocation = venueName || location || (city ? `${city}` : 'Location TBD');
+
+  // Get price display (keep original logic simple)
+  const displayPrice = price === 0 ? 'Free' : `₹${price}`;
+
   return (
-    <div className="event-card">
+    <div className="event-card" onClick={handleCardClick}>
       <div className="event-image">
         <img 
           src={imageUrl || '/api/placeholder/300/200'} 
@@ -33,7 +74,7 @@ const EventCard = ({ event }) => {
             e.target.src = 'https://via.placeholder.com/300x200?text=Event+Image';
           }}
         />
-        <div className="event-category">{category}</div>
+        <div className="event-category">{category?.name || category}</div>
       </div>
       
       <div className="event-content">
@@ -43,12 +84,12 @@ const EventCard = ({ event }) => {
         <div className="event-details">
           <div className="event-detail">
             <Calendar size={16} />
-            <span>{formatDate(date)}</span>
+            <span>{formatDate(displayDate)}</span>
           </div>
           
           <div className="event-detail">
             <MapPin size={16} />
-            <span>{location}</span>
+            <span>{displayLocation}</span>
           </div>
           
           <div className="event-detail">
@@ -59,9 +100,9 @@ const EventCard = ({ event }) => {
         
         <div className="event-footer">
           <div className="event-price">
-            {price === 0 ? 'Free' : `₹${price}`}
+            {displayPrice}
           </div>
-          <button className="book-button">
+          <button className="book-button" onClick={handleBookClick}>
             Book Now
           </button>
         </div>

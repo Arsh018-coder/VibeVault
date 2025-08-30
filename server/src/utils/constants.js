@@ -69,11 +69,28 @@ const NOTIFICATION_PRIORITY = {
 
 // Ticket types
 const TICKET_TYPE = {
+  EARLY_BIRD: 'early-bird',
   REGULAR: 'regular',
   VIP: 'vip',
-  EARLY_BIRD: 'early-bird',
-  STUDENT: 'student',
-  GROUP: 'group',
+};
+
+// Ticket type validation helper
+const TICKET_TYPE_CONFIG = {
+  'early-bird': {
+    name: 'Early Bird',
+    description: 'Limited time discounted tickets',
+    order: 1
+  },
+  'regular': {
+    name: 'Regular',
+    description: 'Standard admission tickets',
+    order: 2
+  },
+  'vip': {
+    name: 'VIP',
+    description: 'Premium experience with exclusive benefits',
+    order: 3
+  }
 };
 
 // Payment providers
@@ -125,6 +142,7 @@ module.exports = {
   NOTIFICATION_STATUS,
   NOTIFICATION_PRIORITY,
   TICKET_TYPE,
+  TICKET_TYPE_CONFIG,
   PAYMENT_PROVIDER,
   CURRENCY,
   DEFAULTS,

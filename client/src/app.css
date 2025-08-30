@@ -6,7 +6,7 @@
 
 .main-content {
   flex: 1;
-  padding-top: 80px; /* Account for fixed header */
+  padding-top: 100px; /* Account for fixed header */
 }
 
 /* Loading spinner */
@@ -34,6 +34,6 @@
 /* Responsive design */
 @media (max-width: 768px) {
   .main-content {
-    padding-top: 70px;
+    padding-top: 90px;
   }
 }

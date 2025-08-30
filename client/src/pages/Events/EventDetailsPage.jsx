@@ -14,8 +14,45 @@ const EventDetailsPage = () => {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await api.get(`/events/${slug}`);
-        setEvent(response.data.event);
+        // Mock data lookup by slug for now
+        const mockEvents = [
+          {
+            id: 1,
+            slug: 'tech-conference-2025',
+            title: 'Tech Conference 2025',
+            description: 'Join us for the biggest tech conference of the year featuring industry leaders and innovative technologies.',
+            dateTime: { start: '2025-12-15T09:00:00Z' },
+            location: { type: 'physical', venue: { name: 'Mumbai Convention Center' } },
+            images: [{ url: 'https://via.placeholder.com/800x400?text=Tech+Conference+2024', alt: 'Tech Conference' }],
+            tickets: [
+              { _id: 1, type: 'early-bird', name: 'Early Bird', price: 1999, quantity: { available: 50, total: 100 }, saleWindow: { start: '2025-10-01', end: '2025-12-14' } },
+              { _id: 2, type: 'regular', name: 'Regular', price: 2499, quantity: { available: 200, total: 300 }, saleWindow: { start: '2025-10-01', end: '2025-12-14' } },
+              { _id: 3, type: 'vip', name: 'VIP', price: 3999, quantity: { available: 25, total: 50 }, saleWindow: { start: '2025-10-01', end: '2025-12-14' } }
+            ]
+          },
+          {
+            id: 2,
+            slug: 'bollywood-music-festival',
+            title: 'Bollywood Music Festival',
+            description: 'Experience amazing live music from top Bollywood artists in a beautiful outdoor setting.',
+            dateTime: { start: '2025-11-20T18:00:00Z' },
+            location: { type: 'physical', venue: { name: 'Palace Grounds' } },
+            images: [{ url: 'https://via.placeholder.com/800x400?text=Bollywood+Music+Festival', alt: 'Music Festival' }],
+            tickets: [
+              { _id: 4, type: 'early-bird', name: 'Early Bird', price: 999, quantity: { available: 100, total: 150 }, saleWindow: { start: '2025-09-01', end: '2025-11-19' } },
+              { _id: 5, type: 'regular', name: 'Regular', price: 1299, quantity: { available: 1500, total: 1800 }, saleWindow: { start: '2025-09-01', end: '2025-11-19' } },
+              { _id: 6, type: 'vip', name: 'VIP', price: 2999, quantity: { available: 150, total: 200 }, saleWindow: { start: '2025-09-01', end: '2025-11-19' } }
+            ]
+          }
+        ];
+
+        const foundEvent = mockEvents.find(e => e.slug === slug);
+        
+        if (foundEvent) {
+          setEvent(foundEvent);
+        } else {
+          setError('Event not found.');
+        }
       } catch (err) {
         setError('Failed to load event details.');
       } finally {

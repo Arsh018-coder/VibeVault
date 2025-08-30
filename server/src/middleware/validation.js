@@ -33,7 +33,7 @@ const schemas = {
     visibility: Joi.string().valid('PUBLIC', 'PRIVATE', 'UNLISTED').default('PUBLIC'),
     ticketTypes: Joi.array().items(
       Joi.object({
-        type: Joi.string().default('GENERAL'),
+        type: Joi.string().valid('early-bird', 'regular', 'vip').required(),
         name: Joi.string().min(2).max(100).required(),
         description: Joi.string().max(500).optional(),
         price: Joi.number().min(0).required(),
@@ -59,7 +59,7 @@ const schemas = {
         name: Joi.string().min(2).max(100).required(),
         email: Joi.string().email().required(),
         phone: Joi.string().max(20).optional(),
-        ticketType: Joi.string().required()
+        ticketType: Joi.string().valid('early-bird', 'regular', 'vip').required()
       })
     ).min(1).required(),
     promoCode: Joi.string().max(50).optional()
