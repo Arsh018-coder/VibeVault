@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const prisma = require("../db/prisma");
 
 class NotificationModel {
@@ -84,41 +83,3 @@ class NotificationModel {
 }
 
 module.exports = NotificationModel;
-=======
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-
-const Notification = sequelize.define(
-  "Notification",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    message: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    type: {
-      type: DataTypes.ENUM("email", "sms", "whatsapp", "system"),
-      defaultValue: "system",
-    },
-    read: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-  },
-  {
-    timestamps: true, // adds createdAt & updatedAt
-  }
-);
-
-// Associations
-Notification.associate = (models) => {
-  // A notification belongs to a user
-  Notification.belongsTo(models.User, { foreignKey: "userId" });
-};
-
-module.exports = Notification;
->>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29

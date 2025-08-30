@@ -37,11 +37,7 @@ module.exports = async (req, res, next) => {
     req.user = { ...decoded, ...user };
     next();
   } catch (err) {
-<<<<<<< HEAD
     console.error('Auth middleware error:', err);
     res.status(401).json({ message: "Invalid or expired token" });
-=======
-    console.log(`Exception while doing something: ${err}`);
->>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
   }
 };

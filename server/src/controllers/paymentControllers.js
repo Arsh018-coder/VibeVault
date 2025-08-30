@@ -1,142 +1,183 @@
+const PaymentService = require('../services/paymentService');
 const prisma = require('../db/prisma');
 
 exports.initiatePayment = async (req, res, next) => {
   try {
-<<<<<<< HEAD
     const { bookingId, provider = 'stripe' } = req.body;
     const userId = req.user.userId;
 
-    // Get booking details
-    const booking = await prisma.booking.findFirst({
-      where: {
-        id: bookingId,
-        userId
-      },
+    // Validate booking
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
       include: {
-        event: {
-          select: {
-            title: true,
-            startAt: true
-          }
-        }
+        event: true,
+        user: true
       }
-=======
-    const { amount, bookingId, method } = req.body;
-
-    // Process payment via your service
-    const paymentIntent = await paymentService.processPayment(amount, method);
-
-    // Create payment record in PostgreSQL
-    const payment = await Payment.create({
-      bookingId,          // Sequelize foreign key
-      userId: req.user.id, // Sequelize foreign key
-      amount,
-      method,
-      status: 'pending'
->>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
     });
 
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
-    if (booking.paymentStatus !== 'PENDING') {
-      return res.status(400).json({ message: 'Payment already processed' });
+    if (booking.userId !== userId) {
+      return res.status(403).json({ message: 'Not authorized for this booking' });
     }
 
-    // Create payment record
-    const payment = await prisma.payment.create({
-      data: {
-        bookingId,
-        amount: booking.total,
-        currency: booking.currency,
-        provider,
-        status: 'PENDING',
-        metadata: {
-          eventTitle: booking.event.title,
-          eventDate: booking.event.startAt
-        }
-      }
-    });
+    if (booking.paymentStatus === 'SUCCESS') {
+      return res.status(400).json({ message: 'Booking is already paid' });
+    }
 
-    // In a real implementation, you would integrate with Stripe/Razorpay here
-    // For demo purposes, we'll simulate payment processing
-    const mockPaymentIntent = {
-      id: `pi_mock_${Date.now()}`,
-      client_secret: `pi_mock_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`,
-      amount: booking.total * 100, // Convert to smallest currency unit
-      currency: booking.currency.toLowerCase()
-    };
+    // Initiate payment
+    const paymentResult = await PaymentService.processPayment(
+      bookingId,
+      parseFloat(booking.total),
+      provider
+    );
 
-    res.status(201).json({
+    res.json({
       message: 'Payment initiated',
-      payment,
-      paymentIntent: mockPaymentIntent
+      clientSecret: paymentResult.clientSecret,
+      paymentId: paymentResult.payment.id
     });
+
   } catch (err) {
     console.error('Initiate payment error:', err);
-    next(err);
+    res.status(500).json({ message: 'Failed to initiate payment' });
   }
 };
 
 exports.confirmPayment = async (req, res, next) => {
   try {
-    const { paymentId, providerTxnId } = req.body;
+    const { paymentIntentId } = req.body;
 
-    // Update payment status
-    const payment = await prisma.$transaction(async (tx) => {
-      const updatedPayment = await tx.payment.update({
-        where: { id: paymentId },
-        data: {
-          status: 'SUCCESS',
-          providerTxnId,
-          paidAt: new Date()
-        }
+    const result = await PaymentService.confirmPayment(paymentIntentId);
+
+    if (result.success) {
+      res.json({
+        message: 'Payment confirmed successfully',
+        payment: result.payment
       });
-
-      // Update booking status
-      await tx.booking.update({
-        where: { id: updatedPayment.bookingId },
-        data: {
-          status: 'CONFIRMED',
-          paymentStatus: 'SUCCESS'
-        }
+    } else {
+      res.status(400).json({
+        message: 'Payment confirmation failed',
+        payment: result.payment
       });
+    }
 
-      return updatedPayment;
-    });
-
-    res.json({
-      message: 'Payment confirmed successfully',
-      payment
-    });
   } catch (err) {
     console.error('Confirm payment error:', err);
-    next(err);
+    res.status(500).json({ message: 'Failed to confirm payment' });
+  }
+};
+
+exports.getPaymentStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    const payment = await prisma.payment.findUnique({
+      where: { id },
+      include: {
+        booking: {
+          include: {
+            user: true,
+            event: true
+          }
+        }
+      }
+    });
+
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+    if (payment.booking.userId !== userId) {
+      return res.status(403).json({ message: 'Not authorized to view this payment' });
+    }
+
+    res.json(payment);
+
+  } catch (err) {
+    console.error('Get payment status error:', err);
+    res.status(500).json({ message: 'Failed to get payment status' });
+  }
+};
+
+exports.refundPayment = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { amount } = req.body;
+    const userId = req.user.userId;
+
+    const payment = await prisma.payment.findUnique({
+      where: { id },
+      include: {
+        booking: {
+          include: {
+            event: {
+              select: {
+                organizerId: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+    // Check if user is the event organizer
+    if (payment.booking.event.organizerId !== userId) {
+      return res.status(403).json({ message: 'Not authorized to refund this payment' });
+    }
+
+    if (payment.status !== 'SUCCESS') {
+      return res.status(400).json({ message: 'Payment is not successful, cannot refund' });
+    }
+
+    const refundResult = await PaymentService.refundPayment(id, amount);
+
+    res.json({
+      message: 'Refund processed successfully',
+      refund: refundResult.refund,
+      payment: refundResult.payment
+    });
+
+  } catch (err) {
+    console.error('Refund payment error:', err);
+    res.status(500).json({ message: 'Failed to process refund' });
   }
 };
 
 exports.getPaymentHistory = async (req, res, next) => {
   try {
     const userId = req.user.userId;
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10, status } = req.query;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (page - 1) * limit;
+    const where = {
+      booking: {
+        userId
+      }
+    };
+
+    if (status) {
+      where.status = status;
+    }
 
     const [payments, total] = await Promise.all([
       prisma.payment.findMany({
-        where: {
-          booking: {
-            userId
-          }
-        },
-        skip,
+        where,
+        skip: parseInt(skip),
         take: parseInt(limit),
         include: {
           booking: {
             include: {
               event: {
                 select: {
+                  id: true,
                   title: true,
                   startAt: true
                 }
@@ -144,15 +185,11 @@ exports.getPaymentHistory = async (req, res, next) => {
             }
           }
         },
-        orderBy: { createdAt: 'desc' }
-      }),
-      prisma.payment.count({
-        where: {
-          booking: {
-            userId
-          }
+        orderBy: {
+          createdAt: 'desc'
         }
-      })
+      }),
+      prisma.payment.count({ where })
     ]);
 
     res.json({
@@ -161,11 +198,56 @@ exports.getPaymentHistory = async (req, res, next) => {
         page: parseInt(page),
         limit: parseInt(limit),
         total,
-        pages: Math.ceil(total / parseInt(limit))
+        pages: Math.ceil(total / limit)
       }
     });
+
   } catch (err) {
     console.error('Get payment history error:', err);
-    next(err);
+    res.status(500).json({ message: 'Failed to get payment history' });
+  }
+};
+
+// Webhook handler for Stripe
+exports.handleStripeWebhook = async (req, res, next) => {
+  try {
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+      console.error('Webhook signature verification failed:', err);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    switch (event.type) {
+      case 'payment_intent.succeeded':
+        const paymentIntent = event.data.object;
+        await PaymentService.confirmPayment(paymentIntent.id);
+        break;
+      
+      case 'payment_intent.payment_failed':
+        const failedPayment = event.data.object;
+        await prisma.payment.updateMany({
+          where: { transactionId: failedPayment.id },
+          data: { 
+            status: 'FAILED',
+            failureReason: failedPayment.last_payment_error?.message
+          }
+        });
+        break;
+
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    res.json({ received: true });
+
+  } catch (err) {
+    console.error('Webhook handler error:', err);
+    res.status(500).json({ message: 'Webhook handler failed' });
   }
 };

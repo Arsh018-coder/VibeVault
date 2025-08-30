@@ -1,30 +1,71 @@
 const prisma = require('../db/prisma');
 
-exports.getTicketsByEvent = async (req, res, next) => {
+exports.createTicketType = async (req, res, next) => {
   try {
-    const { eventId } = req.params;
-    const { includeInactive = false } = req.query;
-
-    const where = {
+    const {
       eventId,
-      ...(includeInactive !== 'true' && { isActive: true })
-    };
+      type,
+      name,
+      description,
+      price,
+      qtyTotal,
+      perUserLimit = 1,
+      saleStart,
+      saleEnd
+    } = req.body;
+    const userId = req.user.userId;
 
-    const ticketTypes = await prisma.ticketType.findMany({
-      where,
-      orderBy: { price: 'asc' }
+    // Check if user owns the event
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      select: { organizerId: true }
     });
 
-    res.json(ticketTypes);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    if (event.organizerId !== userId) {
+      return res.status(403).json({ message: 'Not authorized to create tickets for this event' });
+    }
+
+    const ticketType = await prisma.ticketType.create({
+      data: {
+        eventId,
+        type,
+        name,
+        description,
+        price: parseFloat(price),
+        qtyTotal: parseInt(qtyTotal),
+        qtyAvailable: parseInt(qtyTotal),
+        perUserLimit: parseInt(perUserLimit),
+        saleStart: saleStart ? new Date(saleStart) : null,
+        saleEnd: saleEnd ? new Date(saleEnd) : null,
+        isActive: true
+      },
+      include: {
+        event: {
+          select: {
+            id: true,
+            title: true
+          }
+        }
+      }
+    });
+
+    res.status(201).json({
+      message: 'Ticket type created successfully',
+      ticketType
+    });
+
   } catch (err) {
-    console.error('Get tickets by event error:', err);
-    next(err);
+    console.error('Create ticket type error:', err);
+    res.status(500).json({ message: 'Failed to create ticket type' });
   }
 };
 
 exports.getTicketTypeById = async (req, res, next) => {
   try {
-<<<<<<< HEAD
     const { id } = req.params;
 
     const ticketType = await prisma.ticketType.findUnique({
@@ -32,6 +73,7 @@ exports.getTicketTypeById = async (req, res, next) => {
       include: {
         event: {
           select: {
+            id: true,
             title: true,
             startAt: true,
             endAt: true,
@@ -46,33 +88,55 @@ exports.getTicketTypeById = async (req, res, next) => {
     }
 
     res.json(ticketType);
-=======
-    const tickets = await Ticket.findAll({
-      where: { eventId: req.params.eventId }
-    });
-    res.json(tickets);
->>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
+
   } catch (err) {
     console.error('Get ticket type by ID error:', err);
-    next(err);
+    res.status(500).json({ message: 'Failed to get ticket type' });
+  }
+};
+
+exports.getEventTicketTypes = async (req, res, next) => {
+  try {
+    const { eventId } = req.params;
+    const { includeInactive = false } = req.query;
+
+    const where = { eventId };
+    if (!includeInactive) {
+      where.isActive = true;
+    }
+
+    const ticketTypes = await prisma.ticketType.findMany({
+      where,
+      include: {
+        event: {
+          select: {
+            id: true,
+            title: true,
+            startAt: true,
+            status: true
+          }
+        }
+      },
+      orderBy: {
+        price: 'asc'
+      }
+    });
+
+    res.json(ticketTypes);
+
+  } catch (err) {
+    console.error('Get event ticket types error:', err);
+    res.status(500).json({ message: 'Failed to get ticket types' });
   }
 };
 
 exports.updateTicketType = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const {
-      name,
-      description,
-      price,
-      qtyTotal,
-      perUserLimit,
-      saleStart,
-      saleEnd,
-      isActive
-    } = req.body;
+    const updateData = req.body;
+    const userId = req.user.userId;
 
-    // Check if ticket type exists and user owns the event
+    // Check if user owns the event
     const ticketType = await prisma.ticketType.findUnique({
       where: { id },
       include: {
@@ -88,28 +152,42 @@ exports.updateTicketType = async (req, res, next) => {
       return res.status(404).json({ message: 'Ticket type not found' });
     }
 
-    if (ticketType.event.organizerId !== req.user.userId) {
+    if (ticketType.event.organizerId !== userId) {
       return res.status(403).json({ message: 'Not authorized to update this ticket type' });
     }
 
-    // Calculate new available quantity if total quantity changed
-    let qtyAvailable = ticketType.qtyAvailable;
-    if (qtyTotal !== undefined && qtyTotal !== ticketType.qtyTotal) {
-      const soldTickets = ticketType.qtyTotal - ticketType.qtyAvailable;
-      qtyAvailable = Math.max(0, qtyTotal - soldTickets);
+    // Convert dates if provided
+    if (updateData.saleStart) {
+      updateData.saleStart = new Date(updateData.saleStart);
+    }
+    if (updateData.saleEnd) {
+      updateData.saleEnd = new Date(updateData.saleEnd);
+    }
+
+    // Convert numbers if provided
+    if (updateData.price) {
+      updateData.price = parseFloat(updateData.price);
+    }
+    if (updateData.qtyTotal) {
+      updateData.qtyTotal = parseInt(updateData.qtyTotal);
+      // Update available quantity if total is increased
+      const currentSold = ticketType.qtyTotal - ticketType.qtyAvailable;
+      updateData.qtyAvailable = updateData.qtyTotal - currentSold;
+    }
+    if (updateData.perUserLimit) {
+      updateData.perUserLimit = parseInt(updateData.perUserLimit);
     }
 
     const updatedTicketType = await prisma.ticketType.update({
       where: { id },
-      data: {
-        ...(name && { name }),
-        ...(description !== undefined && { description }),
-        ...(price !== undefined && { price }),
-        ...(qtyTotal !== undefined && { qtyTotal, qtyAvailable }),
-        ...(perUserLimit !== undefined && { perUserLimit }),
-        ...(saleStart !== undefined && { saleStart: saleStart ? new Date(saleStart) : null }),
-        ...(saleEnd !== undefined && { saleEnd: saleEnd ? new Date(saleEnd) : null }),
-        ...(isActive !== undefined && { isActive })
+      data: updateData,
+      include: {
+        event: {
+          select: {
+            id: true,
+            title: true
+          }
+        }
       }
     });
 
@@ -117,128 +195,172 @@ exports.updateTicketType = async (req, res, next) => {
       message: 'Ticket type updated successfully',
       ticketType: updatedTicketType
     });
+
   } catch (err) {
     console.error('Update ticket type error:', err);
-    next(err);
+    res.status(500).json({ message: 'Failed to update ticket type' });
   }
 };
 
-exports.getUserTickets = async (req, res, next) => {
+exports.deleteTicketType = async (req, res, next) => {
   try {
+    const { id } = req.params;
     const userId = req.user.userId;
-    const { page = 1, limit = 10, status } = req.query;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-
-    const where = {
-      booking: {
-        userId,
-        ...(status && { status })
-      }
-    };
-
-    const [attendees, total] = await Promise.all([
-      prisma.attendee.findMany({
-        where,
-        skip,
-        take: parseInt(limit),
-        include: {
-          booking: {
-            include: {
-              event: {
-                select: {
-                  id: true,
-                  title: true,
-                  slug: true,
-                  startAt: true,
-                  endAt: true,
-                  venueName: true,
-                  city: true,
-                  images: {
-                    where: { isPrimary: true },
-                    take: 1
-                  }
-                }
-              }
-            }
+    // Check if user owns the event
+    const ticketType = await prisma.ticketType.findUnique({
+      where: { id },
+      include: {
+        event: {
+          select: {
+            organizerId: true
           }
         },
-        orderBy: { booking: { createdAt: 'desc' } }
-      }),
-      prisma.attendee.count({ where })
-    ]);
-
-    res.json({
-      tickets: attendees,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        pages: Math.ceil(total / parseInt(limit))
+        bookingItems: true
       }
     });
+
+    if (!ticketType) {
+      return res.status(404).json({ message: 'Ticket type not found' });
+    }
+
+    if (ticketType.event.organizerId !== userId) {
+      return res.status(403).json({ message: 'Not authorized to delete this ticket type' });
+    }
+
+    // Check if there are any bookings for this ticket type
+    if (ticketType.bookingItems.length > 0) {
+      return res.status(400).json({ 
+        message: 'Cannot delete ticket type with existing bookings. Deactivate instead.' 
+      });
+    }
+
+    await prisma.ticketType.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Ticket type deleted successfully' });
+
   } catch (err) {
-    console.error('Get user tickets error:', err);
-    next(err);
+    console.error('Delete ticket type error:', err);
+    res.status(500).json({ message: 'Failed to delete ticket type' });
   }
 };
 
-exports.checkInAttendee = async (req, res, next) => {
+exports.toggleTicketTypeStatus = async (req, res, next) => {
   try {
-    const { qrCode } = req.params;
+    const { id } = req.params;
+    const userId = req.user.userId;
 
-    const attendee = await prisma.attendee.findFirst({
-      where: { qrCode },
+    // Check if user owns the event
+    const ticketType = await prisma.ticketType.findUnique({
+      where: { id },
       include: {
-        booking: {
-          include: {
-            event: {
-              select: {
-                title: true,
-                startAt: true,
-                organizerId: true
-              }
-            }
+        event: {
+          select: {
+            organizerId: true
           }
         }
       }
     });
 
-    if (!attendee) {
-      return res.status(404).json({ message: 'Invalid QR code' });
+    if (!ticketType) {
+      return res.status(404).json({ message: 'Ticket type not found' });
     }
 
-    // Check if user is authorized to check in (event organizer)
-    if (attendee.booking.event.organizerId !== req.user.userId) {
-      return res.status(403).json({ message: 'Not authorized to check in attendees for this event' });
+    if (ticketType.event.organizerId !== userId) {
+      return res.status(403).json({ message: 'Not authorized to modify this ticket type' });
     }
 
-    if (attendee.checkedIn) {
-      return res.status(400).json({ 
-        message: 'Attendee already checked in',
-        checkedInAt: attendee.checkedInAt
-      });
-    }
-
-    const updatedAttendee = await prisma.attendee.update({
-      where: { id: attendee.id },
+    const updatedTicketType = await prisma.ticketType.update({
+      where: { id },
       data: {
-        checkedIn: true,
-        checkedInAt: new Date()
+        isActive: !ticketType.isActive
       }
     });
 
     res.json({
-      message: 'Check-in successful',
-      attendee: {
-        name: updatedAttendee.name,
-        email: updatedAttendee.email,
-        ticketType: updatedAttendee.ticketType,
-        checkedInAt: updatedAttendee.checkedInAt
+      message: `Ticket type ${updatedTicketType.isActive ? 'activated' : 'deactivated'} successfully`,
+      ticketType: updatedTicketType
+    });
+
+  } catch (err) {
+    console.error('Toggle ticket type status error:', err);
+    res.status(500).json({ message: 'Failed to toggle ticket type status' });
+  }
+};
+
+exports.checkTicketAvailability = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { quantity = 1 } = req.query;
+
+    const ticketType = await prisma.ticketType.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        qtyAvailable: true,
+        perUserLimit: true,
+        isActive: true,
+        saleStart: true,
+        saleEnd: true,
+        event: {
+          select: {
+            status: true,
+            startAt: true
+          }
+        }
       }
     });
+
+    if (!ticketType) {
+      return res.status(404).json({ message: 'Ticket type not found' });
+    }
+
+    const now = new Date();
+    let available = true;
+    let message = 'Ticket is available';
+
+    // Check various availability conditions
+    if (!ticketType.isActive) {
+      available = false;
+      message = 'Ticket type is not active';
+    } else if (ticketType.event.status !== 'PUBLISHED') {
+      available = false;
+      message = 'Event is not published';
+    } else if (ticketType.event.startAt <= now) {
+      available = false;
+      message = 'Event has already started';
+    } else if (ticketType.saleStart && ticketType.saleStart > now) {
+      available = false;
+      message = 'Ticket sale has not started yet';
+    } else if (ticketType.saleEnd && ticketType.saleEnd < now) {
+      available = false;
+      message = 'Ticket sale has ended';
+    } else if (ticketType.qtyAvailable < parseInt(quantity)) {
+      available = false;
+      message = `Only ${ticketType.qtyAvailable} tickets available`;
+    } else if (parseInt(quantity) > ticketType.perUserLimit) {
+      available = false;
+      message = `Maximum ${ticketType.perUserLimit} tickets per user`;
+    }
+
+    res.json({
+      available,
+      message,
+      ticketType: {
+        id: ticketType.id,
+        name: ticketType.name,
+        price: ticketType.price,
+        qtyAvailable: ticketType.qtyAvailable,
+        perUserLimit: ticketType.perUserLimit
+      }
+    });
+
   } catch (err) {
-    console.error('Check in attendee error:', err);
-    next(err);
+    console.error('Check ticket availability error:', err);
+    res.status(500).json({ message: 'Failed to check ticket availability' });
   }
 };

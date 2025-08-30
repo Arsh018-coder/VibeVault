@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const prisma = require('../db/prisma');
 
 exports.createEvent = async (req, res, next) => {
@@ -19,23 +18,24 @@ exports.createEvent = async (req, res, next) => {
       country,
       virtualLink,
       capacity,
-      visibility = 'PUBLIC',
-      ticketTypes = []
+      featured,
+      visibility = 'PUBLIC'
     } = req.body;
+
+    const organizerId = req.user.userId;
 
     // Generate slug from title
     const slug = title.toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
-    // Create event with ticket types
     const event = await prisma.event.create({
       data: {
         title,
         slug,
         description,
         categoryId,
-        organizerId: req.user.userId,
+        organizerId,
         startAt: new Date(startAt),
         endAt: new Date(endAt),
         timezone,
@@ -48,22 +48,9 @@ exports.createEvent = async (req, res, next) => {
         country,
         virtualLink,
         capacity,
+        featured,
         visibility,
-        status: 'DRAFT',
-        ticketTypes: {
-          create: ticketTypes.map(ticket => ({
-            type: ticket.type || 'GENERAL',
-            name: ticket.name,
-            description: ticket.description,
-            price: ticket.price,
-            currency: ticket.currency || 'INR',
-            qtyTotal: ticket.quantity,
-            qtyAvailable: ticket.quantity,
-            perUserLimit: ticket.perUserLimit || 10,
-            saleStart: ticket.saleStart ? new Date(ticket.saleStart) : null,
-            saleEnd: ticket.saleEnd ? new Date(ticket.saleEnd) : null
-          }))
-        }
+        status: 'DRAFT'
       },
       include: {
         organizer: {
@@ -74,67 +61,62 @@ exports.createEvent = async (req, res, next) => {
             email: true
           }
         },
-        category: true,
-        ticketTypes: true,
-        images: true
+        category: true
       }
     });
 
-    res.status(201).json({
-      message: 'Event created successfully',
-      event
-    });
-=======
-const Event = require('../models/event');
-const User = require('../models/user');
-
-exports.createEvent = async (req, res, next) => {
-  try {
-    const event = await Event.create({
-      ...req.body,
-      createdById: req.user.id, // Sequelize foreign key
-    });
-
     res.status(201).json({ message: 'Event created', event });
->>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
+
   } catch (err) {
     console.error('Create event error:', err);
-    next(err);
+    res.status(500).json({ message: 'Failed to create event' });
   }
 };
 
 exports.getEvents = async (req, res, next) => {
   try {
-<<<<<<< HEAD
     const {
       page = 1,
       limit = 10,
       category,
       search,
-      status = 'PUBLISHED',
       featured,
-      trending
+      upcoming,
+      city,
+      status = 'PUBLISHED'
     } = req.query;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    
-    const where = {
-      status,
-      ...(category && { categoryId: category }),
-      ...(featured && { featured: featured === 'true' }),
-      ...(trending && { trending: trending === 'true' }),
-      ...(search && {
-        OR: [
-          { title: { contains: search, mode: 'insensitive' } },
-          { description: { contains: search, mode: 'insensitive' } }
-        ]
-      })
-    };
+    const skip = (page - 1) * limit;
+    const where = { status };
+
+    // Add filters
+    if (category) {
+      where.categoryId = category;
+    }
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } }
+      ];
+    }
+
+    if (featured === 'true') {
+      where.featured = true;
+    }
+
+    if (upcoming === 'true') {
+      where.startAt = { gte: new Date() };
+    }
+
+    if (city) {
+      where.city = { contains: city, mode: 'insensitive' };
+    }
 
     const [events, total] = await Promise.all([
       prisma.event.findMany({
         where,
-        skip,
+        skip: parseInt(skip),
         take: parseInt(limit),
         include: {
           organizer: {
@@ -146,22 +128,22 @@ exports.getEvents = async (req, res, next) => {
           },
           category: true,
           ticketTypes: {
-            orderBy: { price: 'asc' },
-            take: 1
-          },
-          images: {
-            where: { isPrimary: true },
-            take: 1
+            select: {
+              id: true,
+              name: true,
+              price: true,
+              qtyAvailable: true
+            }
           },
           _count: {
-            select: { bookings: true }
+            select: {
+              bookings: true
+            }
           }
         },
-        orderBy: [
-          { featured: 'desc' },
-          { trending: 'desc' },
-          { createdAt: 'desc' }
-        ]
+        orderBy: {
+          startAt: 'asc'
+        }
       }),
       prisma.event.count({ where })
     ]);
@@ -172,31 +154,18 @@ exports.getEvents = async (req, res, next) => {
         page: parseInt(page),
         limit: parseInt(limit),
         total,
-        pages: Math.ceil(total / parseInt(limit))
+        pages: Math.ceil(total / limit)
       }
     });
-=======
-    const events = await Event.findAll({
-      include: [
-        {
-          model: User,
-          as: 'createdBy',
-          attributes: ['id', 'name', 'email'], // only select needed fields
-        },
-      ],
-    });
 
-    res.json(events);
->>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
   } catch (err) {
     console.error('Get events error:', err);
-    next(err);
+    res.status(500).json({ message: 'Failed to get events' });
   }
 };
 
 exports.getEventById = async (req, res, next) => {
   try {
-<<<<<<< HEAD
     const { id } = req.params;
     
     const event = await prisma.event.findUnique({
@@ -217,7 +186,9 @@ exports.getEventById = async (req, res, next) => {
         },
         images: true,
         _count: {
-          select: { bookings: true }
+          select: {
+            bookings: true
+          }
         }
       }
     });
@@ -226,72 +197,148 @@ exports.getEventById = async (req, res, next) => {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    // Increment view count
+    // Increment views
     await prisma.event.update({
       where: { id },
       data: { views: { increment: 1 } }
     });
 
-=======
-    const event = await Event.findByPk(req.params.id, {
-      include: [
-        {
-          model: User,
-          as: 'createdBy',
-          attributes: ['id', 'name', 'email'],
-        },
-      ],
-    });
-
-    if (!event) return res.status(404).json({ message: 'Event not found' });
->>>>>>> 695296bbcba2ae68b159ad7a57337e4b14d04b29
     res.json(event);
+
   } catch (err) {
     console.error('Get event by ID error:', err);
-    next(err);
+    res.status(500).json({ message: 'Failed to get event' });
   }
 };
 
-exports.getEventBySlug = async (req, res, next) => {
+exports.updateEvent = async (req, res, next) => {
   try {
-    const { slug } = req.params;
-    
-    const event = await prisma.event.findUnique({
-      where: { slug },
+    const { id } = req.params;
+    const userId = req.user.userId;
+    const updateData = req.body;
+
+    // Check if user owns the event
+    const existingEvent = await prisma.event.findUnique({
+      where: { id },
+      select: { organizerId: true }
+    });
+
+    if (!existingEvent) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    if (existingEvent.organizerId !== userId) {
+      return res.status(403).json({ message: 'Not authorized to update this event' });
+    }
+
+    // Update dates if provided
+    if (updateData.startAt) {
+      updateData.startAt = new Date(updateData.startAt);
+    }
+    if (updateData.endAt) {
+      updateData.endAt = new Date(updateData.endAt);
+    }
+
+    const event = await prisma.event.update({
+      where: { id },
+      data: updateData,
       include: {
         organizer: {
           select: {
             id: true,
             firstName: true,
-            lastName: true,
-            email: true
+            lastName: true
           }
         },
         category: true,
-        ticketTypes: {
-          where: { isActive: true },
-          orderBy: { price: 'asc' }
-        },
-        images: true,
-        _count: {
-          select: { bookings: true }
-        }
+        ticketTypes: true
       }
     });
 
-    if (!event) {
+    res.json({ message: 'Event updated', event });
+
+  } catch (err) {
+    console.error('Update event error:', err);
+    res.status(500).json({ message: 'Failed to update event' });
+  }
+};
+
+exports.deleteEvent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    // Check if user owns the event
+    const existingEvent = await prisma.event.findUnique({
+      where: { id },
+      select: { organizerId: true }
+    });
+
+    if (!existingEvent) {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    // Increment view count
-    await prisma.event.update({
-      where: { slug },
-      data: { views: { increment: 1 } }
+    if (existingEvent.organizerId !== userId) {
+      return res.status(403).json({ message: 'Not authorized to delete this event' });
+    }
+
+    await prisma.event.delete({
+      where: { id }
     });
 
-    res.json(event);
+    res.json({ message: 'Event deleted successfully' });
+
   } catch (err) {
-    console.error('Get event by slug error:', err);
-    next(err);
+    console.error('Delete event error:', err);
+    res.status(500).json({ message: 'Failed to delete event' });
+  }
+};
+
+exports.getOrganizerEvents = async (req, res, next) => {
+  try {
+    const organizerId = req.user.userId;
+    const { page = 1, limit = 10, status } = req.query;
+
+    const skip = (page - 1) * limit;
+    const where = { organizerId };
+
+    if (status) {
+      where.status = status;
+    }
+
+    const [events, total] = await Promise.all([
+      prisma.event.findMany({
+        where,
+        skip: parseInt(skip),
+        take: parseInt(limit),
+        include: {
+          category: true,
+          ticketTypes: true,
+          _count: {
+            select: {
+              bookings: true
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      }),
+      prisma.event.count({ where })
+    ]);
+
+    res.json({
+      events,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+
+  } catch (err) {
+    console.error('Get organizer events error:', err);
+    res.status(500).json({ message: 'Failed to get organizer events' });
   }
 };
