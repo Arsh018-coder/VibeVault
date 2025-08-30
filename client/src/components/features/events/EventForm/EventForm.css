@@ -1,0 +1,89 @@
+.event-form-page {
+  padding: 32px 0;
+  max-width: 700px;
+}
+
+.event-form-page h2 {
+  color: var(--primary-main);
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 12px;
+  border: 2px solid var(--primary-lighter);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-main);
+  outline: none;
+}
+
+.form-error {
+  color: var(--status.error);
+  font-size: 0.85rem;
+}
+
+.ticket-fieldset {
+  background: var(--background-paper);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.ticket-fieldset hr {
+  margin-top: 20px;
+}
+
+.ticket-fieldset button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ticket-fieldset button:hover {
+  background: #b91c1c;
+}
+
+button[type="button"] {
+  align-self: flex-start;
+}
+
+.btn-primary {
+  width: 160px;
+  padding: 12px 20px;
+  font-weight: 700;
+  margin-top: 10px;
+}
