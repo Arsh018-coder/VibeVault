@@ -1,0 +1,81 @@
+.event-details-page {
+  padding: 32px 0;
+}
+
+.event-header {
+  margin-bottom: 24px;
+}
+
+.event-title {
+  font-size: 2.5rem;
+  color: var(--primary-main);
+  font-weight: 700;
+}
+
+.event-date,
+.event-location {
+  font-weight: 600;
+  color: var(--primary-dark);
+  font-size: 1.1rem;
+  margin-top: 8px;
+}
+
+.event-image-carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  margin-bottom: 32px;
+}
+
+.event-image {
+  height: 240px;
+  border-radius: var(--border-radius);
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: var(--shadow);
+}
+
+.event-description {
+  margin-bottom: 32px;
+}
+
+.event-description h2 {
+  color: var(--primary-main);
+  margin-bottom: 12px;
+}
+
+.ticket-list {
+  list-style-type: none;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ticket-item h3 {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ticket-item p {
+  margin: 4px 0;
+  color: var(--text-secondary);
+}
+
+.btn-primary {
+  width: 160px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .event-image-carousel {
+    flex-direction: column;
+  }
+
+  .event-image {
+    width: 100%;
+    height: auto;
+  }
+}
