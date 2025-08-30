@@ -1,0 +1,44 @@
+.organizer-dashboard-page {
+  padding: 32px 0;
+}
+
+.organizer-dashboard-page h2 {
+  color: var(--primary-main);
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.stat-card {
+  background: var(--background-paper);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  text-align: center;
+}
+
+.stat-card h3 {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.stat-card p {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary-main);
+}
+
+.sales-chart-section {
+  margin-top: 40px;
+}
+.sales-chart-section h3 {
+  color: var(--primary-main);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
