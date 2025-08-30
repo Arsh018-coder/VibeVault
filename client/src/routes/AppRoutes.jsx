@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from '../pages/Home/HomePage';
 import EventsPage from '../pages/Events/EventsPage';
 import EventDetailsPage from '../pages/Events/EventDetailsPage';
+import CategoriesPage from '../pages/Categories/CategoriesPage';
 import LoginPage from '../pages/Auth/LoginPage';
 import RegisterPage from '../pages/Auth/RegisterPage';
 import ProfilePage from '../pages/Profile/ProfilePage';
@@ -31,6 +32,7 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/events" element={<EventsPage />} />
       <Route path="/events/:slug" element={<EventDetailsPage />} />
+      <Route path="/categories" element={<CategoriesPage />} />
 
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

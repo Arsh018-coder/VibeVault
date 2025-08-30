@@ -4,7 +4,7 @@
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #194759 0%, #4f7369 100%);
   color: white;
   padding: 4rem 2rem;
   text-align: center;
@@ -46,7 +46,7 @@
 
 .btn-primary {
   background: white;
-  color: #6366f1;
+  color: #194759;
 }
 
 .btn-primary:hover {
@@ -109,14 +109,14 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #6366f1;
+  color: #194759;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .view-all-link:hover {
-  color: #5856eb;
+  color: #4f7369;
 }
 
 .events-grid {

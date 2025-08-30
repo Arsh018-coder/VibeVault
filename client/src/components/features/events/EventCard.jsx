@@ -60,7 +60,7 @@ const EventCard = ({ event }) => {
         
         <div className="event-footer">
           <div className="event-price">
-            {price === 0 ? 'Free' : `$${price}`}
+            {price === 0 ? 'Free' : `₹${price}`}
           </div>
           <button className="book-button">
             Book Now

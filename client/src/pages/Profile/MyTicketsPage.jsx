@@ -14,22 +14,44 @@ const MyTicketsPage = () => {
         eventTitle: 'Tech Conference 2024',
         eventDate: '2024-12-15',
         eventTime: '09:00 AM',
-        location: 'San Francisco, CA',
+        location: 'Mumbai, India',
         ticketType: 'VIP',
-        price: 299,
+        price: 2499,
         status: 'confirmed',
         qrCode: 'TC2024-VIP-001'
       },
       {
         id: 2,
-        eventTitle: 'Music Festival',
+        eventTitle: 'Bollywood Music Festival',
         eventDate: '2024-11-20',
         eventTime: '06:00 PM',
-        location: 'Austin, TX',
+        location: 'Bangalore, India',
         ticketType: 'General Admission',
-        price: 150,
+        price: 1299,
         status: 'confirmed',
-        qrCode: 'MF2024-GA-002'
+        qrCode: 'BMF2024-GA-002'
+      },
+      {
+        id: 3,
+        eventTitle: 'Indian Street Food Festival',
+        eventDate: '2024-11-25',
+        eventTime: '12:00 PM',
+        location: 'Delhi, India',
+        ticketType: 'Food Pass',
+        price: 499,
+        status: 'confirmed',
+        qrCode: 'SFF2024-FP-003'
+      },
+      {
+        id: 4,
+        eventTitle: 'Stand-up Comedy Night',
+        eventDate: '2024-11-18',
+        eventTime: '08:00 PM',
+        location: 'Bangalore, India',
+        ticketType: 'Premium',
+        price: 799,
+        status: 'pending',
+        qrCode: 'SCN2024-PR-004'
       }
     ];
 
