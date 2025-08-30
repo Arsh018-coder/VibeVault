@@ -36,11 +36,8 @@ const Header = () => {
           <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
             <Link to="/events" className="nav-link">Events</Link>
             <Link to="/categories" className="nav-link">Categories</Link>
-            {user?.role === 'ORGANIZER' && (
-              <Link to="/dashboard" className="nav-link">Dashboard</Link>
-            )}
-            {user?.role === 'ATTENDEE' && (
-              <Link to="/attendee-dashboard" className="nav-link">My Dashboard</Link>
+            {user && (
+              <Link to="../../../pages/Dashboard/OrganizerDashboardPage" className="nav-link">Dashboard</Link>
             )}
           </nav>
 

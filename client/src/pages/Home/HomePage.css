@@ -34,53 +34,104 @@
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 2rem;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  transition: all 0.3s ease;
-  border: none;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid transparent;
   cursor: pointer;
+  min-width: 160px;
+  text-align: center;
 }
 
 .btn-primary {
-  background: white;
-  color: #194759;
+  background: #194759;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid #194759;
 }
 
 .btn-primary:hover {
-  background: #f8f9fa;
+  background: #0f2d39;
+  border-color: #0f2d39;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .hero-stats {
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 4rem;
   flex-wrap: wrap;
+  margin-top: 3rem;
+  padding: 0 1rem;
 }
 
 .stat {
   display: flex;
   align-items: center;
   gap: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  min-width: 180px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.stat:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .stat svg {
-  color: rgba(255, 255, 255, 0.8);
+  width: 28px;
+  height: 28px;
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.stat:hover svg {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
 }
 
 .stat-number {
   display: block;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  background: linear-gradient(to right, #fff, #e0f2fe);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .stat-label {
   display: block;
   font-size: 0.9rem;
-  opacity: 0.8;
+  font-weight: 500;
+  opacity: 0.9;
+  color: #e0f2fe;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* Featured Events Section */

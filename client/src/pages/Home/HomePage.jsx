@@ -86,22 +86,22 @@ const HomePage = () => {
         </div>
         <div className="hero-stats">
           <div className="stat">
-            <Calendar size={24} />
-            <div>
+            <Calendar className="stat-icon" />
+            <div className="stat-content">
               <span className="stat-number">10+</span>
               <span className="stat-label">Events</span>
             </div>
           </div>
           <div className="stat">
-            <Users size={24} />
-            <div>
+            <Users className="stat-icon" />
+            <div className="stat-content">
               <span className="stat-number">1K+</span>
               <span className="stat-label">Attendees</span>
             </div>
           </div>
           <div className="stat">
-            <MapPin size={24} />
-            <div>
+            <MapPin className="stat-icon" />
+            <div className="stat-content">
               <span className="stat-number">8+</span>
               <span className="stat-label">Cities</span>
             </div>

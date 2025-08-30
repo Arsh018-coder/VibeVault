@@ -11,6 +11,8 @@ import VerifyEmailPage from '../pages/Auth/VerifyEmailPage';
 import ProfilePage from '../pages/Profile/ProfilePage';
 import CartPage from '../pages/Cart/CartPage';
 import OrganizerDashboard from '../pages/Organizer/OrganizerDashboard';
+import AttendeeDashboardPage from '../pages/Dashboard/AttendeeDashboardPage';
+import EventForm from '../components/features/events/EventForm/EventForm';
 import MyTicketsPage from '../pages/Profile/MyTicketsPage';
 import NotFoundPage from '../pages/Error/404Page';
 import { useAuth } from '../contexts/AuthContext';
@@ -45,6 +47,24 @@ const RoleRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
+// Role-based dashboard redirect component
+const RoleBasedDashboard = () => {
+  const { user } = useAuth();
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (user.role === 'ORGANIZER') {
+    return <Navigate to="/organizer" replace />;
+  } else if (user.role === 'ATTENDEE') {
+    return <Navigate to="/attendee-dashboard" replace />;
+  } else {
+    // Default fallback or admin case
+    return <Navigate to="/" replace />;
+  }
+};
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -66,7 +86,24 @@ const AppRoutes = () => {
         {/* Event booking */}
         <Route path="/events/:slug/book" element={<EventBookingPage />} />
         
-        {/* Attendee routes */}
+        {/* Dashboard routes - role-based */}
+        <Route 
+          path="/dashboard" 
+          element={
+            <RoleBasedDashboard />
+          } 
+        />
+        
+        {/* Attendee-specific routes */}
+        <Route 
+          path="/attendee-dashboard" 
+          element={
+            <RoleRoute allowedRoles={['ATTENDEE']}>
+              <AttendeeDashboardPage />
+            </RoleRoute>
+          } 
+        />
+        
         <Route 
           path="/my-tickets" 
           element={
@@ -82,6 +119,24 @@ const AppRoutes = () => {
           element={
             <RoleRoute allowedRoles={['ORGANIZER']}>
               <OrganizerDashboard />
+            </RoleRoute>
+          } 
+        />
+        
+        <Route 
+          path="/organizer/events/new" 
+          element={
+            <RoleRoute allowedRoles={['ORGANIZER']}>
+              <EventForm />
+            </RoleRoute>
+          } 
+        />
+        
+        <Route 
+          path="/organizer/events/:eventId/edit" 
+          element={
+            <RoleRoute allowedRoles={['ORGANIZER']}>
+              <EventForm />
             </RoleRoute>
           } 
         />

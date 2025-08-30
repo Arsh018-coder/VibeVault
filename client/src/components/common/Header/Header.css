@@ -63,8 +63,49 @@
 
 .auth-buttons {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   align-items: center;
+  height: 40px;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  height: 100%;
+  line-height: 1;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+
+.btn-primary {
+  background-color: #194759;
+  color: white;
+  border: 2px solid #194759;
+}
+
+.btn-primary:hover {
+  background-color: #0f2d39;
+  border-color: #0f2d39;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .profile-menu {

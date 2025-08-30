@@ -41,10 +41,10 @@ const VerifyEmailPage = () => {
       <div className="auth-form">
         <h2>Verify Your Email</h2>
         <p className="auth-subtitle">
-          We've sent a 6-digit verification code to {email || 'your email'}
+          We've sent a 6-digit verification code to <strong>{email || 'your email'}</strong>
         </p>
         
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="form-group">
             <label htmlFor="otp" className="form-label">
               Enter Verification Code
@@ -52,12 +52,15 @@ const VerifyEmailPage = () => {
             <input
               id="otp"
               type="text"
-              className="form-input"
-              placeholder="123456"
+              className="otp-input"
+              placeholder="• • • • • •"
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
               maxLength={6}
               required
+              autoComplete="one-time-code"
+              inputMode="numeric"
+              pattern="\d{6}"
             />
           </div>
           
@@ -70,11 +73,11 @@ const VerifyEmailPage = () => {
           </button>
         </form>
         
-        <div className="mt-4 text-center">
+        <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Didn't receive a code?{' '}
             <button 
-              className="text-blue-600 hover:underline"
+              className="resend-code"
               onClick={() => toast('Resend functionality coming soon')}
             >
               Resend Code

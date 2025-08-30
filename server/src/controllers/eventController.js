@@ -20,57 +20,101 @@ exports.createEvent = async (req, res, next) => {
       virtualLink,
       capacity,
       featured,
-      visibility = 'PUBLIC'
+      visibility = 'PUBLIC',
+      ticketTypes = []
     } = req.body;
 
     const organizerId = req.user.id;
 
     // Generate slug from title
-    const slug = title.toLowerCase()
+    let baseSlug = title.toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
+    
+    // Ensure slug is unique
+    let slug = baseSlug;
+    let counter = 1;
+    while (await prisma.event.findUnique({ where: { slug } })) {
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
 
-    const event = await prisma.event.create({
-      data: {
-        title,
-        slug,
-        description,
-        categoryId,
-        organizerId,
-        startAt: new Date(startAt),
-        endAt: new Date(endAt),
-        timezone,
-        isVirtual,
-        venueName,
-        street,
-        city,
-        state,
-        zipCode,
-        country,
-        virtualLink,
-        capacity,
-        featured,
-        visibility,
-        status: 'DRAFT'
-      },
-      include: {
-        organizer: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true
-          }
-        },
-        category: true
+    // Create event with ticket types in a transaction
+    const result = await prisma.$transaction(async (tx) => {
+      // Create the event
+      const event = await tx.event.create({
+        data: {
+          title,
+          slug,
+          description,
+          categoryId: categoryId || null,
+          organizerId,
+          startAt: new Date(startAt),
+          endAt: new Date(endAt),
+          timezone: timezone || 'Asia/Kolkata',
+          isVirtual: Boolean(isVirtual),
+          venueName,
+          street,
+          city,
+          state,
+          zipCode,
+          country,
+          virtualLink,
+          capacity: capacity ? parseInt(capacity) : null,
+          featured: Boolean(featured),
+          visibility,
+          status: 'DRAFT'
+        }
+      });
+
+      // Create ticket types if provided
+      if (ticketTypes && ticketTypes.length > 0) {
+        const ticketTypesData = ticketTypes.map(ticket => ({
+          eventId: event.id,
+          type: ticket.type || 'GENERAL',
+          name: ticket.name,
+          description: ticket.description || '',
+          price: parseFloat(ticket.price) || 0,
+          currency: ticket.currency || 'INR',
+          qtyTotal: parseInt(ticket.qtyTotal) || 0,
+          qtyAvailable: parseInt(ticket.qtyAvailable) || parseInt(ticket.qtyTotal) || 0,
+          saleStart: ticket.saleStart ? new Date(ticket.saleStart) : null,
+          saleEnd: ticket.saleEnd ? new Date(ticket.saleEnd) : null,
+          perUserLimit: parseInt(ticket.perUserLimit) || 1,
+          isActive: ticket.isActive !== false
+        }));
+
+        await tx.ticketType.createMany({
+          data: ticketTypesData
+        });
       }
+
+      // Return the complete event with ticket types
+      return await tx.event.findUnique({
+        where: { id: event.id },
+        include: {
+          organizer: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true
+            }
+          },
+          category: true,
+          ticketTypes: true
+        }
+      });
     });
 
-    res.status(201).json({ message: 'Event created', event });
+    res.status(201).json({ message: 'Event created successfully', event: result });
 
   } catch (err) {
     console.error('Create event error:', err);
-    res.status(500).json({ message: 'Failed to create event' });
+    res.status(500).json({ 
+      message: err.message || 'Failed to create event',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
 
@@ -583,36 +627,67 @@ exports.getOrganizerDashboard = async (req, res, next) => {
     const ticketsSold = await prisma.ticket.aggregate({
       where: {
         ticketType: {
-          event: { organizerId }
+          event: { 
+            organizerId,
+            deletedAt: null // Only count tickets for non-deleted events
+          },
+          deletedAt: null // Only count non-deleted ticket types
         },
-        status: 'CONFIRMED'
+        status: 'CONFIRMED',
+        deletedAt: null // Only count non-deleted tickets
       },
       _sum: {
         quantity: true
       }
+    }).catch(error => {
+      console.error('Error aggregating tickets:', error);
+      return { _sum: { quantity: 0 } }; // Return default value on error
     });
     
     // Get recent events with ticket sales
     const recentEvents = await prisma.event.findMany({
       where: { 
         organizerId,
-        startAt: { gte: new Date() } // Only upcoming events
+        startAt: { gte: new Date() }, // Only upcoming events
+        status: 'ACTIVE', // Only active events
+        deletedAt: null // Not deleted
       },
       orderBy: { startAt: 'asc' },
       take: 5, // Limit to 5 most recent events
       include: {
         ticketTypes: {
+          where: {
+            deletedAt: null // Only include non-deleted ticket types
+          },
           select: {
             id: true,
             name: true,
             price: true,
             _count: {
-              select: { tickets: { where: { status: 'CONFIRMED' } } }
+              select: { 
+                tickets: { 
+                  where: { 
+                    status: 'CONFIRMED',
+                    deletedAt: null // Only count non-deleted tickets
+                  } 
+                } 
+              }
             }
           }
         },
-        venue: true
+        venue: {
+          select: {
+            id: true,
+            name: true,
+            city: true,
+            state: true,
+            country: true
+          }
+        }
       }
+    }).catch(error => {
+      console.error('Error fetching recent events:', error);
+      return []; // Return empty array on error
     });
     
     // Format the response

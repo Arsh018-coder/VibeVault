@@ -48,7 +48,7 @@
 }
 
 .form-error {
-  color: var(--status.error);
+  color: #ef4444;
   margin-top: 4px;
   font-size: 0.85rem;
 }
@@ -58,6 +58,53 @@
   padding: 14px;
   font-weight: 700;
   font-size: 1rem;
+  background-color: var(--primary-main);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0f2d39;
+}
+
+/* OTP Input Styles */
+.otp-input {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.25rem;
+  text-align: center;
+  letter-spacing: 8px;
+  font-weight: 600;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  background: #f8fafc;
+}
+
+.otp-input:focus {
+  outline: none;
+  border-color: #194759;
+  box-shadow: 0 0 0 3px rgba(25, 71, 89, 0.1);
+}
+
+/* Resend Code Link */
+.resend-code {
+  color: #194759;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+}
+
+.resend-code:hover {
+  color: #0f2d39;
+  text-decoration: underline;
 }
 
 /* Role Selection Styles */
