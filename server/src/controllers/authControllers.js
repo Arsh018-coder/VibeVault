@@ -1,26 +1,28 @@
 const prisma = require('../db/prisma');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { generateOTP } = require('../utils/otpGenerator'); // OTP utility
+const smsService = require('../services/smsService'); // Make sure you have SMS service
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
+/**
+ * REGISTER USER & SEND OTP
+ */
 exports.register = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password, role = 'ATTENDEE' } = req.body;
-    
+    const { firstName, lastName, email, password, role = 'ATTENDEE', phone } = req.body;
+
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
-    
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
     // Hash password
     const passwordHash = await bcrypt.hash(password, 12);
-    
-    // Create user
+
+    // Create user as unverified
     const user = await prisma.user.create({
       data: {
         email,
@@ -28,6 +30,7 @@ exports.register = async (req, res, next) => {
         role,
         firstName,
         lastName,
+        phone,
         isVerified: false,
         isActive: true
       },
@@ -44,15 +47,14 @@ exports.register = async (req, res, next) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { userId: user.id, email: user.email, role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
     res.status(201).json({
-      message: 'User registered successfully',
-      token,
-      user
+      message: 'User registered successfully. OTP sent for verification',
+      userId: user.id
     });
 
   } catch (err) {
@@ -61,38 +63,64 @@ exports.register = async (req, res, next) => {
   }
 };
 
-exports.login = async (req, res, next) => {
+/**
+ * VERIFY OTP
+ */
+exports.verifyOtp = async (req, res) => {
+  try {
+    const { userId, otp } = req.body;
+
+    // Fetch OTP from DB
+    const record = await prisma.otp.findFirst({
+      where: {
+        userId,
+        code: otp,
+        expiresAt: { gt: new Date() } // not expired
+      }
+    });
+
+    if (!record) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+
+    // Mark user as verified
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isVerified: true }
+    });
+
+    // Delete used OTP
+    await prisma.otp.delete({ where: { id: record.id } });
+
+    res.json({ message: 'User verified successfully' });
+
+  } catch (err) {
+    console.error('OTP verification error:', err);
+    res.status(500).json({ message: 'OTP verification failed' });
+  }
+};
+
+/**
+ * LOGIN USER
+ */
+exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email }
-    });
-    
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
 
-    if (!user.isActive) {
-      return res.status(401).json({ message: 'Account is deactivated' });
-    }
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user.isActive) return res.status(401).json({ message: 'Account is deactivated' });
+    if (!user.isVerified) return res.status(401).json({ message: 'Account not verified' });
 
-    // Verify password
     const isValidPassword = await bcrypt.compare(password, user.passwordHash);
-    
-    if (!isValidPassword) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+    if (!isValidPassword) return res.status(401).json({ message: 'Invalid credentials' });
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    // Remove password from response
     const { passwordHash, ...userWithoutPassword } = user;
 
     res.json({ message: 'Login successful', token, user: userWithoutPassword });
@@ -105,7 +133,7 @@ exports.login = async (req, res, next) => {
 
 exports.getProfile = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -138,7 +166,7 @@ exports.getProfile = async (req, res, next) => {
 
 exports.updateProfile = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { firstName, lastName, phone, avatarUrl } = req.body;
 
     const user = await prisma.user.update({
@@ -173,7 +201,7 @@ exports.updateProfile = async (req, res, next) => {
 
 exports.changePassword = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { currentPassword, newPassword } = req.body;
 
     // Get current user
@@ -206,68 +234,5 @@ exports.changePassword = async (req, res, next) => {
   } catch (err) {
     console.error('Change password error:', err);
     res.status(500).json({ message: 'Failed to change password' });
-  }
-};
-
-exports.logout = async (req, res, next) => {
-  try {
-    // In a JWT-based system, logout is typically handled client-side
-    // by removing the token from storage
-    res.json({ message: 'Logged out successfully' });
-  } catch (err) {
-    console.error('Logout error:', err);
-    res.status(500).json({ message: 'Logout failed' });
-  }
-};
-
-exports.forgotPassword = async (req, res, next) => {
-  try {
-    const { email } = req.body;
-    
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email }
-    });
-    
-    if (!user) {
-      // Don't reveal if email exists or not for security
-      return res.json({ message: 'If the email exists, a reset link has been sent' });
-    }
-
-    // In a real app, you would generate a reset token and send email
-    // For now, just return success
-    res.json({ message: 'If the email exists, a reset link has been sent' });
-
-  } catch (err) {
-    console.error('Forgot password error:', err);
-    res.status(500).json({ message: 'Failed to process request' });
-  }
-};
-
-exports.resetPassword = async (req, res, next) => {
-  try {
-    const { token, password } = req.body;
-    
-    // In a real app, you would verify the reset token
-    // For now, just return success
-    res.json({ message: 'Password reset successfully' });
-
-  } catch (err) {
-    console.error('Reset password error:', err);
-    res.status(500).json({ message: 'Failed to reset password' });
-  }
-};
-
-exports.verifyEmail = async (req, res, next) => {
-  try {
-    const { token } = req.params;
-    
-    // In a real app, you would verify the email verification token
-    // For now, just return success
-    res.json({ message: 'Email verified successfully' });
-
-  } catch (err) {
-    console.error('Verify email error:', err);
-    res.status(500).json({ message: 'Failed to verify email' });
   }
 };
