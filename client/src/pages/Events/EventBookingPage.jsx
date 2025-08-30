@@ -28,7 +28,7 @@ const EventBookingPage = () => {
             city: 'Mumbai',
             capacity: 500,
             category: { name: 'Technology' },
-            imageUrl: 'https://via.placeholder.com/800x400?text=Tech+Conference+2024',
+            imageUrl: 'https://via.placeholder.com/800x400?text=Tech+Conference+2025',
             ticketTypes: [
               { id: 1, type: 'early-bird', name: 'Early Bird', price: 1999, qtyAvailable: 50, qtyTotal: 100 },
               { id: 2, type: 'regular', name: 'Regular', price: 2499, qtyAvailable: 200, qtyTotal: 300 },
@@ -51,6 +51,186 @@ const EventBookingPage = () => {
               { id: 4, type: 'early-bird', name: 'Early Bird', price: 999, qtyAvailable: 100, qtyTotal: 150 },
               { id: 5, type: 'regular', name: 'Regular', price: 1299, qtyAvailable: 1500, qtyTotal: 1800 },
               { id: 6, type: 'vip', name: 'VIP', price: 2999, qtyAvailable: 150, qtyTotal: 200 }
+            ]
+          },
+          {
+            id: 3,
+            slug: 'contemporary-art-gallery-opening',
+            title: 'Contemporary Art Gallery Opening',
+            description: 'Discover contemporary art from emerging Indian artists in our new gallery space.',
+            startAt: '2025-10-30T17:00:00Z',
+            endAt: '2025-10-30T21:00:00Z',
+            venueName: 'National Gallery of Modern Art',
+            city: 'Delhi',
+            capacity: 100,
+            category: { name: 'Art' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=Art+Gallery',
+            ticketTypes: [
+              { id: 70, type: 'early-bird', name: 'Early Bird Free', price: 0, qtyAvailable: 30, qtyTotal: 30 },
+              { id: 7, type: 'regular', name: 'Regular Entry', price: 0, qtyAvailable: 50, qtyTotal: 50 },
+              { id: 71, type: 'vip', name: 'VIP Opening Reception', price: 499, qtyAvailable: 20, qtyTotal: 20 }
+            ]
+          },
+          {
+            id: 4,
+            slug: 'ipl-cricket-match',
+            title: 'IPL Cricket Match',
+            description: 'Watch the thrilling IPL match between Mumbai Indians and Chennai Super Kings.',
+            startAt: '2025-11-15T19:30:00Z',
+            endAt: '2025-11-15T23:00:00Z',
+            venueName: 'Wankhede Stadium',
+            city: 'Mumbai',
+            capacity: 50000,
+            category: { name: 'Sports' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=Cricket+Match',
+            ticketTypes: [
+              { id: 80, type: 'early-bird', name: 'Early Bird', price: 699, qtyAvailable: 5000, qtyTotal: 7000 },
+              { id: 8, type: 'regular', name: 'General Stand', price: 899, qtyAvailable: 25000, qtyTotal: 28000 },
+              { id: 9, type: 'vip', name: 'Premium Box', price: 2499, qtyAvailable: 5000, qtyTotal: 8000 }
+            ]
+          },
+          {
+            id: 5,
+            slug: 'startup-networking-summit',
+            title: 'Startup Networking Summit',
+            description: 'Connect with entrepreneurs, investors, and industry leaders in this exclusive networking event.',
+            startAt: '2025-12-05T10:00:00Z',
+            endAt: '2025-12-05T18:00:00Z',
+            venueName: 'Pune IT Park',
+            city: 'Pune',
+            capacity: 300,
+            category: { name: 'Business' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=Business+Summit',
+            ticketTypes: [
+              { id: 10, type: 'early-bird', name: 'Early Bird', price: 1499, qtyAvailable: 50, qtyTotal: 75 },
+              { id: 11, type: 'regular', name: 'Startup Pass', price: 1999, qtyAvailable: 200, qtyTotal: 250 },
+              { id: 12, type: 'vip', name: 'Investor Pass', price: 4999, qtyAvailable: 40, qtyTotal: 50 }
+            ]
+          },
+          {
+            id: 6,
+            slug: 'indian-street-food-festival',
+            title: 'Indian Street Food Festival',
+            description: 'Taste authentic street food from across India in this amazing culinary celebration.',
+            startAt: '2025-11-25T12:00:00Z',
+            endAt: '2025-11-25T22:00:00Z',
+            venueName: 'Connaught Place',
+            city: 'Delhi',
+            capacity: 1000,
+            category: { name: 'Food & Drink' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=Food+Festival',
+            ticketTypes: [
+              { id: 130, type: 'early-bird', name: 'Early Bird', price: 399, qtyAvailable: 200, qtyTotal: 250 },
+              { id: 13, type: 'regular', name: 'Food Pass', price: 499, qtyAvailable: 600, qtyTotal: 750 },
+              { id: 14, type: 'vip', name: 'Premium Tasting', price: 999, qtyAvailable: 150, qtyTotal: 200 }
+            ]
+          },
+          {
+            id: 7,
+            slug: 'digital-marketing-workshop',
+            title: 'Digital Marketing Workshop',
+            description: 'Learn the latest digital marketing strategies and tools from industry experts.',
+            startAt: '2025-12-10T14:00:00Z',
+            endAt: '2025-12-10T18:00:00Z',
+            venueName: 'HITEC City Convention Center',
+            city: 'Hyderabad',
+            capacity: 150,
+            category: { name: 'Education' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=Workshop',
+            ticketTypes: [
+              { id: 15, type: 'early-bird', name: 'Early Bird', price: 1199, qtyAvailable: 30, qtyTotal: 50 },
+              { id: 16, type: 'regular', name: 'Workshop Pass', price: 1499, qtyAvailable: 80, qtyTotal: 100 },
+              { id: 161, type: 'vip', name: 'VIP Masterclass', price: 2499, qtyAvailable: 20, qtyTotal: 25 }
+            ]
+          },
+          {
+            id: 8,
+            slug: 'stand-up-comedy-night',
+            title: 'Stand-up Comedy Night',
+            description: 'Laugh out loud with India\'s top comedians in this hilarious comedy show.',
+            startAt: '2025-11-18T20:00:00Z',
+            endAt: '2025-11-18T22:30:00Z',
+            venueName: 'Comedy Club Bangalore',
+            city: 'Bangalore',
+            capacity: 400,
+            category: { name: 'Entertainment' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=Comedy+Show',
+            ticketTypes: [
+              { id: 170, type: 'early-bird', name: 'Early Bird', price: 599, qtyAvailable: 50, qtyTotal: 75 },
+              { id: 17, type: 'regular', name: 'Regular', price: 799, qtyAvailable: 275, qtyTotal: 325 },
+              { id: 18, type: 'vip', name: 'Front Row VIP', price: 1299, qtyAvailable: 40, qtyTotal: 50 }
+            ]
+          },
+          {
+            id: 9,
+            slug: 'ai-machine-learning-conference',
+            title: 'AI & Machine Learning Conference',
+            description: 'Explore the future of AI and ML with leading researchers and practitioners.',
+            startAt: '2025-12-20T09:00:00Z',
+            endAt: '2025-12-20T17:00:00Z',
+            venueName: 'Chennai Trade Center',
+            city: 'Chennai',
+            capacity: 600,
+            category: { name: 'Technology' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=AI+Conference',
+            ticketTypes: [
+              { id: 19, type: 'early-bird', name: 'Early Bird', price: 2499, qtyAvailable: 100, qtyTotal: 150 },
+              { id: 20, type: 'regular', name: 'Professional', price: 2999, qtyAvailable: 400, qtyTotal: 500 },
+              { id: 21, type: 'vip', name: 'Corporate', price: 4999, qtyAvailable: 80, qtyTotal: 100 }
+            ]
+          },
+          {
+            id: 10,
+            slug: 'classical-music-concert',
+            title: 'Classical Music Concert',
+            description: 'Experience the beauty of Indian classical music with renowned maestros.',
+            startAt: '2025-11-12T19:00:00Z',
+            endAt: '2025-11-12T22:00:00Z',
+            venueName: 'Rabindra Sadan',
+            city: 'Kolkata',
+            capacity: 800,
+            category: { name: 'Music' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=Classical+Music',
+            ticketTypes: [
+              { id: 220, type: 'early-bird', name: 'Early Bird', price: 799, qtyAvailable: 100, qtyTotal: 150 },
+              { id: 22, type: 'regular', name: 'Balcony', price: 999, qtyAvailable: 350, qtyTotal: 400 },
+              { id: 23, type: 'vip', name: 'Orchestra VIP', price: 1999, qtyAvailable: 200, qtyTotal: 250 }
+            ]
+          },
+          {
+            id: 11,
+            slug: 'photography-exhibition',
+            title: 'Photography Exhibition',
+            description: 'Stunning photography showcasing the diversity and beauty of India.',
+            startAt: '2025-11-08T11:00:00Z',
+            endAt: '2025-11-08T18:00:00Z',
+            venueName: 'Jawahar Kala Kendra',
+            city: 'Jaipur',
+            capacity: 200,
+            category: { name: 'Art' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=Photography',
+            ticketTypes: [
+              { id: 240, type: 'early-bird', name: 'Early Bird', price: 199, qtyAvailable: 50, qtyTotal: 70 },
+              { id: 24, type: 'regular', name: 'General Entry', price: 299, qtyAvailable: 120, qtyTotal: 130 },
+              { id: 241, type: 'vip', name: 'VIP Private Tour', price: 799, qtyAvailable: 25, qtyTotal: 30 }
+            ]
+          },
+          {
+            id: 12,
+            slug: 'marathon-run-for-charity',
+            title: 'Marathon Run for Charity',
+            description: 'Join thousands of runners in this charity marathon supporting education for underprivileged children.',
+            startAt: '2025-12-01T06:00:00Z',
+            endAt: '2025-12-01T12:00:00Z',
+            venueName: 'Marine Drive',
+            city: 'Mumbai',
+            capacity: 5000,
+            category: { name: 'Sports' },
+            imageUrl: 'https://via.placeholder.com/800x400?text=Marathon',
+            ticketTypes: [
+              { id: 25, type: 'early-bird', name: 'Early Bird 5K', price: 499, qtyAvailable: 1000, qtyTotal: 1500 },
+              { id: 27, type: 'regular', name: '10K Run', price: 899, qtyAvailable: 1200, qtyTotal: 1500 },
+              { id: 28, type: 'vip', name: 'Full Marathon', price: 1299, qtyAvailable: 800, qtyTotal: 1000 }
             ]
           }
         ];
@@ -153,13 +333,7 @@ const EventBookingPage = () => {
     });
   };
 
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+
 
   if (loading) {
     return (

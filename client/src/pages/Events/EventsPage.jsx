@@ -39,8 +39,9 @@ const EventsPage = () => {
         category: { name: 'Technology' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Tech+Conference',
         ticketTypes: [
-          { id: 1, name: 'Early Bird', price: 1999 },
-          { id: 2, name: 'Regular', price: 2499 }
+          { id: 1, type: 'early-bird', name: 'Early Bird', price: 1999 },
+          { id: 2, type: 'regular', name: 'Regular', price: 2499 },
+          { id: 3, type: 'vip', name: 'VIP', price: 3999 }
         ]
       },
       {
@@ -58,8 +59,9 @@ const EventsPage = () => {
         category: { name: 'Music' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Music+Festival',
         ticketTypes: [
-          { id: 3, name: 'General', price: 1299 },
-          { id: 4, name: 'VIP', price: 2999 }
+          { id: 4, type: 'early-bird', name: 'Early Bird', price: 999 },
+          { id: 5, type: 'regular', name: 'Regular', price: 1299 },
+          { id: 6, type: 'vip', name: 'VIP', price: 2999 }
         ]
       },
       {
@@ -77,7 +79,9 @@ const EventsPage = () => {
         category: { name: 'Art' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Art+Gallery',
         ticketTypes: [
-          { id: 5, name: 'Free Entry', price: 0 }
+          { id: 70, type: 'early-bird', name: 'Early Bird Free', price: 0 },
+          { id: 7, type: 'regular', name: 'Regular Entry', price: 0 },
+          { id: 71, type: 'vip', name: 'VIP Opening Reception', price: 499 }
         ]
       },
       {
@@ -95,9 +99,9 @@ const EventsPage = () => {
         category: { name: 'Sports' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Cricket+Match',
         ticketTypes: [
-          { id: 6, name: 'General Stand', price: 899 },
-          { id: 7, name: 'Premium', price: 2499 },
-          { id: 8, name: 'Corporate Box', price: 9999 }
+          { id: 80, type: 'early-bird', name: 'Early Bird', price: 699 },
+          { id: 8, type: 'regular', name: 'General Stand', price: 899 },
+          { id: 9, type: 'vip', name: 'Premium Box', price: 2499 }
         ]
       },
       {
@@ -115,8 +119,9 @@ const EventsPage = () => {
         category: { name: 'Business' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Business+Summit',
         ticketTypes: [
-          { id: 9, name: 'Startup Pass', price: 1999 },
-          { id: 10, name: 'Investor Pass', price: 4999 }
+          { id: 10, type: 'early-bird', name: 'Early Bird', price: 1499 },
+          { id: 11, type: 'regular', name: 'Startup Pass', price: 1999 },
+          { id: 12, type: 'vip', name: 'Investor Pass', price: 4999 }
         ]
       },
       {
@@ -134,8 +139,9 @@ const EventsPage = () => {
         category: { name: 'Food & Drink' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Food+Festival',
         ticketTypes: [
-          { id: 11, name: 'Food Pass', price: 499 },
-          { id: 12, name: 'Premium Tasting', price: 999 }
+          { id: 130, type: 'early-bird', name: 'Early Bird', price: 399 },
+          { id: 13, type: 'regular', name: 'Food Pass', price: 499 },
+          { id: 14, type: 'vip', name: 'Premium Tasting', price: 999 }
         ]
       },
       {
@@ -153,7 +159,9 @@ const EventsPage = () => {
         category: { name: 'Education' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Workshop',
         ticketTypes: [
-          { id: 13, name: 'Workshop Pass', price: 1499 }
+          { id: 15, type: 'early-bird', name: 'Early Bird', price: 1199 },
+          { id: 16, type: 'regular', name: 'Workshop Pass', price: 1499 },
+          { id: 161, type: 'vip', name: 'VIP Masterclass', price: 2499 }
         ]
       },
       {
@@ -171,8 +179,9 @@ const EventsPage = () => {
         category: { name: 'Entertainment' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Comedy+Show',
         ticketTypes: [
-          { id: 14, name: 'Regular', price: 799 },
-          { id: 15, name: 'Front Row', price: 1299 }
+          { id: 170, type: 'early-bird', name: 'Early Bird', price: 599 },
+          { id: 17, type: 'regular', name: 'Regular', price: 799 },
+          { id: 18, type: 'vip', name: 'Front Row VIP', price: 1299 }
         ]
       },
       {
@@ -190,9 +199,9 @@ const EventsPage = () => {
         category: { name: 'Technology' },
         imageUrl: 'https://via.placeholder.com/300x200?text=AI+Conference',
         ticketTypes: [
-          { id: 16, name: 'Student', price: 1999 },
-          { id: 17, name: 'Professional', price: 2999 },
-          { id: 18, name: 'Corporate', price: 4999 }
+          { id: 19, type: 'early-bird', name: 'Early Bird', price: 2499 },
+          { id: 20, type: 'regular', name: 'Professional', price: 2999 },
+          { id: 21, type: 'vip', name: 'Corporate', price: 4999 }
         ]
       },
       {
@@ -210,8 +219,9 @@ const EventsPage = () => {
         category: { name: 'Music' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Classical+Music',
         ticketTypes: [
-          { id: 19, name: 'Balcony', price: 999 },
-          { id: 20, name: 'Orchestra', price: 1999 }
+          { id: 220, type: 'early-bird', name: 'Early Bird', price: 799 },
+          { id: 22, type: 'regular', name: 'Balcony', price: 999 },
+          { id: 23, type: 'vip', name: 'Orchestra VIP', price: 1999 }
         ]
       },
       {
@@ -229,7 +239,9 @@ const EventsPage = () => {
         category: { name: 'Art' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Photography',
         ticketTypes: [
-          { id: 21, name: 'General Entry', price: 299 }
+          { id: 240, type: 'early-bird', name: 'Early Bird', price: 199 },
+          { id: 24, type: 'regular', name: 'General Entry', price: 299 },
+          { id: 241, type: 'vip', name: 'VIP Private Tour', price: 799 }
         ]
       },
       {
@@ -247,9 +259,10 @@ const EventsPage = () => {
         category: { name: 'Sports' },
         imageUrl: 'https://via.placeholder.com/300x200?text=Marathon',
         ticketTypes: [
-          { id: 22, name: '5K Run', price: 599 },
-          { id: 23, name: '10K Run', price: 899 },
-          { id: 24, name: 'Full Marathon', price: 1299 }
+          { id: 25, type: 'early-bird', name: 'Early Bird 5K', price: 499 },
+          { id: 26, type: 'regular', name: '5K Run', price: 599 },
+          { id: 27, type: 'regular', name: '10K Run', price: 899 },
+          { id: 28, type: 'vip', name: 'Full Marathon', price: 1299 }
         ]
       }
     ];

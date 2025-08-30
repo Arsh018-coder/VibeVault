@@ -18,10 +18,15 @@ const HomePage = () => {
         description: 'Join us for the biggest tech conference of the year featuring industry leaders and innovative technologies.',
         date: '2025-12-15',
         location: 'Mumbai, India',
-        price: 2499,
+        price: 1999,
         capacity: 500,
         category: 'Technology',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Tech+Conference'
+        imageUrl: 'https://via.placeholder.com/300x200?text=Tech+Conference',
+        ticketTypes: [
+          { id: 1, type: 'early-bird', name: 'Early Bird', price: 1999 },
+          { id: 2, type: 'regular', name: 'Regular', price: 2499 },
+          { id: 3, type: 'vip', name: 'VIP', price: 3999 }
+        ]
       },
       {
         id: 2,
@@ -30,10 +35,15 @@ const HomePage = () => {
         description: 'Experience amazing live music from top Bollywood artists in a beautiful outdoor setting.',
         date: '2025-11-20',
         location: 'Bangalore, India',
-        price: 1299,
+        price: 999,
         capacity: 2000,
         category: 'Music',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Music+Festival'
+        imageUrl: 'https://via.placeholder.com/300x200?text=Music+Festival',
+        ticketTypes: [
+          { id: 4, type: 'early-bird', name: 'Early Bird', price: 999 },
+          { id: 5, type: 'regular', name: 'Regular', price: 1299 },
+          { id: 6, type: 'vip', name: 'VIP', price: 2999 }
+        ]
       },
       {
         id: 5,
@@ -42,10 +52,15 @@ const HomePage = () => {
         description: 'Connect with entrepreneurs, investors, and industry leaders in this exclusive networking event.',
         date: '2025-12-05',
         location: 'Pune, India',
-        price: 1999,
+        price: 1499,
         capacity: 300,
         category: 'Business',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Business+Summit'
+        imageUrl: 'https://via.placeholder.com/300x200?text=Business+Summit',
+        ticketTypes: [
+          { id: 10, type: 'early-bird', name: 'Early Bird', price: 1499 },
+          { id: 11, type: 'regular', name: 'Startup Pass', price: 1999 },
+          { id: 12, type: 'vip', name: 'Investor Pass', price: 4999 }
+        ]
       },
       {
         id: 6,
@@ -54,10 +69,15 @@ const HomePage = () => {
         description: 'Taste authentic street food from across India in this amazing culinary celebration.',
         date: '2025-11-25',
         location: 'Delhi, India',
-        price: 499,
+        price: 399,
         capacity: 1000,
         category: 'Food & Drink',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Food+Festival'
+        imageUrl: 'https://via.placeholder.com/300x200?text=Food+Festival',
+        ticketTypes: [
+          { id: 130, type: 'early-bird', name: 'Early Bird', price: 399 },
+          { id: 13, type: 'regular', name: 'Food Pass', price: 499 },
+          { id: 14, type: 'vip', name: 'Premium Tasting', price: 999 }
+        ]
       },
       {
         id: 8,
@@ -66,10 +86,15 @@ const HomePage = () => {
         description: 'Laugh out loud with India\'s top comedians in this hilarious comedy show.',
         date: '2025-11-18',
         location: 'Bangalore, India',
-        price: 799,
+        price: 599,
         capacity: 400,
         category: 'Entertainment',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Comedy+Show'
+        imageUrl: 'https://via.placeholder.com/300x200?text=Comedy+Show',
+        ticketTypes: [
+          { id: 170, type: 'early-bird', name: 'Early Bird', price: 599 },
+          { id: 17, type: 'regular', name: 'Regular', price: 799 },
+          { id: 18, type: 'vip', name: 'Front Row VIP', price: 1299 }
+        ]
       },
       {
         id: 4,
@@ -78,10 +103,15 @@ const HomePage = () => {
         description: 'Watch the thrilling IPL match between Mumbai Indians and Chennai Super Kings.',
         date: '2025-11-15',
         location: 'Mumbai, India',
-        price: 899,
+        price: 699,
         capacity: 50000,
         category: 'Sports',
-        imageUrl: 'https://via.placeholder.com/300x200?text=Cricket+Match'
+        imageUrl: 'https://via.placeholder.com/300x200?text=Cricket+Match',
+        ticketTypes: [
+          { id: 80, type: 'early-bird', name: 'Early Bird', price: 699 },
+          { id: 8, type: 'regular', name: 'General Stand', price: 899 },
+          { id: 9, type: 'vip', name: 'Premium Box', price: 2499 }
+        ]
       }
     ];
 
