@@ -1,0 +1,23 @@
+.ticket-details-page {
+  padding: 32px 0;
+  max-width: 700px;
+}
+
+.ticket-info p {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.attendees-list h3 {
+  color: var(--primary-main);
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.attendee-item {
+  background: var(--background-paper);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
