@@ -7,6 +7,7 @@ import './ProfilePage.css';
 
 const ProfilePage = () => {
   const { user, updateUser } = useAuth();
+  const [editMode, setEditMode] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm();
 
   useEffect(() => {
@@ -44,7 +45,15 @@ const ProfilePage = () => {
   return (
     <div className="container profile-page">
       <h2>My Profile</h2>
-
+      <button
+        type="button"
+        className="btn btn-secondary"
+        style={{ marginBottom: '1rem' }}
+        onClick={() => setEditMode(mode => !mode)}
+        disabled={isSubmitting}
+      >
+        {editMode ? 'Cancel Edit' : 'Edit Profile'}
+      </button>
       <form onSubmit={handleSubmit(onSubmit)} className="profile-form">
         <div className="form-group">
           <label htmlFor="firstName" className="form-label">First Name</label>
@@ -53,7 +62,7 @@ const ProfilePage = () => {
             type="text"
             className="form-input"
             {...register('firstName', { required: 'First name is required' })}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !editMode}
           />
           {errors.firstName && <p className="form-error">{errors.firstName.message}</p>}
         </div>
@@ -65,7 +74,7 @@ const ProfilePage = () => {
             type="text"
             className="form-input"
             {...register('lastName', { required: 'Last name is required' })}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !editMode}
           />
           {errors.lastName && <p className="form-error">{errors.lastName.message}</p>}
         </div>
@@ -88,11 +97,11 @@ const ProfilePage = () => {
             type="tel"
             className="form-input"
             {...register('phone')}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !editMode}
           />
         </div>
 
-        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+        <button type="submit" className="btn btn-primary" disabled={isSubmitting || !editMode}>
           {isSubmitting ? 'Saving...' : 'Save Changes'}
         </button>
       </form>

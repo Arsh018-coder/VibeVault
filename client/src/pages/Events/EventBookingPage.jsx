@@ -78,6 +78,7 @@ const EventBookingPage = () => {
     <div className="container event-booking-page">
       <h2>Book Tickets for "{event.title}"</h2>
 
+      {/* Ticket selection form */}
       <form onSubmit={handleSubmit(onSubmit)} className="booking-form">
         {event.tickets.length === 0 && <p>No tickets available for booking.</p>}
         {fields.map((field, index) => {
@@ -98,6 +99,9 @@ const EventBookingPage = () => {
                 disabled={isSubmitting}
                 defaultValue="0"
               />
+              <button type="button" className="btn btn-secondary btn-remove-ticket" onClick={() => remove(index)} disabled={fields.length === 1 || isSubmitting} style={{marginLeft: '8px'}}>
+                Remove
+              </button>
               {errors.tickets && errors.tickets[index] && (
                 <p className="form-error">{errors.tickets[index].quantity?.message}</p>
               )}
@@ -105,7 +109,12 @@ const EventBookingPage = () => {
           );
         })}
 
-        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+        {/* Live total tickets indicator using watch */}
+        <div className="live-ticket-total" style={{marginTop: '1rem'}}>
+          <strong>Total tickets selected:</strong> {watch('tickets') ? watch('tickets').reduce((sum, t) => sum + (parseInt(t.quantity, 10) || 0), 0) : 0}
+        </div>
+
+        <button type="submit" className="btn btn-primary" disabled={isSubmitting} style={{marginTop: '1rem'}}>
           {isSubmitting ? 'Booking...' : 'Confirm Booking'}
         </button>
       </form>
