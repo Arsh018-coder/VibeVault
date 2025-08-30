@@ -1,0 +1,22 @@
+.home-page {
+  padding: 40px 0;
+}
+
+.featured-events-section h2 {
+  color: var(--primary-main);
+  margin-bottom: 24px;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+}
