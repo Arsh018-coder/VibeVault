@@ -21,16 +21,13 @@ const RegisterPage = () => {
         password: data.password,
         role: selectedRole.toUpperCase(),
         firstName: data.firstName,
-        lastName: data.lastName
+        lastName: data.lastName,
+        phone: '' // Add empty phone number as it's required by the server
       });
-      toast.success('Account created successfully!');
+      toast.success(userData.message || 'Account created successfully! Please check your email for verification.');
       
-      // Navigate based on user role
-      if (userData.user.role === 'ORGANIZER') {
-        navigate('/dashboard');
-      } else {
-        navigate('/');
-      }
+      // Navigate to verification page or home based on your flow
+      navigate('/verify-email');
     } catch (err) {
       toast.error(err.message || 'Registration failed');
     }

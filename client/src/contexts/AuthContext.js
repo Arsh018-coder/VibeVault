@@ -69,13 +69,23 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     dispatch({ type: 'AUTH_START' });
     try {
-      const data = await authAPI.register(userData);
-      localStorage.setItem('token', data.token);
-      dispatch({ type: 'AUTH_SUCCESS', payload: data });
-      return data;
+      const response = await authAPI.register(userData);
+      // Store the token if it exists (for auto-login after verification)
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        dispatch({ 
+          type: 'AUTH_SUCCESS', 
+          payload: { 
+            user: response.user,
+            token: response.token
+          } 
+        });
+      }
+      return response;
     } catch (error) {
-      dispatch({ type: 'AUTH_ERROR', payload: error.message });
-      throw error;
+      const errorMessage = error.response?.data?.message || error.message || 'Registration failed';
+      dispatch({ type: 'AUTH_ERROR', payload: errorMessage });
+      throw new Error(errorMessage);
     }
   };
 

@@ -45,6 +45,26 @@ enum DiscountType {
   FIXED
 }
 
+enum OtpType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+  PHONE_VERIFICATION
+}
+
+model Otp {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code      String
+  type      OtpType
+  used      Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, type, used])
+}
+
 model User {
   id            String   @id @default(uuid())
   email         String   @unique
@@ -56,6 +76,7 @@ model User {
   avatarUrl     String?
   loyaltyPoints Int      @default(0)
   isVerified    Boolean  @default(false)
+  otps          Otp[]
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
