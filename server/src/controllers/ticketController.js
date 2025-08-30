@@ -1,4 +1,5 @@
 const prisma = require('../db/prisma');
+const { Prisma } = require('@prisma/client');
 
 exports.createTicketType = async (req, res, next) => {
   try {
@@ -244,6 +245,78 @@ exports.deleteTicketType = async (req, res, next) => {
   } catch (err) {
     console.error('Delete ticket type error:', err);
     res.status(500).json({ message: 'Failed to delete ticket type' });
+  }
+};
+
+// Get all tickets purchased by the current user
+exports.getUserTickets = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    
+    const tickets = await prisma.ticket.findMany({
+      where: {
+        userId,
+        status: { not: 'CANCELLED' }
+      },
+      include: {
+        ticketType: {
+          include: {
+            event: {
+              include: {
+                venue: true,
+                organizer: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                }
+              }
+            }
+          }
+        },
+        payment: {
+          select: {
+            id: true,
+            amount: true,
+            status: true,
+            paymentMethod: true,
+            paidAt: true
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    // Transform the data to match the frontend's expected format
+    const formattedTickets = tickets.map(ticket => ({
+      id: ticket.id,
+      event: {
+        id: ticket.ticketType.event.id,
+        title: ticket.ticketType.event.title,
+        startTime: ticket.ticketType.event.startTime,
+        endTime: ticket.ticketType.event.endTime,
+        imageUrl: ticket.ticketType.event.imageUrl,
+        venue: ticket.ticketType.event.venue,
+        organizer: ticket.ticketType.event.organizer
+      },
+      ticketType: {
+        id: ticket.ticketType.id,
+        name: ticket.ticketType.name,
+        price: ticket.ticketType.price
+      },
+      quantity: ticket.quantity,
+      status: ticket.status,
+      createdAt: ticket.createdAt,
+      payment: ticket.payment
+    }));
+
+    res.json(formattedTickets);
+  } catch (error) {
+    console.error('Error fetching user tickets:', error);
+    next(error);
   }
 };
 

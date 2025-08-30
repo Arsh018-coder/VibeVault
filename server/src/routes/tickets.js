@@ -33,4 +33,7 @@ router.patch('/:id/toggle',
 
 router.get('/event/:eventId', ticketController.getEventTicketTypes);
 
+// Get current user's tickets
+router.get('/my-tickets', ticketController.getUserTickets);
+
 module.exports = router;

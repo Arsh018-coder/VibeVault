@@ -19,8 +19,9 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, 12);
+    // Hash password with reduced salt rounds for development
+    const saltRounds = process.env.NODE_ENV === 'production' ? 12 : 8;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
 
     // Create user as unverified
     const user = await prisma.user.create({
@@ -59,13 +60,16 @@ exports.register = async (req, res, next) => {
       }
     });
 
-    // Send OTP via email
-    await emailService.sendEmail(
+    // Send OTP via email in the background
+    emailService.sendEmail(
       user.email,
       'Verify Your Email - VibeVault',
       `Your verification code is: ${otp}`,
       `<p>Your verification code is: <strong>${otp}</strong></p><p>This code will expire in 10 minutes.</p>`
-    );
+    ).catch(emailError => {
+      console.error('Email sending error (non-blocking):', emailError);
+      console.log('Registration successful but email not sent. OTP:', otp);
+    });
 
     // Generate JWT token (for verification flow)
     const token = jwt.sign(
@@ -82,7 +86,28 @@ exports.register = async (req, res, next) => {
 
   } catch (err) {
     console.error('Registration error:', err);
-    res.status(500).json({ message: 'Registration failed' });
+    
+    // Handle specific error cases
+    if (err.code === 'P2002') { // Prisma unique constraint violation
+      return res.status(400).json({ 
+        message: 'Email already exists',
+        field: 'email'
+      });
+    }
+    
+    // Handle validation errors
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({
+        message: 'Validation failed',
+        errors: err.errors || err.message
+      });
+    }
+    
+    // Default error response
+    res.status(500).json({ 
+      message: 'Registration failed',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
 

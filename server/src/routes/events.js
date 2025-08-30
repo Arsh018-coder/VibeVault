@@ -14,6 +14,12 @@ router.get('/:id/tickets', eventController.getEventTickets);
 // Protected routes
 router.use(authenticate);
 
+// Organizer dashboard
+router.get('/organizer/dashboard', 
+  authorize(['ORGANIZER', 'ADMIN']),
+  eventController.getOrganizerDashboard
+);
+
 // Organizer routes
 router.post('/', 
   authorize(['ORGANIZER', 'ADMIN']), 

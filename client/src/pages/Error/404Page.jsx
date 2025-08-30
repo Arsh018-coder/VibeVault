@@ -16,11 +16,6 @@ const NotFoundPage = () => {
             <Home size={20} />
             Go Home
           </Link>
-          
-          <button onClick={() => window.history.back()} className="back-btn">
-            <ArrowLeft size={20} />
-            Go Back
-          </button>
         </div>
       </div>
       

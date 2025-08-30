@@ -1,4 +1,5 @@
 const prisma = require('../db/prisma');
+const { Prisma } = require('@prisma/client');
 
 exports.createEvent = async (req, res, next) => {
   try {
@@ -554,6 +555,103 @@ exports.updateEventStatus = async (req, res, next) => {
   } catch (err) {
     console.error('Update event status error:', err);
     res.status(500).json({ message: 'Failed to update event status' });
+  }
+};
+
+// Get organizer dashboard data
+exports.getOrganizerDashboard = async (req, res, next) => {
+  try {
+    const organizerId = req.user.id;
+    
+    // Get total number of events
+    const totalEvents = await prisma.event.count({
+      where: { organizerId }
+    });
+    
+    // Get upcoming events (next 30 days)
+    const upcomingEvents = await prisma.event.count({
+      where: {
+        organizerId,
+        startAt: {
+          gte: new Date(),
+          lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Next 30 days
+        }
+      }
+    });
+    
+    // Get total tickets sold
+    const ticketsSold = await prisma.ticket.aggregate({
+      where: {
+        ticketType: {
+          event: { organizerId }
+        },
+        status: 'CONFIRMED'
+      },
+      _sum: {
+        quantity: true
+      }
+    });
+    
+    // Get recent events with ticket sales
+    const recentEvents = await prisma.event.findMany({
+      where: { 
+        organizerId,
+        startAt: { gte: new Date() } // Only upcoming events
+      },
+      orderBy: { startAt: 'asc' },
+      take: 5, // Limit to 5 most recent events
+      include: {
+        ticketTypes: {
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            _count: {
+              select: { tickets: { where: { status: 'CONFIRMED' } } }
+            }
+          }
+        },
+        venue: true
+      }
+    });
+    
+    // Format the response
+    const dashboardData = {
+      stats: {
+        totalEvents,
+        upcomingEvents,
+        ticketsSold: ticketsSold._sum.quantity || 0,
+        totalRevenue: 0 // This would require payment data
+      },
+      recentEvents: recentEvents.map(event => ({
+        id: event.id,
+        title: event.title,
+        startAt: event.startAt,
+        endAt: event.endAt,
+        imageUrl: event.imageUrl,
+        status: event.status,
+        venue: event.venue,
+        ticketTypes: event.ticketTypes.map(type => ({
+          id: type.id,
+          name: type.name,
+          price: type.price,
+          ticketsSold: type._count.tickets
+        }))
+      }))
+    };
+    
+    // Calculate total revenue (simplified - would need payment data for accurate amount)
+    dashboardData.stats.totalRevenue = recentEvents.reduce((total, event) => {
+      return total + event.ticketTypes.reduce((eventTotal, type) => {
+        return eventTotal + (type.price * (type._count?.tickets || 0));
+      }, 0);
+    }, 0);
+    
+    res.json(dashboardData);
+    
+  } catch (error) {
+    console.error('Error fetching organizer dashboard data:', error);
+    next(error);
   }
 };
 

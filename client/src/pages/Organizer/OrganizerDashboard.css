@@ -1,0 +1,93 @@
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stats-card {
+  transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for the create event button */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.create-event-btn {
+  animation: pulse 2s infinite;
+}
+
+/* Responsive table styles */
+@media (max-width: 768px) {
+  .event-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Status badges */
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.status-upcoming {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.status-ongoing {
+  @apply bg-green-100 text-green-800;
+}
+
+.status-completed {
+  @apply bg-gray-100 text-gray-800;
+}
+
+.status-cancelled {
+  @apply bg-red-100 text-red-800;
+}
+
+/* Action buttons */
+.action-btn {
+  @apply p-1.5 rounded-full transition-colors duration-200;
+}
+
+.action-btn:hover {
+  @apply bg-gray-100;
+}
+
+.action-btn-edit {
+  @apply text-blue-500 hover:text-blue-700;
+}
+
+.action-btn-delete {
+  @apply text-red-500 hover:text-red-700;
+}
+
+/* Loading skeleton */
+.skeleton {
+  @apply bg-gray-200 animate-pulse rounded;
+}
+
+/* Responsive grid for event cards */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+}
