@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Users, ArrowRight } from 'lucide-react';
+import { Calendar, Users, ArrowRight, Plus } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import './CategoriesPage.css';
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     // Mock categories data
@@ -93,8 +95,18 @@ const CategoriesPage = () => {
   return (
     <div className="categories-page">
       <div className="categories-header">
-        <h1>Event Categories</h1>
-        <p>Discover events by category and find what interests you most</p>
+        <div className="header-content">
+          <h1>Event Categories</h1>
+          <p>Discover events by category and find what interests you most</p>
+        </div>
+        {user && user.role === 'ORGANIZER' && (
+          <div className="header-action">
+            <Link to="/organizer/events/new" className="create-event-btn">
+              <Plus size={20} />
+              Create Event
+            </Link>
+          </div>
+        )}
       </div>
 
       <div className="categories-grid">
@@ -142,14 +154,17 @@ const CategoriesPage = () => {
 
       <div className="categories-cta">
         <h2>Can't find what you're looking for?</h2>
-        <p>Browse all events or create your own event</p>
+        <p>Browse all events{user && user.role === 'ORGANIZER' ? ' or create your own event' : ''}</p>
         <div className="cta-buttons">
           <Link to="/events" className="btn btn-primary">
             Browse All Events
           </Link>
-          <Link to="/dashboard" className="btn btn-secondary">
-            Create Event
-          </Link>
+          {user && user.role === 'ORGANIZER' && (
+            <Link to="/organizer/events/new" className="btn btn-secondary">
+              <Plus size={18} />
+              Create Event
+            </Link>
+          )}
         </div>
       </div>
     </div>

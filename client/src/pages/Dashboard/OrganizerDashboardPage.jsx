@@ -91,7 +91,7 @@ const OrganizerDashboardPage = () => {
             {Math.abs(statsWithChanges.totalEvents.change)}% from last month
           </span>
         </div>
-        
+
         <div className="stat-card">
           <h3><Ticket size={18} /> Total Bookings</h3>
           <p>{statsWithChanges.totalBookings.value}</p>
@@ -100,7 +100,7 @@ const OrganizerDashboardPage = () => {
             {Math.abs(statsWithChanges.totalBookings.change)}% from last month
           </span>
         </div>
-        
+
         <div className="stat-card">
           <h3><DollarSign size={18} /> Total Revenue</h3>
           <p>₹{statsWithChanges.totalRevenue.value.toLocaleString()}</p>
@@ -109,7 +109,7 @@ const OrganizerDashboardPage = () => {
             {Math.abs(statsWithChanges.totalRevenue.change)}% from last month
           </span>
         </div>
-        
+
         <div className="stat-card">
           <h3><Users size={18} /> Active Events</h3>
           <p>{statsWithChanges.activeEvents.value}</p>
@@ -134,7 +134,7 @@ const OrganizerDashboardPage = () => {
             <SalesChart data={salesData} />
           </div>
         </div>
-        
+
         <div className="chart-container">
           <div className="chart-header">
             <h3>Recent Activity</h3>

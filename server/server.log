@@ -305,3 +305,1205 @@ Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `ema
 prisma:query SELECT 1
 prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
 prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT 1
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT 1
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT 1
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT 1
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/authControllers.js:230:36
+
+  227 try {
+  228   const userId = req.user.userId;
+  229   
+→ 230   const user = await prisma.user.findUnique({
+          where: {
+            id: undefined,
+        ?   email?: String,
+        ?   AND?: UserWhereInput | UserWhereInput[],
+        ?   OR?: UserWhereInput[],
+        ?   NOT?: UserWhereInput | UserWhereInput[],
+        ?   passwordHash?: StringFilter | String,
+        ?   role?: EnumRoleFilter | Role,
+        ?   firstName?: StringNullableFilter | String | Null,
+        ?   lastName?: StringNullableFilter | String | Null,
+        ?   phone?: StringNullableFilter | String | Null,
+        ?   avatarUrl?: StringNullableFilter | String | Null,
+        ?   loyaltyPoints?: IntFilter | Int,
+        ?   isVerified?: BoolFilter | Boolean,
+        ?   isActive?: BoolFilter | Boolean,
+        ?   createdAt?: DateTimeFilter | DateTime,
+        ?   updatedAt?: DateTimeFilter | DateTime,
+        ?   otps?: OtpListRelationFilter,
+        ?   events?: EventListRelationFilter,
+        ?   bookings?: BookingListRelationFilter,
+        ?   notifications?: NotificationListRelationFilter
+          },
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+            avatarUrl: true,
+            loyaltyPoints: true,
+            isVerified: true,
+            createdAt: true,
+            updatedAt: true
+          }
+        })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get profile error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/authControllers.js:230:36
+
+  227 try {
+  228   const userId = req.user.userId;
+  229   
+→ 230   const user = await prisma.user.findUnique({
+          where: {
+            id: undefined,
+        ?   email?: String,
+        ?   AND?: UserWhereInput | UserWhereInput[],
+        ?   OR?: UserWhereInput[],
+        ?   NOT?: UserWhereInput | UserWhereInput[],
+        ?   passwordHash?: StringFilter | String,
+        ?   role?: EnumRoleFilter | Role,
+        ?   firstName?: StringNullableFilter | String | Null,
+        ?   lastName?: StringNullableFilter | String | Null,
+        ?   phone?: StringNullableFilter | String | Null,
+        ?   avatarUrl?: StringNullableFilter | String | Null,
+        ?   loyaltyPoints?: IntFilter | Int,
+        ?   isVerified?: BoolFilter | Boolean,
+        ?   isActive?: BoolFilter | Boolean,
+        ?   createdAt?: DateTimeFilter | DateTime,
+        ?   updatedAt?: DateTimeFilter | DateTime,
+        ?   otps?: OtpListRelationFilter,
+        ?   events?: EventListRelationFilter,
+        ?   bookings?: BookingListRelationFilter,
+        ?   notifications?: NotificationListRelationFilter
+          },
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+            avatarUrl: true,
+            loyaltyPoints: true,
+            isVerified: true,
+            createdAt: true,
+            updatedAt: true
+          }
+        })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getProfile (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/authControllers.js:230:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."passwordHash", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."phone", "public"."User"."avatarUrl", "public"."User"."loyaltyPoints", "public"."User"."isVerified", "public"."User"."isActive", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT 1
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT 1
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT 1
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text, "public"."User"."firstName", "public"."User"."lastName", "public"."User"."isActive", "public"."User"."isVerified" FROM "public"."User" WHERE ("public"."User"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:error 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+Get dashboard stats error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:36
+
+  27 }
+  28 
+  29 // Check user role
+→ 30 const user = await prisma.user.findUnique({
+       where: {
+         id: undefined,
+     ?   email?: String,
+     ?   AND?: UserWhereInput | UserWhereInput[],
+     ?   OR?: UserWhereInput[],
+     ?   NOT?: UserWhereInput | UserWhereInput[],
+     ?   passwordHash?: StringFilter | String,
+     ?   role?: EnumRoleFilter | Role,
+     ?   firstName?: StringNullableFilter | String | Null,
+     ?   lastName?: StringNullableFilter | String | Null,
+     ?   phone?: StringNullableFilter | String | Null,
+     ?   avatarUrl?: StringNullableFilter | String | Null,
+     ?   loyaltyPoints?: IntFilter | Int,
+     ?   isVerified?: BoolFilter | Boolean,
+     ?   isActive?: BoolFilter | Boolean,
+     ?   createdAt?: DateTimeFilter | DateTime,
+     ?   updatedAt?: DateTimeFilter | DateTime,
+     ?   otps?: OtpListRelationFilter,
+     ?   events?: EventListRelationFilter,
+     ?   bookings?: BookingListRelationFilter,
+     ?   notifications?: NotificationListRelationFilter
+       },
+       select: {
+         role: true
+       }
+     })
+
+Argument `where` of type UserWhereUniqueInput needs at least one of `id` or `email` arguments. Available options are marked with ?.
+    at _n (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ei.handleRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6926)
+    at ei.handleAndLogRequestError (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6608)
+    at ei.request (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:121:6315)
+    at async a (/Users/liberty/Desktop/VibeVault/VibeVault/server/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async exports.getDashboardStats (/Users/liberty/Desktop/VibeVault/VibeVault/server/src/controllers/analyticsController.js:30:18) {
+  clientVersion: '6.15.0'
+}
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT 1
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT 1
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT 1
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT 1
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT "public"."Event"."id", "public"."Event"."title", "public"."Event"."slug", "public"."Event"."description", "public"."Event"."categoryId", "public"."Event"."organizerId", "public"."Event"."startAt", "public"."Event"."endAt", "public"."Event"."timezone", "public"."Event"."isVirtual", "public"."Event"."venueName", "public"."Event"."street", "public"."Event"."city", "public"."Event"."state", "public"."Event"."zipCode", "public"."Event"."country", "public"."Event"."virtualLink", "public"."Event"."capacity", "public"."Event"."featured", "public"."Event"."trending", "public"."Event"."visibility"::text, "public"."Event"."status"::text, "public"."Event"."views", "public"."Event"."bookingsCount", "public"."Event"."revenue", "public"."Event"."createdAt", "public"."Event"."updatedAt" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."featured" = $2 AND "public"."Event"."startAt" >= $3) ORDER BY "public"."Event"."startAt" ASC LIMIT $4 OFFSET $5
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4
+prisma:query SELECT "public"."Category"."id", "public"."Category"."name", "public"."Category"."slug", "public"."Category"."description", "public"."Category"."color", "public"."Category"."isActive", "public"."Category"."sortOrder", "public"."Category"."createdAt", "public"."Category"."updatedAt", COALESCE("aggr_selection_0_Event"."_aggr_count_events", 0) AS "_aggr_count_events" FROM "public"."Category" LEFT JOIN (SELECT "public"."Event"."categoryId", COUNT(*) AS "_aggr_count_events" FROM "public"."Event" WHERE ("public"."Event"."status" = CAST($1::text AS "public"."EventStatus") AND "public"."Event"."visibility" = CAST($2::text AS "public"."Visibility")) GROUP BY "public"."Event"."categoryId") AS "aggr_selection_0_Event" ON ("public"."Category"."id" = "aggr_selection_0_Event"."categoryId") WHERE "public"."Category"."isActive" = $3 ORDER BY "public"."Category"."sortOrder" ASC, "public"."Category"."name" ASC OFFSET $4

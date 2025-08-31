@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Search, Filter } from 'lucide-react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Search, Filter, Plus } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import EventCard from '../../components/features/events/EventCard';
 import './EventsPage.css';
 
@@ -10,6 +11,7 @@ const EventsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   // Get category from URL params
   useEffect(() => {
@@ -277,10 +279,10 @@ const EventsPage = () => {
 
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || 
-                           event.category?.name === selectedCategory || 
-                           event.category === selectedCategory;
+      event.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' ||
+      event.category?.name === selectedCategory ||
+      event.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -295,8 +297,17 @@ const EventsPage = () => {
   return (
     <div className="events-page">
       <div className="events-header">
-        <h1>Discover Events</h1>
-        <p>Find amazing events happening near you</p>
+        <div className="header-content">
+          <h1>Discover Events</h1>
+        </div>
+        {user && user.role === 'ORGANIZER' && (
+          <div className="header-action">
+            <Link to="/organizer/events/new" className="create-event-btn">
+              <Plus size={20} />
+              Create Event
+            </Link>
+          </div>
+        )}
       </div>
 
       <div className="events-filters">

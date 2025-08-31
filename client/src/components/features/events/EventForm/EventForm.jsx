@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Calendar, MapPin, Ticket, Plus, Trash2, Loader2 } from 'lucide-react';
 import api from '../../../../services/api';
@@ -27,7 +27,7 @@ const EventForm = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
-  
+
   const {
     register,
     control,
@@ -85,7 +85,7 @@ const EventForm = () => {
         try {
           const response = await api.get(`/events/${eventId}`);
           const event = response.data.event || response.data;
-          
+
           // Format dates for datetime-local inputs
           const formatDateForInput = (date) => {
             if (!date) return '';
@@ -180,307 +180,327 @@ const EventForm = () => {
 
   if (loadingCategories) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <Loader2 className="animate-spin h-12 w-12 text-primary" />
-        <p className="text-gray-600">Loading form...</p>
+      <div className="event-form-container">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p className="loading-text">Loading form...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white shadow sm:rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">
-                {eventId ? 'Edit Event' : 'Create New Event'}
-              </h1>
-              <p className="mt-1 text-sm text-gray-600">
-                {eventId ? 'Update your event details below.' : 'Fill in the details to create your event.'}
-              </p>
-            </div>
+    <div className="event-form-container">
+      <div className="event-form-wrapper">
+        <div className="event-form-card">
+          <div className="event-form-header">
+            <h3>{eventId ? 'Update your event details below.' : 'Fill in the details to create your event.'}</h3>
+          </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="event-form-content">
+
+            <form onSubmit={handleSubmit(onSubmit)}>
               {/* Basic Information */}
-              <div className="grid grid-cols-1 gap-6">
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                    Event Title *
-                  </label>
-                  <input
-                    id="title"
-                    type="text"
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
-                    {...register('title', { required: 'Title is required' })}
-                    disabled={isSubmitting}
-                  />
-                  {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
-                </div>
+              <div className="form-section">
+                <h2 className="section-title">
+                  <Calendar size={20} />
+                  Basic Information
+                </h2>
 
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                    Description *
-                  </label>
-                  <textarea
-                    id="description"
-                    rows="4"
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
-                    {...register('description', { required: 'Description is required' })}
-                    disabled={isSubmitting}
-                  />
-                  {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
-                </div>
-
-                <div>
-                  <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
-                    Category
-                  </label>
-                  <select
-                    id="categoryId"
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
-                    {...register('categoryId')}
-                    disabled={isSubmitting}
-                  >
-                    <option value="">Select category (optional)</option>
-                    {categories.map(c => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="startAt" className="block text-sm font-medium text-gray-700">
-                      Start Date & Time *
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label htmlFor="title" className="form-label required">
+                      Event Title
                     </label>
                     <input
-                      id="startAt"
-                      type="datetime-local"
-                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
-                      {...register('startAt', { required: 'Start date is required' })}
+                      id="title"
+                      type="text"
+                      className="form-input"
+                      {...register('title', { required: 'Title is required' })}
                       disabled={isSubmitting}
+                      placeholder="Enter your event title"
                     />
-                    {errors.startAt && <p className="mt-1 text-sm text-red-600">{errors.startAt.message}</p>}
+                    {errors.title && <p className="form-error">{errors.title.message}</p>}
                   </div>
 
-                  <div>
-                    <label htmlFor="endAt" className="block text-sm font-medium text-gray-700">
-                      End Date & Time *
+                  <div className="form-group">
+                    <label htmlFor="description" className="form-label required">
+                      Description
+                    </label>
+                    <textarea
+                      id="description"
+                      rows="4"
+                      className="form-textarea"
+                      {...register('description', { required: 'Description is required' })}
+                      disabled={isSubmitting}
+                      placeholder="Describe your event in detail"
+                    />
+                    {errors.description && <p className="form-error">{errors.description.message}</p>}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="categoryId" className="form-label">
+                      Category
+                    </label>
+                    <select
+                      id="categoryId"
+                      className="form-select"
+                      {...register('categoryId')}
+                      disabled={isSubmitting}
+                    >
+                      <option value="">Select category (optional)</option>
+                      {categories.map(c => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-grid form-grid-2">
+                    <div className="form-group">
+                      <label htmlFor="startAt" className="form-label required">
+                        Start Date & Time
+                      </label>
+                      <input
+                        id="startAt"
+                        type="datetime-local"
+                        className="form-input"
+                        {...register('startAt', { required: 'Start date is required' })}
+                        disabled={isSubmitting}
+                      />
+                      {errors.startAt && <p className="form-error">{errors.startAt.message}</p>}
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="endAt" className="form-label required">
+                        End Date & Time
+                      </label>
+                      <input
+                        id="endAt"
+                        type="datetime-local"
+                        className="form-input"
+                        {...register('endAt', { required: 'End date is required' })}
+                        disabled={isSubmitting}
+                      />
+                      {errors.endAt && <p className="form-error">{errors.endAt.message}</p>}
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="capacity" className="form-label">
+                      Event Capacity
                     </label>
                     <input
-                      id="endAt"
-                      type="datetime-local"
-                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
-                      {...register('endAt', { required: 'End date is required' })}
+                      id="capacity"
+                      type="number"
+                      min="1"
+                      className="form-input"
+                      {...register('capacity', { valueAsNumber: true })}
                       disabled={isSubmitting}
+                      placeholder="Enter maximum capacity"
                     />
-                    {errors.endAt && <p className="mt-1 text-sm text-red-600">{errors.endAt.message}</p>}
+                    <p className="form-help">Leave empty for unlimited capacity</p>
                   </div>
-                </div>
-
-                <div>
-                  <label htmlFor="capacity" className="block text-sm font-medium text-gray-700">
-                    Event Capacity
-                  </label>
-                  <input
-                    id="capacity"
-                    type="number"
-                    min="1"
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
-                    {...register('capacity', { valueAsNumber: true })}
-                    disabled={isSubmitting}
-                  />
-                  <p className="mt-1 text-sm text-gray-500">Leave empty for unlimited capacity</p>
                 </div>
               </div>
 
               {/* Location Information */}
-              <div className="border-t border-gray-200 pt-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Location Details</h3>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Event Type *
+              <div className="form-section">
+                <h2 className="section-title">
+                  <MapPin size={20} />
+                  Location Details
+                </h2>
+
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label className="form-label required">
+                      Event Type
                     </label>
-                    <div className="flex items-center space-x-6">
-                      <label className="flex items-center">
+                    <div className="radio-group">
+                      <label className="radio-option">
                         <input
                           type="radio"
                           value={false}
                           {...register('isVirtual', { required: true })}
                           disabled={isSubmitting}
-                          className="focus:ring-primary h-4 w-4 text-primary border-gray-300"
+                          className="radio-input"
                         />
-                        <span className="ml-2 text-sm text-gray-700">Physical Event</span>
+                        <span className="radio-label">Physical Event</span>
                       </label>
-                      <label className="flex items-center">
+                      <label className="radio-option">
                         <input
                           type="radio"
                           value={true}
                           {...register('isVirtual', { required: true })}
                           disabled={isSubmitting}
-                          className="focus:ring-primary h-4 w-4 text-primary border-gray-300"
+                          className="radio-input"
                         />
-                        <span className="ml-2 text-sm text-gray-700">Virtual Event</span>
+                        <span className="radio-label">Virtual Event</span>
                       </label>
                     </div>
                   </div>
 
                   {!isVirtual && (
-                    <div className="grid grid-cols-1 gap-4">
-                      <div>
-                        <label htmlFor="venueName" className="block text-sm font-medium text-gray-700">
-                          Venue Name *
+                    <>
+                      <div className="form-group">
+                        <label htmlFor="venueName" className="form-label required">
+                          Venue Name
                         </label>
                         <input
                           id="venueName"
                           type="text"
-                          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                          className="form-input"
                           {...register('venueName', { required: !isVirtual ? 'Venue name is required' : false })}
                           disabled={isSubmitting}
+                          placeholder="Enter venue name"
                         />
-                        {errors.venueName && <p className="mt-1 text-sm text-red-600">{errors.venueName.message}</p>}
+                        {errors.venueName && <p className="form-error">{errors.venueName.message}</p>}
                       </div>
 
-                      <div>
-                        <label htmlFor="street" className="block text-sm font-medium text-gray-700">
-                          Street Address *
+                      <div className="form-group">
+                        <label htmlFor="street" className="form-label required">
+                          Street Address
                         </label>
                         <input
                           id="street"
                           type="text"
-                          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                          className="form-input"
                           {...register('street', { required: !isVirtual ? 'Street address is required' : false })}
                           disabled={isSubmitting}
+                          placeholder="Enter street address"
                         />
-                        {errors.street && <p className="mt-1 text-sm text-red-600">{errors.street.message}</p>}
+                        {errors.street && <p className="form-error">{errors.street.message}</p>}
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                            City *
+                      <div className="form-grid form-grid-2">
+                        <div className="form-group">
+                          <label htmlFor="city" className="form-label required">
+                            City
                           </label>
                           <input
                             id="city"
                             type="text"
-                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                            className="form-input"
                             {...register('city', { required: !isVirtual ? 'City is required' : false })}
                             disabled={isSubmitting}
+                            placeholder="Enter city"
                           />
-                          {errors.city && <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>}
+                          {errors.city && <p className="form-error">{errors.city.message}</p>}
                         </div>
 
-                        <div>
-                          <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                            State *
+                        <div className="form-group">
+                          <label htmlFor="state" className="form-label required">
+                            State
                           </label>
                           <input
                             id="state"
                             type="text"
-                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                            className="form-input"
                             {...register('state', { required: !isVirtual ? 'State is required' : false })}
                             disabled={isSubmitting}
+                            placeholder="Enter state"
                           />
-                          {errors.state && <p className="mt-1 text-sm text-red-600">{errors.state.message}</p>}
+                          {errors.state && <p className="form-error">{errors.state.message}</p>}
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
-                            Zip Code *
+                      <div className="form-grid form-grid-2">
+                        <div className="form-group">
+                          <label htmlFor="zipCode" className="form-label required">
+                            Zip Code
                           </label>
                           <input
                             id="zipCode"
                             type="text"
-                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                            className="form-input"
                             {...register('zipCode', { required: !isVirtual ? 'Zip code is required' : false })}
                             disabled={isSubmitting}
+                            placeholder="Enter zip code"
                           />
-                          {errors.zipCode && <p className="mt-1 text-sm text-red-600">{errors.zipCode.message}</p>}
+                          {errors.zipCode && <p className="form-error">{errors.zipCode.message}</p>}
                         </div>
 
-                        <div>
-                          <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                            Country *
+                        <div className="form-group">
+                          <label htmlFor="country" className="form-label required">
+                            Country
                           </label>
                           <input
                             id="country"
                             type="text"
-                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                            className="form-input"
                             {...register('country', { required: !isVirtual ? 'Country is required' : false })}
                             disabled={isSubmitting}
+                            placeholder="Enter country"
                           />
-                          {errors.country && <p className="mt-1 text-sm text-red-600">{errors.country.message}</p>}
+                          {errors.country && <p className="form-error">{errors.country.message}</p>}
                         </div>
                       </div>
-                    </div>
+                    </>
                   )}
 
                   {isVirtual && (
-                    <div>
-                      <label htmlFor="virtualLink" className="block text-sm font-medium text-gray-700">
-                        Virtual Event Link *
+                    <div className="form-group">
+                      <label htmlFor="virtualLink" className="form-label required">
+                        Virtual Event Link
                       </label>
                       <input
                         id="virtualLink"
                         type="url"
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                        className="form-input"
                         {...register('virtualLink', { required: isVirtual ? 'Virtual link is required' : false })}
                         disabled={isSubmitting}
                         placeholder="https://zoom.us/j/..."
                       />
-                      {errors.virtualLink && <p className="mt-1 text-sm text-red-600">{errors.virtualLink.message}</p>}
+                      {errors.virtualLink && <p className="form-error">{errors.virtualLink.message}</p>}
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Ticket Types */}
-              <div className="border-t border-gray-200 pt-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900">Ticket Types</h3>
-                    <p className="text-sm text-gray-500">Define the different types of tickets for your event</p>
+              <div className="form-section">
+                <div className="ticket-types-header">
+                  <div className="ticket-types-info">
+                    <h3>
+                      <Ticket size={20} style={{ display: 'inline', marginRight: '0.5rem' }} />
+                      Ticket Types
+                    </h3>
+                    <p>Define the different types of tickets for your event</p>
                   </div>
                   <button
                     type="button"
                     onClick={handleAddTicket}
                     disabled={isSubmitting}
-                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                    className="add-ticket-btn"
                   >
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Plus size={16} />
                     Add Ticket Type
                   </button>
                 </div>
 
-                <div className="space-y-6">
+                <div>
                   {fields.map((item, index) => (
-                    <div key={item.id} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-md font-medium text-gray-900">Ticket Type {index + 1}</h4>
+                    <div key={item.id} className="ticket-card">
+                      <div className="ticket-card-header">
+                        <h4 className="ticket-card-title">Ticket Type {index + 1}</h4>
                         {fields.length > 1 && (
                           <button
                             type="button"
                             onClick={() => remove(index)}
                             disabled={isSubmitting}
-                            className="inline-flex items-center p-1 border border-transparent rounded-full text-red-400 hover:text-red-600 focus:outline-none"
+                            className="remove-ticket-btn"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 size={16} />
                           </button>
                         )}
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">
-                            Type *
+                      <div className="form-grid form-grid-2">
+                        <div className="form-group">
+                          <label className="form-label required">
+                            Type
                           </label>
                           <select
-                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                            className="form-select"
                             {...register(`ticketTypes.${index}.type`, { required: 'Ticket type is required' })}
                             disabled={isSubmitting}
                           >
@@ -490,23 +510,23 @@ const EventForm = () => {
                             ))}
                           </select>
                           {errors.ticketTypes?.[index]?.type && (
-                            <p className="mt-1 text-sm text-red-600">{errors.ticketTypes[index].type.message}</p>
+                            <p className="form-error">{errors.ticketTypes[index].type.message}</p>
                           )}
                         </div>
 
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700">
-                            Name *
+                        <div className="form-group">
+                          <label className="form-label required">
+                            Name
                           </label>
                           <input
                             type="text"
-                            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                            className="form-input"
                             {...register(`ticketTypes.${index}.name`, { required: 'Ticket name is required' })}
                             disabled={isSubmitting}
                             placeholder="e.g., General Admission"
                           />
                           {errors.ticketTypes?.[index]?.name && (
-                            <p className="mt-1 text-sm text-red-600">{errors.ticketTypes[index].name.message}</p>
+                            <p className="form-error">{errors.ticketTypes[index].name.message}</p>
                           )}
                         </div>
 
@@ -578,21 +598,22 @@ const EventForm = () => {
                 </div>
               </div>
 
-              {/* Submit Button */}
-              <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+              {/* Form Actions */}
+              <div className="form-actions">
                 <button
                   type="button"
                   onClick={() => navigate('/dashboard')}
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  className="btn btn-secondary"
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`btn btn-primary ${isSubmitting ? 'btn-loading' : ''}`}
                 >
-                  {isSubmitting && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
+                  {isSubmitting && <Loader2 className="loading-spinner" />}
                   {eventId ? 'Update Event' : 'Create Event'}
                 </button>
               </div>

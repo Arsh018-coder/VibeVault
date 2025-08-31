@@ -12,7 +12,8 @@ import ProfilePage from '../pages/Profile/ProfilePage';
 import CartPage from '../pages/Cart/CartPage';
 import OrganizerDashboardPage from '../pages/Dashboard/OrganizerDashboardPage';
 import AttendeeDashboardPage from '../pages/Dashboard/AttendeeDashboardPage';
-import EventForm from '../components/features/events/EventForm/EventForm';
+import CreateEventPage from '../pages/Events/CreateEventPage';
+import EditEventPage from '../pages/Events/EditEventPage';
 import MyTicketsPage from '../pages/Profile/MyTicketsPage';
 import PaymentPage from '../pages/Payment/PaymentPage';
 import NotFoundPage from '../pages/Error/404Page';
@@ -131,7 +132,7 @@ const AppRoutes = () => {
           path="/organizer/events/new" 
           element={
             <RoleRoute allowedRoles={['ORGANIZER']}>
-              <EventForm />
+              <CreateEventPage />
             </RoleRoute>
           } 
         />
@@ -140,7 +141,7 @@ const AppRoutes = () => {
           path="/organizer/events/:eventId/edit" 
           element={
             <RoleRoute allowedRoles={['ORGANIZER']}>
-              <EventForm />
+              <EditEventPage />
             </RoleRoute>
           } 
         />
