@@ -14,6 +14,25 @@ router.get('/:id/tickets', eventController.getEventTickets);
 // Protected routes
 router.use(authenticate);
 
+// Image management routes
+router.post('/:eventId/images', 
+  authorize(['ORGANIZER', 'ADMIN']),
+  eventController.addEventImages,
+  (req, res) => {
+    res.status(201).json({ message: 'Images uploaded successfully', images: req.uploadedImages });
+  }
+);
+
+router.patch('/:eventId/images/:imageId/primary', 
+  authorize(['ORGANIZER', 'ADMIN']),
+  eventController.setPrimaryImage
+);
+
+router.delete('/:eventId/images/:imageId', 
+  authorize(['ORGANIZER', 'ADMIN']),
+  eventController.deleteEventImage
+);
+
 // Organizer dashboard
 router.get('/organizer/dashboard', 
   authorize(['ORGANIZER', 'ADMIN']),

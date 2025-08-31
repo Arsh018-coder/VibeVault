@@ -334,6 +334,133 @@
   border-width: 2px;
 }
 
+/* Image Upload Styles */
+.image-upload-area {
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.2s;
+  background: #fafafa;
+}
+
+.image-upload-area:hover {
+  border-color: #194759;
+  background: #f0f9ff;
+}
+
+.image-upload-input {
+  display: none;
+}
+
+.image-upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #4f7369;
+}
+
+.image-upload-label span {
+  font-weight: 500;
+}
+
+.image-upload-label small {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+.uploaded-images {
+  margin-top: 1.5rem;
+}
+
+.uploaded-images h4 {
+  color: #194759;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.image-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+  background: white;
+}
+
+.image-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.image-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.image-item:hover .image-actions {
+  opacity: 1;
+}
+
+.primary-btn {
+  background: #7ebfb3;
+  color: #194759;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.primary-btn.active {
+  background: #194759;
+  color: white;
+}
+
+.primary-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.remove-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-btn:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .event-form-container {
@@ -378,6 +505,14 @@
 
   .btn {
     justify-content: center;
+  }
+
+  .image-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .image-upload-area {
+    padding: 1.5rem;
   }
 }
 

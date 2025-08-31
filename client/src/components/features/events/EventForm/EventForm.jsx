@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Calendar, MapPin, Ticket, Plus, Trash2, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Ticket, Plus, Trash2, Loader2, Upload, X, Image } from 'lucide-react';
 import api from '../../../../services/api';
 import toast from 'react-hot-toast';
 import './EventForm.css';
@@ -27,6 +27,8 @@ const EventForm = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [images, setImages] = useState([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   const {
     register,
@@ -70,7 +72,8 @@ const EventForm = () => {
         setCategories(response.data || []);
       } catch (err) {
         console.error('Failed to load categories:', err);
-        toast.error('Failed to load categories');
+        // Don't show error toast, just continue without categories
+        setCategories([]);
       } finally {
         setLoadingCategories(false);
       }
@@ -137,6 +140,46 @@ const EventForm = () => {
     append(defaultTicket);
   };
 
+  // Image handling functions
+  const handleImageUpload = async (files) => {
+    if (!files || files.length === 0) return;
+
+    setUploadingImages(true);
+    const formData = new FormData();
+    
+    Array.from(files).forEach((file) => {
+      formData.append('images', file);
+    });
+
+    try {
+      const response = await api.post('/events/upload-images', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const uploadedImages = response.data.images || [];
+      setImages(prev => [...prev, ...uploadedImages]);
+      toast.success(`${uploadedImages.length} image(s) uploaded successfully!`);
+    } catch (err) {
+      console.error('Failed to upload images:', err);
+      toast.error('Failed to upload images');
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  const handleRemoveImage = (index) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSetPrimaryImage = (index) => {
+    setImages(prev => prev.map((img, i) => ({
+      ...img,
+      isPrimary: i === index
+    })));
+  };
+
   // Submit handler
   const onSubmit = async (data) => {
     try {
@@ -158,7 +201,12 @@ const EventForm = () => {
         virtualLink: data.isVirtual ? data.virtualLink : null,
         capacity: data.capacity ? parseInt(data.capacity) : null,
         visibility: 'PUBLIC',
-        ticketTypes: data.ticketTypes.filter(ticket => ticket.name && ticket.price)
+        ticketTypes: data.ticketTypes.filter(ticket => ticket.name && ticket.price),
+        images: images.map(img => ({
+          url: img.url,
+          alt: img.alt || data.title,
+          isPrimary: img.isPrimary || false
+        }))
       };
 
       if (eventId) {
@@ -194,7 +242,8 @@ const EventForm = () => {
       <div className="event-form-wrapper">
         <div className="event-form-card">
           <div className="event-form-header">
-            <h3>{eventId ? 'Update your event details below.' : 'Fill in the details to create your event.'}</h3>
+            <h1>{eventId ? 'Edit Event' : 'Create New Event'}</h1>
+            <p>{eventId ? 'Update your event details below.' : 'Fill in the details to create your event.'}</p>
           </div>
 
           <div className="event-form-content">
@@ -303,6 +352,71 @@ const EventForm = () => {
                 </div>
               </div>
 
+              {/* Event Images */}
+              <div className="form-section">
+                <h2 className="section-title">
+                  <Image size={20} />
+                  Event Images
+                </h2>
+                
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label className="form-label">
+                      Upload Images
+                    </label>
+                    <div className="image-upload-area">
+                      <input
+                        type="file"
+                        id="image-upload"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e.target.files)}
+                        disabled={uploadingImages || isSubmitting}
+                        className="image-upload-input"
+                      />
+                      <label htmlFor="image-upload" className="image-upload-label">
+                        <Upload size={24} />
+                        <span>
+                          {uploadingImages ? 'Uploading...' : 'Click to upload images or drag and drop'}
+                        </span>
+                        <small>PNG, JPG, GIF up to 5MB each</small>
+                      </label>
+                    </div>
+                    
+                    {images.length > 0 && (
+                      <div className="uploaded-images">
+                        <h4>Uploaded Images</h4>
+                        <div className="image-grid">
+                          {images.map((image, index) => (
+                            <div key={index} className="image-item">
+                              <img src={image.url} alt={`Event image ${index + 1}`} />
+                              <div className="image-actions">
+                                <button
+                                  type="button"
+                                  onClick={() => handleSetPrimaryImage(index)}
+                                  className={`primary-btn ${image.isPrimary ? 'active' : ''}`}
+                                  disabled={isSubmitting}
+                                >
+                                  {image.isPrimary ? 'Primary' : 'Set Primary'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveImage(index)}
+                                  className="remove-btn"
+                                  disabled={isSubmitting}
+                                >
+                                  <X size={16} />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {/* Location Information */}
               <div className="form-section">
                 <h2 className="section-title">
@@ -319,8 +433,9 @@ const EventForm = () => {
                       <label className="radio-option">
                         <input
                           type="radio"
-                          value={false}
-                          {...register('isVirtual', { required: true })}
+                          value="false"
+                          checked={!isVirtual}
+                          onChange={() => setValue('isVirtual', false, { shouldValidate: true })}
                           disabled={isSubmitting}
                           className="radio-input"
                         />
@@ -329,8 +444,9 @@ const EventForm = () => {
                       <label className="radio-option">
                         <input
                           type="radio"
-                          value={true}
-                          {...register('isVirtual', { required: true })}
+                          value="true"
+                          checked={isVirtual}
+                          onChange={() => setValue('isVirtual', true, { shouldValidate: true })}
                           disabled={isSubmitting}
                           className="radio-input"
                         />

@@ -22,6 +22,7 @@
     "helmet": "^7.0.0",
     "joi": "^17.9.0",
     "jsonwebtoken": "^9.0.0",
+    "multer": "^2.0.2",
     "nodemailer": "^7.0.6",
     "stripe": "^18.5.0",
     "twilio": "^5.8.2",

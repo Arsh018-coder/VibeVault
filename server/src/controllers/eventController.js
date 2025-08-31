@@ -1,5 +1,69 @@
 const prisma = require('../db/prisma');
 const { Prisma } = require('@prisma/client');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs').promises;
+
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const uploadDir = path.join(__dirname, '../../public/uploads/events');
+    try {
+      await fs.mkdir(uploadDir, { recursive: true });
+      cb(null, uploadDir);
+    } catch (error) {
+      cb(error);
+    }
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, `event-${uniqueSuffix}${path.extname(file.originalname)}`);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
+
+exports.uploadEventImages = upload.array('images', 10);
+
+exports.processEventImages = async (req, res, next) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return next();
+    }
+
+    // Process uploaded files and attach to request
+    req.uploadedImages = req.files.map(file => ({
+      url: `/uploads/events/${file.filename}`,
+      alt: file.originalname,
+      isPrimary: false
+    }));
+
+    // Set first image as primary
+    if (req.uploadedImages.length > 0) {
+      req.uploadedImages[0].isPrimary = true;
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
 
 exports.createEvent = async (req, res, next) => {
   try {
@@ -21,7 +85,8 @@ exports.createEvent = async (req, res, next) => {
       capacity,
       featured,
       visibility = 'PUBLIC',
-      ticketTypes = []
+      ticketTypes = [],
+      images = []
     } = req.body;
 
     const organizerId = req.user.id;
@@ -39,7 +104,13 @@ exports.createEvent = async (req, res, next) => {
       counter++;
     }
 
-    // Create event with ticket types in a transaction
+    // Combine uploaded images with any existing images
+    const eventImages = req.uploadedImages || [];
+    if (Array.isArray(images) && images.length > 0) {
+      eventImages.push(...images);
+    }
+
+    // Create event with ticket types and images in a transaction
     const result = await prisma.$transaction(async (tx) => {
       // Create the event
       const event = await tx.event.create({
@@ -63,7 +134,13 @@ exports.createEvent = async (req, res, next) => {
           capacity: capacity ? parseInt(capacity) : null,
           featured: Boolean(featured),
           visibility,
-          status: 'DRAFT'
+          status: 'DRAFT',
+          images: eventImages.length > 0 ? {
+            create: eventImages
+          } : undefined
+        },
+        include: {
+          images: true
         }
       });
 
@@ -706,6 +783,7 @@ exports.getOrganizerDashboard = async (req, res, next) => {
         imageUrl: event.imageUrl,
         status: event.status,
         venue: event.venue,
+        category: event.category,
         ticketTypes: event.ticketTypes.map(type => ({
           id: type.id,
           name: type.name,
@@ -715,13 +793,13 @@ exports.getOrganizerDashboard = async (req, res, next) => {
       }))
     };
     
-    // Calculate total revenue (simplified - would need payment data for accurate amount)
+    // Calculate total revenue
     dashboardData.stats.totalRevenue = recentEvents.reduce((total, event) => {
       return total + event.ticketTypes.reduce((eventTotal, type) => {
         return eventTotal + (type.price * (type._count?.tickets || 0));
       }, 0);
     }, 0);
-    
+
     res.json(dashboardData);
     
   } catch (error) {
@@ -733,14 +811,20 @@ exports.getOrganizerDashboard = async (req, res, next) => {
 exports.toggleFeatured = async (req, res, next) => {
   try {
     const { id } = req.params;
-    
+    const userId = req.user.id;
+
+    // Check if event exists and user is the organizer
     const event = await prisma.event.findUnique({
       where: { id },
-      select: { featured: true }
+      select: { organizerId: true, featured: true }
     });
 
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
+    }
+
+    if (event.organizerId !== userId && req.user.role !== 'ADMIN') {
+      return res.status(403).json({ message: 'Not authorized to update this event' });
     }
 
     const updatedEvent = await prisma.event.update({
@@ -749,9 +833,120 @@ exports.toggleFeatured = async (req, res, next) => {
     });
 
     res.json({ message: 'Event featured status updated', event: updatedEvent });
-
   } catch (err) {
     console.error('Toggle featured error:', err);
     res.status(500).json({ message: 'Failed to toggle featured status' });
   }
 };
+
+// Add images to an event
+exports.addEventImages = [
+upload.array('images', 10), // Allow up to 10 images
+async (req, res, next) => {
+try {
+const { eventId } = req.params;
+  
+if (!req.files || req.files.length === 0) {
+  return res.status(400).json({ message: 'No images uploaded' });
+}
+
+// Check if event exists
+const event = await prisma.event.findUnique({
+  where: { id: eventId },
+  include: { images: true }
+});
+
+if (!event) {
+  return res.status(404).json({ message: 'Event not found' });
+}
+
+// Process uploaded files
+const images = req.files.map(file => ({
+  url: `/uploads/events/${file.filename}`,
+  alt: file.originalname,
+  isPrimary: false
+}));
+
+// Add images to event
+const savedImages = await Promise.all(
+  images.map(img => 
+    prisma.eventImage.create({
+      data: {
+        ...img,
+        eventId
+      }
+    })
+  )
+);
+
+res.status(201).json({
+  message: 'Images added to event successfully',
+  images: savedImages
+});
+} catch (err) {
+next(err);
+}
+}
+];
+
+// Set primary image for an event
+exports.setPrimaryImage = async (req, res, next) => {
+try {
+const { eventId, imageId } = req.params;
+
+// Start a transaction
+await prisma.$transaction([
+  // Reset all images to non-primary
+  prisma.eventImage.updateMany({
+    where: { eventId, isPrimary: true },
+    data: { isPrimary: false }
+  }),
+  
+  // Set the selected image as primary
+  prisma.eventImage.update({
+    where: { id: imageId, eventId },
+    data: { isPrimary: true }
+  })
+]);
+
+res.json({ message: 'Primary image updated successfully' });
+} catch (err) {
+next(err);
+}
+};
+
+// Delete an event image
+exports.deleteEventImage = async (req, res, next) => {
+try {
+const { imageId } = req.params;
+  
+// Find the image first to get the file path
+const image = await prisma.eventImage.findUnique({
+  where: { id: imageId }
+});
+
+if (!image) {
+  return res.status(404).json({ message: 'Image not found' });
+}
+
+// Delete from database
+await prisma.eventImage.delete({
+  where: { id: imageId }
+});
+
+// Delete the actual file
+const filePath = path.join(__dirname, '../../public', image.url);
+try {
+  await fs.unlink(filePath);
+} catch (err) {
+  console.error('Error deleting image file:', err);
+  // Continue even if file deletion fails
+}
+
+res.json({ message: 'Image deleted successfully' });
+} catch (err) {
+next(err);
+}
+};
+
+// Image upload functionality is now handled at the top of the file
