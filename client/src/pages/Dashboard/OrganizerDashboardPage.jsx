@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Calendar, Users, Ticket, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
 import api from '../../services/api';
 import SalesChart from '../../components/dashboard/SalesChart/SalesChart';
+import AttendanceChart from '../../components/dashboard/AttendanceChart/AttendanceChart';
 import './OrganizerDashboardPage.css';
 
 const OrganizerDashboardPage = () => {
   const [stats, setStats] = useState(null);
   const [salesData, setSalesData] = useState([]);
+  const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,7 +16,7 @@ const OrganizerDashboardPage = () => {
       try {
         const response = await api.get('/analytics/dashboard');
         setStats(response.data.stats);
-        // Create mock sales data for the chart since the API doesn't return it yet
+        // Create mock sales data for the charts since the API doesn't return it yet
         setSalesData([
           { month: 'Jan', revenue: 4000, ticketsSold: 240 },
           { month: 'Feb', revenue: 3000, ticketsSold: 139 },
@@ -22,6 +24,15 @@ const OrganizerDashboardPage = () => {
           { month: 'Apr', revenue: 2780, ticketsSold: 390 },
           { month: 'May', revenue: 1890, ticketsSold: 480 },
           { month: 'Jun', revenue: 2390, ticketsSold: 380 },
+        ]);
+        
+        // Mock attendance data for events
+        setAttendanceData([
+          { name: 'Music Festival', attendees: 1250, capacity: 1500 },
+          { name: 'Tech Conference', attendees: 480, capacity: 500 },
+          { name: 'Food Expo', attendees: 920, capacity: 1000 },
+          { name: 'Art Exhibition', attendees: 320, capacity: 400 },
+          { name: 'Startup Pitch', attendees: 180, capacity: 200 },
         ]);
       } catch (error) {
         console.error('Failed to fetch analytics', error);
@@ -121,17 +132,32 @@ const OrganizerDashboardPage = () => {
       </div>
 
       <div className="dashboard-content">
-        <div className="chart-container">
-          <div className="chart-header">
-            <h3>Sales Overview</h3>
-            <div className="time-filter">
-              <button className="active">Week</button>
-              <button>Month</button>
-              <button>Year</button>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="chart-container">
+            <div className="chart-header">
+              <h3>Sales Overview</h3>
+              <div className="time-filter">
+                <button className="active">Week</button>
+                <button>Month</button>
+                <button>Year</button>
+              </div>
+            </div>
+            <div className="chart-wrapper">
+              <SalesChart data={salesData} />
             </div>
           </div>
-          <div className="chart-wrapper">
-            <SalesChart data={salesData} />
+
+          <div className="chart-container">
+            <div className="chart-header">
+              <h3>Event Attendance</h3>
+              <div className="time-filter">
+                <button className="active">This Month</button>
+                <button>All Time</button>
+              </div>
+            </div>
+            <div className="chart-wrapper" style={{ height: '300px' }}>
+              <AttendanceChart data={attendanceData} />
+            </div>
           </div>
         </div>
 

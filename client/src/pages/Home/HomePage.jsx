@@ -88,21 +88,21 @@ const HomePage = () => {
           <div className="stat">
             <Calendar className="stat-icon" />
             <div className="stat-content">
-              <span className="stat-number">10+</span>
+              <span className="stat-number">100+</span>
               <span className="stat-label">Events</span>
             </div>
           </div>
           <div className="stat">
             <Users className="stat-icon" />
             <div className="stat-content">
-              <span className="stat-number">1K+</span>
+              <span className="stat-number">15K+</span>
               <span className="stat-label">Attendees</span>
             </div>
           </div>
           <div className="stat">
             <MapPin className="stat-icon" />
             <div className="stat-content">
-              <span className="stat-number">8+</span>
+              <span className="stat-number">80+</span>
               <span className="stat-label">Cities</span>
             </div>
           </div>
