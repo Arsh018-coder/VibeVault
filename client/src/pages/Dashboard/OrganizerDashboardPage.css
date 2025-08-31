@@ -43,7 +43,7 @@
   padding: 1.75rem 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  border-left: 4px solid #4f46e5;
+  border-left: 4px solid #0d9488;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
@@ -142,7 +142,7 @@
   width: 3rem;
   height: 3rem;
   border: 3px solid #e2e8f0;
-  border-top: 3px solid #4f46e5;
+  border-top: 3px solid #0d9488;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -205,7 +205,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  background: linear-gradient(90deg, #0d9488, #14b8a6);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s ease;

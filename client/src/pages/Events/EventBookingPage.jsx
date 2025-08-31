@@ -342,36 +342,51 @@ const EventBookingPage = () => {
     try {
       // Prepare booking data
       const bookingItems = [];
+      let totalAmount = 0;
+      
       Object.entries(selectedTickets).forEach(([ticketTypeId, quantity]) => {
         if (quantity > 0) {
           const ticketType = event.ticketTypes.find(t => t.id === parseInt(ticketTypeId));
           if (ticketType) {
             bookingItems.push({
               ticketTypeId: ticketType.id,
+              type: ticketType.type,
+              name: ticketType.name,
               quantity: quantity,
               price: ticketType.price
             });
+            totalAmount += ticketType.price * quantity;
           }
         }
       });
 
+      if (bookingItems.length === 0) {
+        toast.error('Please select at least one ticket');
+        return;
+      }
+
+      // Create booking data with payment information
       const bookingData = {
         eventId: event.id,
-        items: bookingItems
+        eventTitle: event.title,
+        totalAmount,
+        currency: 'INR',
+        tickets: bookingItems,
+        paymentMethod: 'card',
+        status: 'pending_payment'
       };
 
-      // Create booking
-      const response = await api.post('/bookings', bookingData);
-      const booking = response.data;
-
-      toast.success('Booking created! Redirecting to payment...');
-      
-      // Navigate to payment page
-      navigate(`/payment/${booking.id}`);
+      // Navigate to the new payment flow with booking data
+      navigate('/payment/checkout', { 
+        state: { 
+          bookingData,
+          from: `/events/${slug}/book`
+        } 
+      });
       
     } catch (error) {
       console.error('Booking failed:', error);
-      toast.error(error.response?.data?.message || 'Failed to create booking. Please try again.');
+      toast.error(error.response?.data?.message || 'Failed to process booking. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

@@ -470,7 +470,8 @@ exports.getAllEvents = exports.getEvents;
 
 exports.getFeaturedEvents = async (req, res, next) => {
   try {
-    const events = await prisma.event.findMany({
+    // First try to get featured events
+    let events = await prisma.event.findMany({
       where: {
         status: 'PUBLISHED',
         featured: true,
@@ -501,6 +502,76 @@ exports.getFeaturedEvents = async (req, res, next) => {
         startAt: 'asc'
       }
     });
+
+    // If less than 3 featured events, get upcoming events to fill the gap
+    if (events.length < 3) {
+      const additionalEvents = await prisma.event.findMany({
+        where: {
+          status: 'PUBLISHED',
+          startAt: { gte: new Date() },
+          // Exclude already fetched featured events
+          id: { notIn: events.map(e => e.id) }
+        },
+        take: 6 - events.length, // Fill up to 6 events total
+        include: {
+          organizer: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true
+            }
+          },
+          category: true,
+          ticketTypes: {
+            select: {
+              id: true,
+              name: true,
+              price: true,
+              qtyAvailable: true
+            },
+            orderBy: { price: 'asc' },
+            take: 1
+          }
+        },
+        orderBy: {
+          startAt: 'asc'
+        }
+      });
+      
+      // Combine featured and additional events
+      events = [...events, ...additionalEvents];
+      
+      // If still no events, get any published events
+      if (events.length === 0) {
+        events = await prisma.event.findMany({
+          where: { status: 'PUBLISHED' },
+          take: 6,
+          include: {
+            organizer: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true
+              }
+            },
+            category: true,
+            ticketTypes: {
+              select: {
+                id: true,
+                name: true,
+                price: true,
+                qtyAvailable: true
+              },
+              orderBy: { price: 'asc' },
+              take: 1
+            }
+          },
+          orderBy: {
+            startAt: 'asc'
+          }
+        });
+      }
+    }
 
     res.json({ events });
 
@@ -841,52 +912,73 @@ exports.toggleFeatured = async (req, res, next) => {
 
 // Add images to an event
 exports.addEventImages = [
-upload.array('images', 10), // Allow up to 10 images
-async (req, res, next) => {
-try {
-const { eventId } = req.params;
-  
-if (!req.files || req.files.length === 0) {
-  return res.status(400).json({ message: 'No images uploaded' });
-}
-
-// Check if event exists
-const event = await prisma.event.findUnique({
-  where: { id: eventId },
-  include: { images: true }
-});
-
-if (!event) {
-  return res.status(404).json({ message: 'Event not found' });
-}
-
-// Process uploaded files
-const images = req.files.map(file => ({
-  url: `/uploads/events/${file.filename}`,
-  alt: file.originalname,
-  isPrimary: false
-}));
-
-// Add images to event
-const savedImages = await Promise.all(
-  images.map(img => 
-    prisma.eventImage.create({
-      data: {
-        ...img,
-        eventId
+  upload.array('images', 10), // Allow up to 10 images
+  async (req, res, next) => {
+    try {
+      const { eventId } = req.params;
+      console.log('Uploading images for event:', eventId);
+      
+      if (!req.files || req.files.length === 0) {
+        console.log('No files were uploaded');
+        return res.status(400).json({ message: 'No images uploaded' });
       }
-    })
-  )
-);
+      
+      console.log(`Received ${req.files.length} files`);
 
-res.status(201).json({
-  message: 'Images added to event successfully',
-  images: savedImages
-});
-} catch (err) {
-next(err);
-}
-}
+      // Check if event exists
+      const event = await prisma.event.findUnique({
+        where: { id: eventId },
+        include: { images: true }
+      });
+
+      if (!event) {
+        console.log('Event not found:', eventId);
+        return res.status(404).json({ message: 'Event not found' });
+      }
+
+      // Process uploaded files
+      const images = req.files.map(file => {
+        console.log('Processing file:', file.originalname);
+        return {
+          url: `/uploads/events/${file.filename}`,
+          alt: file.originalname,
+          isPrimary: false
+        };
+      });
+
+      // Add images to event
+      const savedImages = await Promise.all(
+        images.map(img => 
+          prisma.eventImage.create({
+            data: {
+              ...img,
+              eventId
+            }
+          }).catch(err => {
+            console.error('Error saving image to database:', err);
+            throw err;
+          })
+        )
+      );
+
+      console.log(`Successfully saved ${savedImages.length} images`);
+      res.status(201).json({
+        message: 'Images added to event successfully',
+        images: savedImages
+      });
+    } catch (err) {
+      console.error('Error in addEventImages:', err);
+      // Clean up any uploaded files if there was an error
+      if (req.files && req.files.length > 0) {
+        await Promise.all(
+          req.files.map(file => 
+            fs.unlink(file.path).catch(e => console.error('Error cleaning up file:', e))
+          )
+        );
+      }
+      next(err);
+    }
+  }
 ];
 
 // Set primary image for an event

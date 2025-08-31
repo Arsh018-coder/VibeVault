@@ -33,15 +33,17 @@ const schemas = {
     visibility: Joi.string().valid('PUBLIC', 'PRIVATE', 'UNLISTED').default('PUBLIC'),
     ticketTypes: Joi.array().items(
       Joi.object({
-        type: Joi.string().valid('early-bird', 'regular', 'vip').required(),
+        type: Joi.string().valid('GENERAL', 'VIP', 'STUDENT', 'EARLY_BIRD').default('GENERAL'),
         name: Joi.string().min(2).max(100).required(),
         description: Joi.string().max(500).optional(),
         price: Joi.number().min(0).required(),
         currency: Joi.string().length(3).default('INR'),
-        quantity: Joi.number().integer().min(1).required(),
-        perUserLimit: Joi.number().integer().min(1).max(50).default(10),
+        qtyTotal: Joi.number().integer().min(1).required(),
+        qtyAvailable: Joi.number().integer().min(0).optional(),
+        perUserLimit: Joi.number().integer().min(1).max(50).default(1),
         saleStart: Joi.date().iso().optional(),
-        saleEnd: Joi.date().iso().optional()
+        saleEnd: Joi.date().iso().optional(),
+        isActive: Joi.boolean().default(true)
       })
     ).min(1).required()
   }),

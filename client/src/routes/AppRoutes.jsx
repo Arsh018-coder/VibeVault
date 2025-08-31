@@ -16,6 +16,7 @@ import CreateEventPage from '../pages/Events/CreateEventPage';
 import EditEventPage from '../pages/Events/EditEventPage';
 import MyTicketsPage from '../pages/Profile/MyTicketsPage';
 import PaymentPage from '../pages/Payment/PaymentPage';
+import BookTicketFlow from '../pages/Tickets/BookTicketFlow';
 import NotFoundPage from '../pages/Error/404Page';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -90,6 +91,7 @@ const AppRoutes = () => {
         
         {/* Payment */}
         <Route path="/payment/:bookingId" element={<PaymentPage />} />
+        <Route path="/payment/checkout" element={<BookTicketFlow />} />
         
         {/* Dashboard routes - role-based */}
         <Route 
