@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Users, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
+import api from '../../services/api';
 import toast from 'react-hot-toast';
 import './EventBookingPage.css';
 
@@ -327,7 +328,7 @@ const EventBookingPage = () => {
     navigate('/cart');
   };
   
-  const handleBookNow = (e) => {
+  const handleBookNow = async (e) => {
     e.preventDefault();
     
     if (!isAuthenticated) {
@@ -338,16 +339,42 @@ const EventBookingPage = () => {
     
     setIsSubmitting(true);
     
-    // Process booking logic here
-    console.log('Booking tickets:', selectedTickets);
-    
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Prepare booking data
+      const bookingItems = [];
+      Object.entries(selectedTickets).forEach(([ticketTypeId, quantity]) => {
+        if (quantity > 0) {
+          const ticketType = event.ticketTypes.find(t => t.id === parseInt(ticketTypeId));
+          if (ticketType) {
+            bookingItems.push({
+              ticketTypeId: ticketType.id,
+              quantity: quantity,
+              price: ticketType.price
+            });
+          }
+        }
+      });
+
+      const bookingData = {
+        eventId: event.id,
+        items: bookingItems
+      };
+
+      // Create booking
+      const response = await api.post('/bookings', bookingData);
+      const booking = response.data;
+
+      toast.success('Booking created! Redirecting to payment...');
+      
+      // Navigate to payment page
+      navigate(`/payment/${booking.id}`);
+      
+    } catch (error) {
+      console.error('Booking failed:', error);
+      toast.error(error.response?.data?.message || 'Failed to create booking. Please try again.');
+    } finally {
       setIsSubmitting(false);
-      toast.success('Tickets booked successfully!');
-      // Navigate to confirmation page or user's tickets
-      navigate('/my-tickets');
-    }, 1500);
+    }
   };
 
   const formatDate = (dateString) => {

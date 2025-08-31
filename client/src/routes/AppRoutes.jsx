@@ -10,10 +10,11 @@ import RegisterPage from '../pages/Auth/RegisterPage';
 import VerifyEmailPage from '../pages/Auth/VerifyEmailPage';
 import ProfilePage from '../pages/Profile/ProfilePage';
 import CartPage from '../pages/Cart/CartPage';
-import OrganizerDashboard from '../pages/Organizer/OrganizerDashboard';
+import OrganizerDashboardPage from '../pages/Dashboard/OrganizerDashboardPage';
 import AttendeeDashboardPage from '../pages/Dashboard/AttendeeDashboardPage';
 import EventForm from '../components/features/events/EventForm/EventForm';
 import MyTicketsPage from '../pages/Profile/MyTicketsPage';
+import PaymentPage from '../pages/Payment/PaymentPage';
 import NotFoundPage from '../pages/Error/404Page';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -56,9 +57,9 @@ const RoleBasedDashboard = () => {
   }
   
   if (user.role === 'ORGANIZER') {
-    return <Navigate to="/organizer" replace />;
+    return <Navigate to="/dashboard/organizer" replace />;
   } else if (user.role === 'ATTENDEE') {
-    return <Navigate to="/attendee-dashboard" replace />;
+    return <Navigate to="/dashboard/attendee" replace />;
   } else {
     // Default fallback or admin case
     return <Navigate to="/" replace />;
@@ -86,6 +87,9 @@ const AppRoutes = () => {
         {/* Event booking */}
         <Route path="/events/:slug/book" element={<EventBookingPage />} />
         
+        {/* Payment */}
+        <Route path="/payment/:bookingId" element={<PaymentPage />} />
+        
         {/* Dashboard routes - role-based */}
         <Route 
           path="/dashboard" 
@@ -96,7 +100,7 @@ const AppRoutes = () => {
         
         {/* Attendee-specific routes */}
         <Route 
-          path="/attendee-dashboard" 
+          path="/dashboard/attendee" 
           element={
             <RoleRoute allowedRoles={['ATTENDEE']}>
               <AttendeeDashboardPage />
@@ -115,10 +119,10 @@ const AppRoutes = () => {
 
         {/* Organizer routes */}
         <Route 
-          path="/organizer" 
+          path="/dashboard/organizer" 
           element={
             <RoleRoute allowedRoles={['ORGANIZER']}>
-              <OrganizerDashboard />
+              <OrganizerDashboardPage />
             </RoleRoute>
           } 
         />

@@ -37,7 +37,12 @@ const Header = () => {
             <Link to="/events" className="nav-link">Events</Link>
             <Link to="/categories" className="nav-link">Categories</Link>
             {user && (
-              <Link to="../../../pages/Dashboard/OrganizerDashboardPage" className="nav-link">Dashboard</Link>
+              <Link 
+                to={user.role === 'ORGANIZER' ? '/dashboard/organizer' : '/dashboard/attendee'} 
+                className="nav-link"
+              >
+                Dashboard
+              </Link>
             )}
           </nav>
 

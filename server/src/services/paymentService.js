@@ -1,9 +1,7 @@
 const Stripe = require("stripe");
-const { STRIPE_SECRET_KEY } = require("../config/environment");
-const PaymentModel = require("../models/payment");
-const BookingModel = require("../models/booking");
+const prisma = require("../db/prisma");
 
-const stripe = STRIPE_SECRET_KEY ? Stripe(STRIPE_SECRET_KEY) : null;
+const stripe = process.env.STRIPE_SECRET_KEY ? Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
 class PaymentService {
   static async processPayment(bookingId, amount, method = "card") {
@@ -23,13 +21,15 @@ class PaymentService {
       });
 
       // Create payment record in database
-      const payment = await PaymentModel.create({
-        bookingId,
-        amount,
-        currency: "INR",
-        provider: "stripe",
-        status: "initiated",
-        transactionId: paymentIntent.id,
+      const payment = await prisma.payment.create({
+        data: {
+          bookingId,
+          amount,
+          currency: "INR",
+          provider: "STRIPE",
+          status: "PENDING",
+          transactionId: paymentIntent.id,
+        }
       });
 
       return {
@@ -51,27 +51,37 @@ class PaymentService {
       
       const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
       
-      const payment = await PaymentModel.findByTransactionId(paymentIntentId);
+      const payment = await prisma.payment.findFirst({
+        where: { transactionId: paymentIntentId }
+      });
+      
       if (!payment) {
         throw new Error("Payment record not found");
       }
 
-      let status = "failed";
+      let status = "FAILED";
       if (paymentIntent.status === "succeeded") {
-        status = "successful";
+        status = "SUCCESS";
         
         // Update booking status to confirmed
-        await BookingModel.update(payment.bookingId, {
-          status: "confirmed",
+        await prisma.booking.update({
+          where: { id: payment.bookingId },
+          data: { 
+            status: "CONFIRMED",
+            paymentStatus: "SUCCESS"
+          }
         });
       }
 
       // Update payment status
-      await PaymentModel.updateStatus(payment.id, status);
+      const updatedPayment = await prisma.payment.update({
+        where: { id: payment.id },
+        data: { status }
+      });
 
       return {
-        success: status === "successful",
-        payment: await PaymentModel.findById(payment.id),
+        success: status === "SUCCESS",
+        payment: updatedPayment,
         paymentIntent,
       };
     } catch (err) {
@@ -86,7 +96,10 @@ class PaymentService {
         throw new Error("Stripe is not configured. Please add STRIPE_SECRET_KEY to environment variables.");
       }
       
-      const payment = await PaymentModel.findById(paymentId);
+      const payment = await prisma.payment.findUnique({
+        where: { id: paymentId }
+      });
+      
       if (!payment) {
         throw new Error("Payment not found");
       }
@@ -100,17 +113,29 @@ class PaymentService {
 
       // Update payment status if full refund
       if (!amount || amount === payment.amount) {
-        await PaymentModel.updateStatus(payment.id, "refunded");
+        const updatedPayment = await prisma.payment.update({
+          where: { id: payment.id },
+          data: { status: "REFUNDED" }
+        });
         
         // Update booking status to cancelled
-        await BookingModel.update(payment.bookingId, {
-          status: "cancelled",
+        await prisma.booking.update({
+          where: { id: payment.bookingId },
+          data: { 
+            status: "CANCELLED",
+            paymentStatus: "REFUNDED"
+          }
         });
+
+        return {
+          refund,
+          payment: updatedPayment,
+        };
       }
 
       return {
         refund,
-        payment: await PaymentModel.findById(payment.id),
+        payment,
       };
     } catch (err) {
       console.error("Payment refund failed:", err);
@@ -120,7 +145,9 @@ class PaymentService {
 
   static async getPaymentStatus(paymentId) {
     try {
-      return await PaymentModel.findById(paymentId);
+      return await prisma.payment.findUnique({
+        where: { id: paymentId }
+      });
     } catch (err) {
       console.error("Failed to get payment status:", err);
       throw err;

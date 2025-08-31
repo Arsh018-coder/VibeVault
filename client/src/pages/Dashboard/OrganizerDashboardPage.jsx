@@ -12,9 +12,17 @@ const OrganizerDashboardPage = () => {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const response = await api.get('/analytics/organizer');
-        setStats(response.data.summary);
-        setSalesData(response.data.salesByMonth);
+        const response = await api.get('/analytics/dashboard');
+        setStats(response.data.stats);
+        // Create mock sales data for the chart since the API doesn't return it yet
+        setSalesData([
+          { month: 'Jan', revenue: 4000, ticketsSold: 240 },
+          { month: 'Feb', revenue: 3000, ticketsSold: 139 },
+          { month: 'Mar', revenue: 2000, ticketsSold: 980 },
+          { month: 'Apr', revenue: 2780, ticketsSold: 390 },
+          { month: 'May', revenue: 1890, ticketsSold: 480 },
+          { month: 'Jun', revenue: 2390, ticketsSold: 380 },
+        ]);
       } catch (error) {
         console.error('Failed to fetch analytics', error);
       } finally {
@@ -44,22 +52,22 @@ const OrganizerDashboardPage = () => {
   // Calculate percentage changes (mock data - replace with actual data)
   const statsWithChanges = {
     totalEvents: {
-      value: stats.totalEvents,
+      value: stats.totalEvents || 0,
       change: 12, // Example: 12% increase
       isPositive: true
     },
-    totalTicketsSold: {
-      value: stats.totalTicketsSold,
+    totalBookings: {
+      value: stats.totalBookings || 0,
       change: 8, // Example: 8% increase
       isPositive: true
     },
     totalRevenue: {
-      value: `$${stats.totalRevenue?.toLocaleString() || '0'}`,
+      value: stats.totalRevenue || 0,
       change: 5, // Example: 5% increase
       isPositive: true
     },
-    avgAttendance: {
-      value: `${stats.avgAttendance || 0}%`,
+    activeEvents: {
+      value: stats.activeEvents || 0,
       change: 3, // Example: 3% decrease
       isPositive: false
     }
@@ -85,17 +93,17 @@ const OrganizerDashboardPage = () => {
         </div>
         
         <div className="stat-card">
-          <h3><Ticket size={18} /> Tickets Sold</h3>
-          <p>{statsWithChanges.totalTicketsSold.value}</p>
-          <span className={`stat-change ${statsWithChanges.totalTicketsSold.isPositive ? 'positive' : 'negative'}`}>
-            {statsWithChanges.totalTicketsSold.isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-            {Math.abs(statsWithChanges.totalTicketsSold.change)}% from last month
+          <h3><Ticket size={18} /> Total Bookings</h3>
+          <p>{statsWithChanges.totalBookings.value}</p>
+          <span className={`stat-change ${statsWithChanges.totalBookings.isPositive ? 'positive' : 'negative'}`}>
+            {statsWithChanges.totalBookings.isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+            {Math.abs(statsWithChanges.totalBookings.change)}% from last month
           </span>
         </div>
         
         <div className="stat-card">
           <h3><DollarSign size={18} /> Total Revenue</h3>
-          <p>₹{stats.totalRevenue?.toLocaleString() || '0'}</p>
+          <p>₹{statsWithChanges.totalRevenue.value.toLocaleString()}</p>
           <span className={`stat-change ${statsWithChanges.totalRevenue.isPositive ? 'positive' : 'negative'}`}>
             {statsWithChanges.totalRevenue.isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
             {Math.abs(statsWithChanges.totalRevenue.change)}% from last month
@@ -103,11 +111,11 @@ const OrganizerDashboardPage = () => {
         </div>
         
         <div className="stat-card">
-          <h3><Users size={18} /> Total Attendees</h3>
-          <p>{stats.totalAttendees || '0'}</p>
-          <span className={`stat-change ${statsWithChanges.avgAttendance.isPositive ? 'positive' : 'negative'}`}>
-            {statsWithChanges.avgAttendance.isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-            {Math.abs(statsWithChanges.avgAttendance.change)}% from last month
+          <h3><Users size={18} /> Active Events</h3>
+          <p>{statsWithChanges.activeEvents.value}</p>
+          <span className={`stat-change ${statsWithChanges.activeEvents.isPositive ? 'positive' : 'negative'}`}>
+            {statsWithChanges.activeEvents.isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+            {Math.abs(statsWithChanges.activeEvents.change)}% from last month
           </span>
         </div>
       </div>
